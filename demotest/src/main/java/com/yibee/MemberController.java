@@ -45,6 +45,35 @@ public class MemberController {
 	@PersistenceContext
     private EntityManager entityManager;
 	
+	
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	@GetMapping(value="/editicon")
+	public boolean editIcon(HttpServletRequest request,@RequestParam("id") int id) {
+		Part part;
+		Properties pp;
+		try {
+			part = request.getPart("upfile");
+			pp = MyUtil.getConfProperties();
+			String savePath = pp.getProperty("member_icon.dir");
+			int folderName = (int)Math.floor(id/1000);
+			String save2Path = savePath + ("/"+folderName); 
+			File fileSaveDir = new File(save2Path);
+	        if (!fileSaveDir.exists()) {
+	            fileSaveDir.mkdir();
+	        }
+			part.write(save2Path + File.separator + id+".jpg");
+			MyUtil.manageImage(160,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_2.jpg");
+			MyUtil.manageImage(64,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_1.jpg");
+			MyUtil.manageImage(32,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_0.jpg");
+			return true;
+		} catch (IOException | ServletException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+	
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/geticon")
 	public ResponseEntity<FileSystemResource> getIconById(HttpServletResponse response,@RequestParam("Id") int Id,@RequestParam("size") int size) {
