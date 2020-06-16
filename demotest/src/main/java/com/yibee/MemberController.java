@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yibee.entity.Member;
 
+import net.sf.json.JSONObject;
+
 @RestController
 @RequestMapping("/member")
 public class MemberController {
@@ -45,14 +47,15 @@ public class MemberController {
 	@PersistenceContext
     private EntityManager entityManager;
 	
-	
+	@RequestMapping(value = "/upIcon")
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	@GetMapping(value="/editicon")
-	public boolean editIcon(HttpServletRequest request,@RequestParam("id") int id) {
+	public Properties upIcon(HttpServletRequest request,HttpServletResponse response,@RequestParam("id") int id) throws IOException, ServletException {
+		Properties p = new Properties();
+		p.put("ID", id);
 		Part part;
 		Properties pp;
 		try {
-			part = request.getPart("upfile");
+			part = request.getPart("photo");
 			pp = MyUtil.getConfProperties();
 			String savePath = pp.getProperty("member_icon.dir");
 			int folderName = (int)Math.floor(id/1000);
@@ -65,11 +68,43 @@ public class MemberController {
 			MyUtil.manageImage(160,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_2.jpg");
 			MyUtil.manageImage(64,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_1.jpg");
 			MyUtil.manageImage(32,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_0.jpg");
-			return true;
+			p.put("msg", 1);
 		} catch (IOException | ServletException e) {
+			p.put("msg", 0);
 			e.printStackTrace();
-			return false;
 		}
+		return p;
+	}
+	
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	@GetMapping(value="/editicon")
+	public Properties editIcon(HttpServletRequest request,@RequestParam("id") int id) {
+		//JSONObject result = new JSONObject();
+		Properties p = new Properties();
+		p.put("ID", id);
+		//result.put("ID", id);
+		Part part;
+		Properties pp;
+		try {
+			part = request.getPart("photo");
+			pp = MyUtil.getConfProperties();
+			String savePath = pp.getProperty("member_icon.dir");
+			int folderName = (int)Math.floor(id/1000);
+			String save2Path = savePath + ("/"+folderName); 
+			File fileSaveDir = new File(save2Path);
+	        if (!fileSaveDir.exists()) {
+	            fileSaveDir.mkdir();
+	        }
+			part.write(save2Path + File.separator + id+".jpg");
+			MyUtil.manageImage(160,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_2.jpg");
+			MyUtil.manageImage(64,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_1.jpg");
+			MyUtil.manageImage(32,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_0.jpg");
+			p.put("msg", 1);
+		} catch (IOException | ServletException e) {
+			p.put("msg", 0);
+			e.printStackTrace();
+		}
+		return p;
 	}
 	
 	
