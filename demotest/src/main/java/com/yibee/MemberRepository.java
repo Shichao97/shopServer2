@@ -1,5 +1,7 @@
 package com.yibee;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -10,4 +12,6 @@ public interface MemberRepository extends PagingAndSortingRepository<Member, Lon
 
 	@Query(value = "select MAX(m.id) FROM Member m")
 	public Long getMaxId();
+	
+	public Optional<Member> findByUserName(String userName);
 }

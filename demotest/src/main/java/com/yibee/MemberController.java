@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import javax.annotation.Resource;
@@ -16,6 +17,7 @@ import javax.persistence.PersistenceContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import org.springframework.core.io.FileSystemResource;
@@ -324,4 +326,39 @@ public class MemberController {
 	     
 	  return repo.getMaxId();
 	}
+	
+	@PostMapping(value = "/login")
+	//@CrossOrigin(origins = "*", maxAge = 3600)
+    public Properties login(HttpServletRequest request,
+    		HttpServletResponse response,
+    		@RequestParam(value="userName",defaultValue="") String userName,
+    		@RequestParam(value="passWord",defaultValue="") String passWord
+    		) throws IOException, ServletException {
+		
+		Properties p = new Properties();
+		HttpSession session = request.getSession();
+		Optional<Member> op = repo.findByUserName(userName);
+		
+		String url = request.getHeader("Origin");  
+		if(url !=null && url.length()>0) {
+			response.addHeader("Access-Control-Allow-Origin", url);                
+			response.addHeader("Access-Control-Allow-Credentials", "true");     
+		}
+		
+		if(op.isPresent()) {
+			Member m = op.get();
+			String enpass = MyUtil.encrypt(passWord);
+			if(m.getPassWord().contentEquals(enpass)) {
+				this.entityManager.detach(m);
+				session.setAttribute(MyUtil.ATTR_LOGIN_NAME, m);
+				p.put("success", 1);
+				return p;
+			}
+		}
+		
+		
+		p.put("success", 0);
+		p.put("msg", "Username or password is wrong.");
+		return p;
+    }		
 }
