@@ -21,7 +21,7 @@ public class GoodsType implements Serializable {
 	private String categoryCode;
 
 	@Column(name="category_name")
-	private int categoryName;
+	private String categoryName;
 
 	private String code;
 
@@ -48,11 +48,11 @@ public class GoodsType implements Serializable {
 		this.categoryCode = categoryCode;
 	}
 
-	public int getCategoryName() {
+	public String getCategoryName() {
 		return this.categoryName;
 	}
 
-	public void setCategoryName(int categoryName) {
+	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
 	}
 
