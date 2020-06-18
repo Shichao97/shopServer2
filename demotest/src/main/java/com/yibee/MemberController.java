@@ -156,7 +156,7 @@ public class MemberController {
 	@PostMapping(value="/register")
 	public Member memberRegister(HttpServletResponse response,@RequestParam("userName") String userName,
 			@RequestParam("passWord") String passWord,@RequestParam("email") String email) throws IOException {
-		/*
+		
 		Member m = new Member();
 		Long mid = repo.getMaxId();
 		Long id = mid + 1;
@@ -167,34 +167,35 @@ public class MemberController {
 		m.setRegisterDate(registerDate);
 		m.setUserName(userName);
 		passWord = MyUtil.encrypt(passWord);
-		m.setPassWord(passWord)*/
+		m.setPassWord(passWord);
 		//response.sendError(601, "wrong!");
-		response.setStatus(601);
-		/*
+		int actcode = (int)((Math.random()*9+1)*100000);
+		String codestring = Integer.toString(actcode);
+		Properties pp;
 		try {
-			repo.save(m);
-			int actcode = (int)((Math.random()*9+1)*100000);
-			String codestring = Integer.toString(actcode);
-			Properties pp;
-			try {
-				pp = MyUtil.getConfProperties();
-				String url = pp.getProperty("active.url")+"?userName="+userName+"&actcode="+codestring;
-				System.out.println(url);
-				MailSendObj send = new MailSendObj();
-				send.sendOut("shichaostats@outlook.com", "Website", email, "you", "Website Activation", "activate your account here: "+url);
-				m.setActived(-actcode);
-			} catch (IOException e
-					) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}catch(Exception e){
-			String err = e.getMessage();
-			response.sendError(601, err);
+			pp = MyUtil.getConfProperties();
+			String url = pp.getProperty("active.url")+"?userName="+userName+"&actcode="+codestring;
+			System.out.println(url);
+			MailSendObj send = new MailSendObj();
+			send.sendOut("shichaostats@outlook.com", "Website", email, "you", "Website Activation", "activate your account here: "+url);
+			m.setActived(-actcode);
+		} catch (IOException e
+				) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
-		return null;
+		try {
+			Member m2 = repo.save(m);
+			return m2;
+		}catch(Exception e){
+			//String err = e.getMessage();
+			//response.sendError(601, err);
+			e.printStackTrace();
+			response.setStatus(601);
+			return null;
+		}
+		
+		
 	}
 	
 	@PostMapping(value="/add")

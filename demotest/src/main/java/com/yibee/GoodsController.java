@@ -40,7 +40,7 @@ public class GoodsController {
 	}
 
 	
-	@PostMapping(value = "/add")
+	@PostMapping(value = "/sell/add")
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	public Goods addGoods(HttpServletRequest request,
 			@RequestParam(value = "typeCode",defaultValue = "A0001") String typeCode, 
