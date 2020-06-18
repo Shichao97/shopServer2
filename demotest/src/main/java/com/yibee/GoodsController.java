@@ -3,7 +3,9 @@ package com.yibee;
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -25,6 +27,18 @@ import com.yibee.entity.Member;
 public class GoodsController {
 	@Resource
 	private GoodsRepository repo;
+	
+	@PostMapping(value = "/add2")
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	public Goods addGoods(HttpServletRequest request) {
+		Map<String,String[]> map = request.getParameterMap();
+		Set<String> set = map.keySet();
+		for(Object o : set) {
+			System.out.println(o.toString());
+		}
+		return null;
+	}
+
 	
 	@PostMapping(value = "/add")
 	@CrossOrigin(origins = "*", maxAge = 3600)

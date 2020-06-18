@@ -11,10 +11,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringUtils;
 //配置拦截路径
 //@WebFilter(filterName = "loginFilter",urlPatterns = {"/goods/sell/*,/goods/buy/*,/member/upIcon,/member/edit*"})
+
+@WebFilter(filterName = "loginFilter",urlPatterns = {"/goods/sell/*","/goods/buy/*","/member/upIcon","/member/edit*"})
 public class LoginFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -25,7 +28,8 @@ public class LoginFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-
+        //Part part = request.getPart("photo");
+        //String id = request.getParameter("id");
         //System.out.println("TestFilter,"+request.getRequestURI());
         
         Object o = request.getSession().getAttribute(MyUtil.ATTR_LOGIN_NAME);

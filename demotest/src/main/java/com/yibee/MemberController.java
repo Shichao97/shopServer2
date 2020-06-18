@@ -352,6 +352,7 @@ public class MemberController {
 				this.entityManager.detach(m);
 				session.setAttribute(MyUtil.ATTR_LOGIN_NAME, m);
 				p.put("success", 1);
+				p.put("member",m);
 				return p;
 			}
 		}
