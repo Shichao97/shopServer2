@@ -21,8 +21,8 @@ public class WebSocketConfig implements WebSocketConfigurer{
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry)
     {
         // 注册消息处理器，并添加自定义拦截器，支持websocket的连接访问
-        registry.addHandler(new MyWebSocketHander(), "/chat")
-            .addInterceptors(new WebSocketHandshakeInterceptor());
+        registry.addHandler(new MyWebSocketHander(), "myHandler")
+            .addInterceptors(new WebSocketHandshakeInterceptor()).setAllowedOrigins("*");
 
         /*
         注册消息处理器，并添加自定义拦截器,添加不支持websocket的连接访问
