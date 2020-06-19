@@ -358,8 +358,10 @@ public class MemberController {
 				p.put("success", 1);
 				p.put("member",m);
 				//cookie
-				Cookie c = new Cookie("id", ""+m.getId());
+				Cookie c = new Cookie("userId", ""+m.getId());
 				Cookie c2 = new Cookie("username",m.getUserName());
+				c.setPath("/");
+				c2.setPath("/");
 				
 				response.addCookie(c);//添加到response中
 				response.addCookie(c2);
