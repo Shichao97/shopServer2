@@ -376,11 +376,12 @@ public class MemberController {
 				  
 			    Cookie coo[] = request.getCookies();//获取request中cookie集合
 				  //循环遍历
+			    if(coo != null) {
 			    
-			    
-			    for (Cookie co : coo) {
-				   System.out.println("Cookie:  "+co.getName() + "=" + co.getValue());
-				}
+				    for (Cookie co : coo) {
+					   System.out.println("Cookie:  "+co.getName() + "=" + co.getValue());
+					}
+			    }
 				return p;
 			}
 		}
