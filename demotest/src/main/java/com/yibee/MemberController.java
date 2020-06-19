@@ -53,6 +53,14 @@ public class MemberController {
 	@RequestMapping(value = "/upIcon")
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	public Properties upIcon(HttpServletRequest request,HttpServletResponse response,@RequestParam("id") int id) throws IOException, ServletException {
+		HttpSession session = request.getSession();
+		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Member m =(Member)o;
+		if(m == null || m.getId() != id) {
+			response.setStatus(606);
+			return null;
+		}
+		
 		Properties p = new Properties();
 		p.put("ID", id);
 		Part part;
