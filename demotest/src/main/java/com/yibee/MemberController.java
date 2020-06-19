@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -78,6 +79,7 @@ public class MemberController {
 		return p;
 	}
 	
+	/*
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/editicon")
 	public Properties editIcon(HttpServletRequest request,@RequestParam("id") int id) {
@@ -108,6 +110,7 @@ public class MemberController {
 		}
 		return p;
 	}
+	*/
 	
 	
 
@@ -354,6 +357,20 @@ public class MemberController {
 				session.setAttribute(MyUtil.ATTR_LOGIN_NAME, m);
 				p.put("success", 1);
 				p.put("member",m);
+				//cookie
+				Cookie c = new Cookie("id", ""+m.getId());
+				Cookie c2 = new Cookie("username",m.getUserName());
+				
+				response.addCookie(c);//添加到response中
+				response.addCookie(c2);
+				  
+			    Cookie coo[] = request.getCookies();//获取request中cookie集合
+				  //循环遍历
+			    
+			    
+			    for (Cookie co : coo) {
+				   System.out.println("Cookie:  "+co.getName() + "=" + co.getValue());
+				}
 				return p;
 			}
 		}

@@ -2,6 +2,9 @@ package com.yibee.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -39,7 +42,8 @@ public class Member implements Serializable {
 
 	@Column(name="last_name", length=32)
 	private String lastName;
-
+	
+	@JsonIgnore
 	@Column(name="pass_word", nullable=false, length=32)
 	private String passWord;
 
