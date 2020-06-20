@@ -11,9 +11,15 @@ import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,7 +44,43 @@ public class GoodsController {
 		}
 		return null;
 	}
-
+	@GetMapping(value = "sell/search")
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	public Page<Goods> goodsSelect(@RequestParam("searchType1") String searchType1,@RequestParam("searchType2") String searchType2,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="20") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
+		//List<Teacher> list = null;
+		
+		
+		Page<Goods> page = null;
+		
+		Pageable pageable = null;
+		if(sortBy.length() == 0) {
+			pageable = PageRequest.of(pageNo, pageSize);
+		}else {
+			pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+		}
+		
+		
+		if(searchType1.contentEquals("status0") && searchType2.contentEquals("name") ) {
+			page = repo.findByStatus0Name("%"+searchValue+"%",pageable); //未发布
+		}else if(searchType1.contentEquals("status0") && searchType2.contentEquals("desc")) {
+			page = repo.findByStatus0Desc("%"+searchValue+"%",pageable); 
+		}else if (searchType1.contentEquals("status1") && searchType2.contentEquals("name")) {
+			page = repo.findByStatus1Name("%"+searchValue+"%",pageable); 
+		}else if(searchType1.contentEquals("status1") && searchType2.contentEquals("desc")) {
+			page = repo.findByStatus1Desc("%"+searchValue+"%",pageable); 
+		}else if(searchType1.contentEquals("status2") && searchType2.contentEquals("name")) {
+			page = repo.findByStatus2Name("%"+searchValue+"%",pageable); 
+		}else if(searchType1.contentEquals("status2") && searchType2.contentEquals("desc")) {
+			page = repo.findByStatus2Desc("%"+searchValue+"%",pageable); 
+		}else if(searchType1.contentEquals("statusm1") && searchType2.contentEquals("name")) {
+			page = repo.findByStatusm1Name("%"+searchValue+"%",pageable); 
+		}else {
+			page = repo.findByStatusm1Desc("%"+searchValue+"%",pageable); 
+		}
+						
+		return page;
+		
+	}
 	
 	@PostMapping(value = "/sell/add")
 	@CrossOrigin(origins = "*", maxAge = 3600)
@@ -53,6 +95,10 @@ public class GoodsController {
 			@RequestParam(value = "status",defaultValue = "0") int status
 			) {
 		
+		HttpSession session = request.getSession();
+		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Member m =(Member)o;
+		
 		Enumeration<String> e = request.getParameterNames();
 		while(e.hasMoreElements()){
             String value = (String)e.nextElement();//调用nextElement方法获得元素
@@ -65,7 +111,7 @@ public class GoodsController {
 		Long id = gid + 1;
 		
 		Goods g = new Goods();
-		g.setSellerId(1005L);
+		g.setSellerId(m.getId());
 		g.setTypeCode(typeCode);
 		g.setLocation(location);
 		g.setName(name);
