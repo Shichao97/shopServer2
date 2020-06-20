@@ -30,6 +30,8 @@ public class Goods implements Serializable {
 	private byte sellingMethod;
 
 	private int status;
+	
+	private String description;
 
 	@Column(name="type_code")
 	private String typeCode;
@@ -91,6 +93,14 @@ public class Goods implements Serializable {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+	
+	public String getDescription() {
+		return this.description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getTypeCode() {
