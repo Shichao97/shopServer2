@@ -323,6 +323,7 @@ public class MemberController {
 	}
 	*/
 	@GetMapping("/getMaxId")
+	@CrossOrigin(origins = "*", maxAge = 3600)
 	 public Long getMaxId() {
 	  Properties p = new Properties();
 	     ClassLoader cl = this.getClass().getClassLoader();
