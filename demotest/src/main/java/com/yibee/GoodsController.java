@@ -61,9 +61,9 @@ public class GoodsController {
 		
 		
 		if(searchType2.contentEquals("name")){
-			page = repo.findAllByName(searchType1,"%"+searchValue+"%",pageable); //未发布
+			page = repo.findByStatusAndName(searchType1,"%"+searchValue+"%",pageable); //未发布
 		}else{
-			page = repo.findAllByDesc(searchType1,"%"+searchValue+"%",pageable); 
+			page = repo.findByStatusAndDesc(searchType1,"%"+searchValue+"%",pageable); 
 		}
 						
 		return page;
