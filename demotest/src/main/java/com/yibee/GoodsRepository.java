@@ -12,28 +12,11 @@ public interface GoodsRepository extends PagingAndSortingRepository<Goods, Long>
 	@Query(value = "select MAX(g.id) FROM Goods g")
 	public Long getMaxId();
 	
-	@Query(value = "from Goods g where g.status = 0 and g.name like ?1")
-    Page<Goods> findByStatus0Name(String name,Pageable pageable);
+	@Query(value = "from Goods g where g.status = ?1 and g.name like ?2")
+    Page<Goods> findAllByName(int status,String name,Pageable pageable);
 	
-	@Query(value = "from Goods g where g.status = 0 and g.description like ?1")
-    Page<Goods> findByStatus0Desc(String desc,Pageable pageable);
+	@Query(value = "from Goods g where g.status = ?1 and g.description like ?2")
+    Page<Goods> findAllByDesc(int status,String desc,Pageable pageable);
 	
-	@Query(value = "from Goods g where g.status = 1 and g.name like ?1")
-    Page<Goods> findByStatus1Name(String name,Pageable pageable);
-	
-	@Query(value = "from Goods g where g.status = 1 and g.description like ?1")
-    Page<Goods> findByStatus1Desc(String desc,Pageable pageable);
-	
-	@Query(value = "from Goods g where g.status = 2 and g.name like ?1")
-    Page<Goods> findByStatus2Name(String name,Pageable pageable);
-	
-	@Query(value = "from Goods g where g.status = 2 and g.description like ?1")
-    Page<Goods> findByStatus2Desc(String desc,Pageable pageable);
-	
-	@Query(value = "from Goods g where g.status = -1 and g.name like ?1")
-    Page<Goods> findByStatusm1Name(String name,Pageable pageable);
-	
-	@Query(value = "from Goods g where g.status = -1 and g.description like ?1")
-    Page<Goods> findByStatusm1Desc(String desc,Pageable pageable);
 	
 }

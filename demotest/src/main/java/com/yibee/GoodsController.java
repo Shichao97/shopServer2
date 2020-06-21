@@ -46,7 +46,7 @@ public class GoodsController {
 	}
 	@GetMapping(value = "sell/search")
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	public Page<Goods> goodsSelect(@RequestParam("searchType1") String searchType1,@RequestParam("searchType2") String searchType2,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="20") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
+	public Page<Goods> goodsSelect(@RequestParam("searchType1") int searchType1,@RequestParam("searchType2") String searchType2,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="20") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
 		//List<Teacher> list = null;
 		
 		
@@ -60,22 +60,10 @@ public class GoodsController {
 		}
 		
 		
-		if(searchType1.contentEquals("status0") && searchType2.contentEquals("name") ) {
-			page = repo.findByStatus0Name("%"+searchValue+"%",pageable); //未发布
-		}else if(searchType1.contentEquals("status0") && searchType2.contentEquals("desc")) {
-			page = repo.findByStatus0Desc("%"+searchValue+"%",pageable); 
-		}else if (searchType1.contentEquals("status1") && searchType2.contentEquals("name")) {
-			page = repo.findByStatus1Name("%"+searchValue+"%",pageable); 
-		}else if(searchType1.contentEquals("status1") && searchType2.contentEquals("desc")) {
-			page = repo.findByStatus1Desc("%"+searchValue+"%",pageable); 
-		}else if(searchType1.contentEquals("status2") && searchType2.contentEquals("name")) {
-			page = repo.findByStatus2Name("%"+searchValue+"%",pageable); 
-		}else if(searchType1.contentEquals("status2") && searchType2.contentEquals("desc")) {
-			page = repo.findByStatus2Desc("%"+searchValue+"%",pageable); 
-		}else if(searchType1.contentEquals("statusm1") && searchType2.contentEquals("name")) {
-			page = repo.findByStatusm1Name("%"+searchValue+"%",pageable); 
-		}else {
-			page = repo.findByStatusm1Desc("%"+searchValue+"%",pageable); 
+		if(searchType2.contentEquals("name")){
+			page = repo.findAllByName(searchType1,"%"+searchValue+"%",pageable); //未发布
+		}else{
+			page = repo.findAllByDesc(searchType1,"%"+searchValue+"%",pageable); 
 		}
 						
 		return page;
