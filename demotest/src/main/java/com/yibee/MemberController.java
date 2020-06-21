@@ -361,7 +361,7 @@ public class MemberController {
 		
 		if(op.isPresent()) {
 			Member m = op.get();
-			if(m.getActived()==0) {
+			if(m.getActived()<=0) {
 				p.put("success", 0);
 				p.put("msg", "Login Failed. User is not actived.");
 				return p;
