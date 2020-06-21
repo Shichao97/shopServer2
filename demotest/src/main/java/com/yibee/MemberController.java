@@ -363,12 +363,12 @@ public class MemberController {
 			Member m = op.get();
 			if(m.getActived()==0) {
 				p.put("success", 0);
-				p.put("msg", "User is not actived.");
+				p.put("msg", "Login Failed. User is not actived.");
 				return p;
 			}
 			else if(m.getDisabled()==1) {
 				p.put("success", 0);
-				p.put("msg", "User is disabled.");
+				p.put("msg", "Login Failed. User is disabled.");
 				return p;
 			}
 			String enpass = MyUtil.encrypt(passWord);
