@@ -357,10 +357,23 @@ public class MemberController {
 			response.addHeader("Access-Control-Allow-Origin", url);                
 			response.addHeader("Access-Control-Allow-Credentials", "true");     
 		}
+		System.out.println("Login username="+userName);
 		
 		if(op.isPresent()) {
 			Member m = op.get();
+			if(m.getActived()==0) {
+				p.put("success", 0);
+				p.put("msg", "User is not actived.");
+				return p;
+			}
+			else if(m.getDisabled()==1) {
+				p.put("success", 0);
+				p.put("msg", "User is disabled.");
+				return p;
+			}
 			String enpass = MyUtil.encrypt(passWord);
+			System.out.println("Login enpass="+enpass);
+			System.out.println("Login m.getPassWord()="+m.getPassWord());
 			if(m.getPassWord().contentEquals(enpass)) {
 				this.entityManager.detach(m);
 				session.setAttribute(MyUtil.ATTR_LOGIN_NAME, m);
