@@ -2,6 +2,7 @@ package com.yibee;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
@@ -14,10 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,9 +49,54 @@ public class GoodsController {
 		}
 		return null;
 	}
+	
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	@GetMapping(value="/sell/getgoodsimg")
+	public ResponseEntity<FileSystemResource> getGoodsImg(HttpServletResponse response,@RequestParam("Id") int Id) {
+		//String savePath = "/Users/liushichao/desktop/member_icon";
+		Properties pp;
+		try {
+			pp = MyUtil.getConfProperties();
+			String savePath = pp.getProperty("goods_main_img.dir");
+			int folderName = (int)Math.floor(Id/1000);
+			String save2Path = savePath + ("/"+folderName); 
+			String absolutePath = save2Path+"/"+Id+"_0.jpg";
+			File file = new File(absolutePath);
+			//默认商品图？
+			/*
+			if(!file.exists()) {
+				file = new File(savePath+"/default_0.jpg");
+			}
+			*/
+			HttpHeaders headers = new HttpHeaders();
+		    headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+		   //浏览器自动下载
+		   //headers.add("Content-Disposition", "attachment; filename=ttt.jpg");
+		   //缓存
+		    headers.add("Pragma", "no-cache");
+		    headers.add("Expires", "0");
+		    headers.add("Last-Modified", new Date().toString()); 
+		    headers.add("ETag", String.valueOf(System.currentTimeMillis()));
+		    return ResponseEntity
+		      .ok()
+		      .headers(headers)
+		      .contentLength(file.length())
+		      .contentType(MediaType.IMAGE_JPEG)
+		      .body(new FileSystemResource(file));
+
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ResponseEntity.status(602).build();
+
+
+	}
+	
 	@GetMapping(value = "sell/search")
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	public Page<Goods> goodsSelect(@RequestParam("searchType1") int searchType1,@RequestParam("searchType2") String searchType2,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="20") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
+	public Page<Goods> goodsSelect(@RequestParam("sellerId") Long sellerId,@RequestParam("searchType1") int searchType1,@RequestParam("searchType2") String searchType2,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="20") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
 		//List<Teacher> list = null;
 		
 		
@@ -61,9 +111,9 @@ public class GoodsController {
 		
 		
 		if(searchType2.contentEquals("name")){
-			page = repo.findByStatusAndName(searchType1,"%"+searchValue+"%",pageable); //未发布
+			page = repo.findBySelleridAndStatusAndName(sellerId,searchType1,"%"+searchValue+"%",pageable); //未发布
 		}else{
-			page = repo.findByStatusAndDesc(searchType1,"%"+searchValue+"%",pageable); 
+			page = repo.findBySelleridAndStatusAndDesc(sellerId,searchType1,"%"+searchValue+"%",pageable); 
 		}
 						
 		return page;
