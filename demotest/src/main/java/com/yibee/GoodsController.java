@@ -110,7 +110,6 @@ public class GoodsController {
 			pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
 		}
 		
-		
 		if(searchType2.contentEquals("name")){
 			page = repo.findBySelleridAndStatusAndName(sellerId,searchType1,"%"+searchValue+"%",pageable); //未发布
 		}else{
