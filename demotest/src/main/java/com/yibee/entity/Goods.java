@@ -32,6 +32,8 @@ public class Goods implements Serializable {
 	private int status;
 	
 	private String description;
+	
+	private String filename;
 
 	@Column(name="type_code")
 	private String typeCode;
@@ -101,6 +103,14 @@ public class Goods implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public String getFilename() {
+		return this.filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = description;
 	}
 
 	public String getTypeCode() {
