@@ -161,22 +161,27 @@ public class GoodsController {
 		
 		Part part;
 		Properties pp;
+		int i = 0;
 		try {
 			Collection<Part> parts = request.getParts();
 			for(Part p : parts) {
-				Part ll = p;
+				if( p.getName().startsWith("img")){
+					String fieldName = p.getName();
+					String imgId = fieldName.substring(3,fieldName.length());
+					part = request.getPart(fieldName);
+					pp = MyUtil.getConfProperties();
+					String savePath = pp.getProperty("goods_main_img.dir");
+					int folderName = (int)Math.floor(id/1000);
+					String save2Path = savePath + ("/"+folderName) + "/" + id;
+					File fileSaveDir = new File(save2Path);
+			        if (!fileSaveDir.exists()) {
+			            fileSaveDir.mkdir();
+			        }
+			        part.write(save2Path + File.separator + imgId +".jpg");
+			        MyUtil.manageImage(240,save2Path + File.separator + imgId+".jpg",save2Path + File.separator + imgId+"_l.jpg");
+				}
 			}
-			part = request.getPart("mainImg");
-			pp = MyUtil.getConfProperties();
-			String savePath = pp.getProperty("goods_main_img.dir");
-			int folderName = (int)Math.floor(id/1000);
-			String save2Path = savePath + ("/"+folderName);
-			File fileSaveDir = new File(save2Path);
-	        if (!fileSaveDir.exists()) {
-	            fileSaveDir.mkdir();
-	        }
-	        part.write(save2Path + File.separator + id+".jpg");
-	        MyUtil.manageImage(240,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_0.jpg");
+			
 		}catch(Exception e1) {
 			e1.printStackTrace();
 		}
