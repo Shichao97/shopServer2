@@ -2,6 +2,7 @@ package com.yibee;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Map;
@@ -161,6 +162,10 @@ public class GoodsController {
 		Part part;
 		Properties pp;
 		try {
+			Collection<Part> parts = request.getParts();
+			for(Part p : parts) {
+				Part ll = p;
+			}
 			part = request.getPart("mainImg");
 			pp = MyUtil.getConfProperties();
 			String savePath = pp.getProperty("goods_main_img.dir");
