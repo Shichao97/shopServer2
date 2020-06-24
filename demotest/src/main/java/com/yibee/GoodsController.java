@@ -52,16 +52,21 @@ public class GoodsController {
 	}
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	@GetMapping(value="/sell/getgoodsimg")
-	public ResponseEntity<FileSystemResource> getGoodsImg(HttpServletResponse response,@RequestParam("Id") int Id) {
+	@GetMapping(value="/sell/getgoodsmainimg")
+	public ResponseEntity<FileSystemResource> getGoodsMainImg(HttpServletResponse response,@RequestParam("Id") Long Id) {
 		//String savePath = "/Users/liushichao/desktop/member_icon";
 		Properties pp;
 		try {
 			pp = MyUtil.getConfProperties();
 			String savePath = pp.getProperty("goods_main_img.dir");
 			int folderName = (int)Math.floor(Id/1000);
-			String save2Path = savePath + ("/"+folderName); 
-			String absolutePath = save2Path+"/"+Id+"_0.jpg";
+			String save2Path = savePath + ("/"+folderName)+ "/" + Id;
+			Goods g = repo.findFilenameById(Id);
+			String totalFile = g.getFilename();
+			//String total = "3";
+			String[] array = totalFile.split(";");
+			String firstNo = array[0];
+			String absolutePath = save2Path+"/"+firstNo+"_l.jpg";
 			File file = new File(absolutePath);
 			//默认商品图？
 			/*
@@ -119,6 +124,22 @@ public class GoodsController {
 		return page;
 		
 	}
+	/*
+	@PostMapping(value = "/sell/edit")
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	public Goods editGoods(HttpServletRequest request,
+			@RequestParam(value = "typeCode",defaultValue = "A0001") String typeCode, 
+			@RequestParam("location") String location,
+			@RequestParam("name") String name,
+			@RequestParam("price") float price, 
+			@RequestParam(value = "method1",defaultValue = "0") byte method1,
+			@RequestParam(value = "method2",defaultValue = "0") byte method2,
+			@RequestParam(value = "method3",defaultValue = "0") byte method3,
+			@RequestParam(value = "status",defaultValue = "0") int status
+			) {
+		return null;
+	}
+	*/
 	
 	@PostMapping(value = "/sell/add")
 	@CrossOrigin(origins = "*", maxAge = 3600)
@@ -159,15 +180,16 @@ public class GoodsController {
 		g.setStatus(status);
 		
 		
-		Part part;
+		//Part part;
 		Properties pp;
-		int i = 0;
 		try {
 			Collection<Part> parts = request.getParts();
-			for(Part p : parts) {
-				if( p.getName().startsWith("img")){
-					String fieldName = p.getName();
+			String fileName = "";
+			for(Part part : parts) {
+				if( part.getName().startsWith("img")){
+					String fieldName = part.getName();
 					String imgId = fieldName.substring(3,fieldName.length());
+					fileName += (imgId+";");
 					part = request.getPart(fieldName);
 					pp = MyUtil.getConfProperties();
 					String savePath = pp.getProperty("goods_main_img.dir");
@@ -181,6 +203,9 @@ public class GoodsController {
 			        MyUtil.manageImage(240,save2Path + File.separator + imgId+".jpg",save2Path + File.separator + imgId+"_l.jpg");
 				}
 			}
+			
+			fileName = fileName.substring(0, fileName.length()-1);
+			g.setFilename(fileName);
 			
 		}catch(Exception e1) {
 			e1.printStackTrace();

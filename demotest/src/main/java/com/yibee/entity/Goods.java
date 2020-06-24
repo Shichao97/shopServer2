@@ -110,7 +110,7 @@ public class Goods implements Serializable {
 	}
 
 	public void setFilename(String filename) {
-		this.filename = description;
+		this.filename = filename;
 	}
 
 	public String getTypeCode() {
