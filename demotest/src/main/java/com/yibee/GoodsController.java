@@ -159,6 +159,7 @@ public class GoodsController {
 		g.setSellingMethod(sellingMethod);
 		g.setStatus(status);
 		
+		
 		Part part;
 		Properties pp;
 		try {
