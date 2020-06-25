@@ -33,7 +33,8 @@ public class Goods implements Serializable {
 	
 	private String description;
 	
-	private String filename;
+	@Column(name="img_names")
+	private String imgNames;
 
 	@Column(name="type_code")
 	private String typeCode;
@@ -105,12 +106,12 @@ public class Goods implements Serializable {
 		this.description = description;
 	}
 	
-	public String getFilename() {
-		return this.filename;
+	public String getImgNames() {
+		return this.imgNames;
 	}
 
-	public void setFilename(String filename) {
-		this.filename = filename;
+	public void setImgNames(String imgNames) {
+		this.imgNames = imgNames;
 	}
 
 	public String getTypeCode() {

@@ -126,7 +126,7 @@ public class GoodsController {
 			int folderName = (int)Math.floor(Id/1000);
 			String save2Path = savePath + ("/"+folderName)+ "/" + Id;
 			Goods g = repo.findGoodsById(Id);
-			String totalFile = g.getFilename();
+			String totalFile = g.getImgNames();
 			//String total = "3";
 			String[] array = totalFile.split(";");
 			String firstNo = array[0];
@@ -269,7 +269,7 @@ public class GoodsController {
 			}
 			
 			fileName = fileName.substring(0, fileName.length()-1);
-			g.setFilename(fileName);
+			g.setImgNames(fileName);
 			
 		}catch(Exception e1) {
 			e1.printStackTrace();
