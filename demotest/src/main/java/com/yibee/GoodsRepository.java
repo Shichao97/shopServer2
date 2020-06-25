@@ -13,7 +13,7 @@ public interface GoodsRepository extends PagingAndSortingRepository<Goods, Long>
 	public Long getMaxId();
 	
 	@Query(value = "from Goods g where g.id = ?1")
-	Goods findFilenameById(Long id);
+	Goods findGoodsById(Long id);
 	
 	@Query(value = "from Goods g where g.sellerId=?1 and g.status = ?2 and g.name like ?3")
     Page<Goods> findBySelleridAndStatusAndName(Long sellerId, int status,String name,Pageable pageable);
