@@ -167,8 +167,6 @@ public class GoodsController {
 	@GetMapping(value = "sell/search")
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	public Page<Goods> goodsSelect(@RequestParam("sellerId") Long sellerId,@RequestParam("searchType1") int searchType1,@RequestParam("searchType2") String searchType2,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="20") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
-		//List<Teacher> list = null;
-		
 		
 		Page<Goods> page = null;
 		
@@ -188,10 +186,11 @@ public class GoodsController {
 		return page;
 		
 	}
-	/*
+	
 	@PostMapping(value = "/sell/edit")
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	public Goods editGoods(HttpServletRequest request,
+	public Properties editGoods(HttpServletRequest request,
+			@RequestParam("gid") Long gid,
 			@RequestParam(value = "typeCode",defaultValue = "A0001") String typeCode, 
 			@RequestParam("location") String location,
 			@RequestParam("name") String name,
@@ -199,11 +198,86 @@ public class GoodsController {
 			@RequestParam(value = "method1",defaultValue = "0") byte method1,
 			@RequestParam(value = "method2",defaultValue = "0") byte method2,
 			@RequestParam(value = "method3",defaultValue = "0") byte method3,
-			@RequestParam(value = "status",defaultValue = "0") int status
-			) {
-		return null;
+			@RequestParam(value = "oldimgnames") String oldimgnames,
+			@RequestParam(value = "status",defaultValue = "1") int status
+			){
+		Properties p = new Properties();
+		HttpSession session = request.getSession();
+		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Member m =(Member)o;
+		
+		Optional<Goods> og = repo.findById(gid);
+		if(!og.isPresent()) {
+			p.put("success",0);
+			p.put("msg", "Wrong goods_id for matching!");
+			return p;
+		}
+        
+		Goods g = og.get();
+		if(m.getId() != g.getSellerId()) {
+			p.put("success",1);
+			p.put("msg", "You do not have previllege to do so!");
+			return p;
+		}
+		//g.setSellerId(m.getId());
+		g.setTypeCode(typeCode);
+		g.setLocation(location);
+		g.setName(name);
+		g.setPrice(price);
+		byte sellingMethod =(byte) (method1 | method2 | method3) ;
+		g.setSellingMethod(sellingMethod);
+		g.setStatus(status);
+		
+		//old images
+		//String oldDatabaseNames = g.getImgNames();
+		int maxImgId;
+		if(oldimgnames == null || oldimgnames.length() == 0) {
+			maxImgId = 0;
+		}else {
+			int index = oldimgnames.lastIndexOf(";");
+			maxImgId = Integer.parseInt( oldimgnames.substring(index+1,oldimgnames.length())); 
+		}
+		//Part part;
+		Properties pp;
+		try {
+			Collection<Part> parts = request.getParts();
+			String fileName = "";
+			
+			int imgId,newId;
+			for(Part part : parts) {
+				if( part.getName().startsWith("img")){
+					String fieldName = part.getName();
+					imgId = Integer.parseInt(fieldName.substring(3,fieldName.length()));
+					newId = imgId + maxImgId + 1;
+					fileName += (newId+";");
+					part = request.getPart(fieldName);
+					pp = MyUtil.getConfProperties();
+					String savePath = pp.getProperty("goods_main_img.dir");
+					int folderName = (int)Math.floor(gid/1000);
+					String save2Path = savePath + ("/"+folderName) + "/" + gid;
+					File fileSaveDir = new File(save2Path);
+			        if (!fileSaveDir.exists()) {
+			            fileSaveDir.mkdir();
+			        }
+			        part.write(save2Path + File.separator + newId +".jpg");
+			        MyUtil.manageImage(240,save2Path + File.separator + newId+".jpg",save2Path + File.separator + newId+"_l.jpg");
+			       
+				}
+			}
+			
+			fileName = fileName.substring(0, fileName.length()-1);
+			String imgnames = fileName.length() == 0? oldimgnames : oldimgnames+";"+fileName;
+			g.setImgNames(imgnames);
+			repo.save(g);
+			p.put("success",1);
+			p.put("msg","Edit success!");
+		}catch(Exception e1) {
+			e1.printStackTrace();
+		}
+		return p;
 	}
-	*/
+	
+
 	
 	@PostMapping(value = "/sell/add")
 	@CrossOrigin(origins = "*", maxAge = 3600)
@@ -215,25 +289,27 @@ public class GoodsController {
 			@RequestParam(value = "method1",defaultValue = "0") byte method1,
 			@RequestParam(value = "method2",defaultValue = "0") byte method2,
 			@RequestParam(value = "method3",defaultValue = "0") byte method3,
-			@RequestParam(value = "status",defaultValue = "0") int status
+			@RequestParam(value = "status",defaultValue = "1") int status
 			) {
 		
 		HttpSession session = request.getSession();
 		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
 		Member m =(Member)o;
 		
+		/*
 		Enumeration<String> e = request.getParameterNames();
 		while(e.hasMoreElements()){
             String value = (String)e.nextElement();//调用nextElement方法获得元素
             System.out.print(value);
         }
-        
+        */
 		
 		
 		Long gid = repo.getMaxId();
 		Long id = gid + 1;
 		
 		Goods g = new Goods();
+		
 		g.setSellerId(m.getId());
 		g.setTypeCode(typeCode);
 		g.setLocation(location);
