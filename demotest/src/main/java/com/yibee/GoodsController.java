@@ -210,8 +210,7 @@ public class GoodsController {
 			@RequestParam(value = "method1",defaultValue = "0") byte method1,
 			@RequestParam(value = "method2",defaultValue = "0") byte method2,
 			@RequestParam(value = "method3",defaultValue = "0") byte method3,
-			@RequestParam(value = "oldimgnames") String oldimgnames,
-			@RequestParam(value = "status",defaultValue = "1") int status
+			@RequestParam(value = "oldimgnames") String oldimgnames
 			){
 		Properties p = new Properties();
 		HttpSession session = request.getSession();
@@ -238,7 +237,6 @@ public class GoodsController {
 		g.setPrice(price);
 		byte sellingMethod =(byte) (method1 | method2 | method3) ;
 		g.setSellingMethod(sellingMethod);
-		g.setStatus(status);
 		
 		//old images
 		//String oldDatabaseNames = g.getImgNames();
@@ -248,7 +246,7 @@ public class GoodsController {
 		Properties pp;
 		try {
 			Collection<Part> parts = request.getParts();
-			String fileName = "";
+			String fileName = oldimgnames;
 			
 			int imgId,newId;
 			for(Part part : parts) {
@@ -256,7 +254,12 @@ public class GoodsController {
 					String fieldName = part.getName();
 					imgId = Integer.parseInt(fieldName.substring(3,fieldName.length()));
 					newId = imgId + maxImgId + 1;
-					fileName += (newId+";");
+					if(fileName == null || fileName.length() == 0) {
+						fileName += newId;
+					}else {
+						fileName += (";"+newId);
+					}
+					
 					part = request.getPart(fieldName);
 					pp = MyUtil.getConfProperties();
 					String savePath = pp.getProperty("goods_main_img.dir");
@@ -272,9 +275,10 @@ public class GoodsController {
 				}
 			}
 			
-			fileName = fileName.substring(0, fileName.length()-1);
-			String imgnames = fileName.length() == 0? oldimgnames : oldimgnames+";"+fileName;
-			g.setImgNames(imgnames);
+			//fileName = fileName.substring(0, fileName.length()-1);
+			//String imgnames = fileName.length() == 0? oldimgnames : oldimgnames+";"+fileName;
+			
+			g.setImgNames(fileName);
 			repo.save(g);
 			p.put("success",1);
 			p.put("msg","Edit success!");
