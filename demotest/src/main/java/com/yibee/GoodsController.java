@@ -186,6 +186,18 @@ public class GoodsController {
 		return page;
 		
 	}
+	public int getMaxId(String str) {
+		if(str == null || str.length() == 0) {
+			return -1;
+		}
+		String array1[]= str.split(";");
+		int maxId = Integer.parseInt(array1[0]);
+		if(array1.length == 1) return maxId;
+		for (int i=1; i<array1.length; i++) {
+			maxId = Math.max(maxId, Integer.parseInt(array1[i]));
+		}
+		return maxId;
+	}
 	
 	@PostMapping(value = "/sell/edit")
 	@CrossOrigin(origins = "*", maxAge = 3600)
@@ -214,8 +226,8 @@ public class GoodsController {
 		}
         
 		Goods g = og.get();
-		if(m.getId() != g.getSellerId()) {
-			p.put("success",1);
+		if(!m.getId().equals(g.getSellerId())) {
+			p.put("success",0);
 			p.put("msg", "You do not have previllege to do so!");
 			return p;
 		}
@@ -231,12 +243,7 @@ public class GoodsController {
 		//old images
 		//String oldDatabaseNames = g.getImgNames();
 		int maxImgId;
-		if(oldimgnames == null || oldimgnames.length() == 0) {
-			maxImgId = 0;
-		}else {
-			int index = oldimgnames.lastIndexOf(";");
-			maxImgId = Integer.parseInt( oldimgnames.substring(index+1,oldimgnames.length())); 
-		}
+		maxImgId = getMaxId(oldimgnames);
 		//Part part;
 		Properties pp;
 		try {
@@ -245,7 +252,7 @@ public class GoodsController {
 			
 			int imgId,newId;
 			for(Part part : parts) {
-				if( part.getName().startsWith("img")){
+				if( part.getContentType() != null && part.getContentType().startsWith("image/")){
 					String fieldName = part.getName();
 					imgId = Integer.parseInt(fieldName.substring(3,fieldName.length()));
 					newId = imgId + maxImgId + 1;
