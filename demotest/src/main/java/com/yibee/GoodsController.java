@@ -53,8 +53,8 @@ public class GoodsController {
 	}
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	@GetMapping(value="/sell/getgoodsinfo")
-	public Goods getGoodsById(@RequestParam("Id") Long Id){
+	@GetMapping(value="/getgoodsinfo")
+	public Goods getGoodsById(@RequestParam("Id") Long Id){ //selling now
 		//Goods g = repo.findGoodsById(Id);
 		Optional<Goods> og = repo.findById(Id);
 		if(og.isPresent()) {
@@ -65,8 +65,12 @@ public class GoodsController {
 		}
 	}
 	
+	
+	
+	
+	
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	@GetMapping(value="/sell/getgoodsimg")
+	@GetMapping(value="/getgoodsimg")
 	public ResponseEntity<FileSystemResource> getGoodsImg(HttpServletResponse response,@RequestParam("Id") Long Id,@RequestParam("fname") String fname) {
 		//String savePath = "/Users/liushichao/desktop/member_icon";
 		Properties pp;
@@ -116,7 +120,7 @@ public class GoodsController {
 	
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	@GetMapping(value="/sell/getgoodsmainimg")
+	@GetMapping(value="/getgoodsmainimg")
 	public ResponseEntity<FileSystemResource> getGoodsMainImg(HttpServletResponse response,@RequestParam("Id") Long Id) {
 		//String savePath = "/Users/liushichao/desktop/member_icon";
 		Properties pp;
