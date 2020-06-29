@@ -54,15 +54,16 @@ public class GoodsController {
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/getgoodsinfo")
-	public Goods getGoodsById(@RequestParam("Id") Long Id){ //selling now
+	public Optional<Goods> getGoodsById(@RequestParam("Id") Long Id){ //selling now
 		//Goods g = repo.findGoodsById(Id);
 		Optional<Goods> og = repo.findById(Id);
-		if(og.isPresent()) {
-			Goods g = og.get();
-			return g;
-		}else {
-			return null;
-		}
+		return og;
+//		if(og.isPresent()) {
+//			Goods g = og.get();
+//			return g;
+//		}else {
+//			return null;
+//		}
 	}
 	
 	
