@@ -67,7 +67,7 @@ public class GoodsController {
 	}
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	@GetMapping(value="/getgoodsbigimg")
+	@GetMapping(value="/getGoodsBigImg")
 	public ResponseEntity<FileSystemResource> getGoodsBigImg(HttpServletResponse response,@RequestParam("Id") Long Id,@RequestParam("fname") String fname) {
 		Properties pp;
 		try {
