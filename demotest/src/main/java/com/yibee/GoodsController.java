@@ -350,7 +350,7 @@ public class GoodsController {
 			@RequestParam(value = "method2",defaultValue = "0") byte method2,
 			@RequestParam(value = "method3",defaultValue = "0") byte method3,
 			@RequestParam(value = "status",defaultValue = "1") int status
-			) {
+			) throws IOException, ServletException {
 		
 		HttpSession session = request.getSession();
 		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
@@ -382,7 +382,7 @@ public class GoodsController {
 		
 		//Part part;
 		Properties pp;
-		try {
+		//try {
 			Collection<Part> parts = request.getParts();
 			String fileName = "";
 			for(Part part : parts) {
@@ -415,10 +415,10 @@ public class GoodsController {
 			Goods g2 = repo.save(g);
 			return Optional.of(g2);
 			
-		}catch(Exception e1) {
-			e1.printStackTrace();
-			return Optional.empty();
-		}
+//		}catch(Exception e1) {
+//			e1.printStackTrace();
+//			return Optional.empty();
+//		}
 			
 		
 		
