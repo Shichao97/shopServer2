@@ -66,7 +66,51 @@ public class GoodsController {
 //		}
 	}
 	
-	
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	@GetMapping(value="/getgoodsbigimg")
+	public ResponseEntity<FileSystemResource> getGoodsBigImg(HttpServletResponse response,@RequestParam("Id") Long Id,@RequestParam("fname") String fname) {
+		Properties pp;
+		try {
+			pp = MyUtil.getConfProperties();
+			String savePath = pp.getProperty("goods_main_img.dir");
+			int folderName = (int)Math.floor(Id/1000);
+			String save2Path = savePath + ("/"+folderName)+ "/" + Id;
+			Goods g = repo.findGoodsById(Id);
+//			String totalFile = g.getFilename();
+//			//String total = "3";
+//			String[] array = totalFile.split(";");
+//			String firstNo = array[0];
+			String absolutePath = save2Path+"/"+fname+".jpg";
+			File file = new File(absolutePath);
+			//默认商品图？
+			/*
+			if(!file.exists()) {
+				file = new File(savePath+"/default_0.jpg");
+			}
+			*/
+			HttpHeaders headers = new HttpHeaders();
+		    headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+		   //浏览器自动下载
+		   //headers.add("Content-Disposition", "attachment; filename=ttt.jpg");
+		   //缓存
+		    headers.add("Pragma", "no-cache");
+		    headers.add("Expires", "0");
+		    headers.add("Last-Modified", new Date().toString()); 
+		    headers.add("ETag", String.valueOf(System.currentTimeMillis()));
+		    return ResponseEntity
+		      .ok()
+		      .headers(headers)
+		      .contentLength(file.length())
+		      .contentType(MediaType.IMAGE_JPEG)
+		      .body(new FileSystemResource(file));
+
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ResponseEntity.status(602).build();
+	}
 	
 	
 	
