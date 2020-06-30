@@ -341,7 +341,7 @@ public class GoodsController {
 	
 	@PostMapping(value = "/sell/add")
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	public Goods addGoods(HttpServletRequest request,
+	public Optional<Goods> addGoods(HttpServletRequest request,
 			@RequestParam(value = "typeCode",defaultValue = "A0001") String typeCode, 
 			@RequestParam("location") String location,
 			@RequestParam("name") String name,
@@ -394,8 +394,13 @@ public class GoodsController {
 					pp = MyUtil.getConfProperties();
 					String savePath = pp.getProperty("goods_main_img.dir");
 					int folderName = (int)Math.floor(id/1000);
-					String save2Path = savePath + ("/"+folderName) + "/" + id;
+					String save2Path = savePath + ("/"+folderName);
 					File fileSaveDir = new File(save2Path);
+			        if (!fileSaveDir.exists()) {
+			            fileSaveDir.mkdir();
+			        }
+					save2Path += "/" + id;
+					fileSaveDir = new File(save2Path);
 			        if (!fileSaveDir.exists()) {
 			            fileSaveDir.mkdir();
 			        }
@@ -407,14 +412,16 @@ public class GoodsController {
 			fileName = fileName.substring(0, fileName.length()-1);
 			g.setImgNames(fileName);
 			
+			Goods g2 = repo.save(g);
+			return Optional.of(g2);
+			
 		}catch(Exception e1) {
 			e1.printStackTrace();
+			return Optional.empty();
 		}
 			
 		
 		
-		Goods g2 = repo.save(g);
-		return g2;
 		
 		
 	}
