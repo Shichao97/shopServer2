@@ -244,6 +244,7 @@ public class GoodsController {
 		
 	}
 	
+
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/sell/removefromshelf")
@@ -275,7 +276,36 @@ public class GoodsController {
 		return p;
 		
 	}
+	/*
+	 * 买家搜索
+	 */
+	@GetMapping(value = "search")
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	public Page<Goods> goodsSearch(@RequestParam("searchType") String searchType,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
+		
+		Page<Goods> page = null;
+		
+		Pageable pageable = null;
+		if(sortBy.length() == 0) {
+			pageable = PageRequest.of(pageNo, pageSize);
+		}else {
+			pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+		}
+		
+		if(searchType.contentEquals("name")){
+			page = repo.findByStatusAndName("%"+searchValue+"%",pageable); //未发布
+		}else{
+			page = repo.findByStatusAndDesc("%"+searchValue+"%",pageable); 
+		}
+						
+		return page;
+		
+	}
 	
+	
+	/*
+	 * 卖家家搜索自己的商品
+	 */
 	@GetMapping(value = "sell/search")
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	public Page<Goods> goodsSelect(@RequestParam("sellerId") Long sellerId,@RequestParam("searchType1") int searchType1,@RequestParam("searchType2") String searchType2,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
@@ -297,7 +327,9 @@ public class GoodsController {
 						
 		return page;
 		
-	}
+	}	
+	
+	
 	public int getMaxId(String str) {
 		if(str == null || str.length() == 0) {
 			return -1;

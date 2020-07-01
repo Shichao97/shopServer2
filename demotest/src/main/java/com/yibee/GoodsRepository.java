@@ -21,5 +21,10 @@ public interface GoodsRepository extends PagingAndSortingRepository<Goods, Long>
 	@Query(value = "from Goods g where g.sellerId=?1 and g.status = ?2 and g.description like ?3")
     Page<Goods> findBySelleridAndStatusAndDesc(Long sellerId, int status,String desc,Pageable pageable);
 	
+	@Query(value = "from Goods g where g.status = 1 and g.name like ?1")
+    Page<Goods> findByStatusAndName(String name,Pageable pageable);
+	
+	@Query(value = "from Goods g where g.status = 1 and g.description like ?1")
+    Page<Goods> findByStatusAndDesc(String desc,Pageable pageable);
 	
 }
