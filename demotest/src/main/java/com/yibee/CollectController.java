@@ -40,10 +40,10 @@ public class CollectController {
    Optional<Collect> oc = repo.findByGoodsidAndMemberid(goodsId, memberId);
    if(!oc.isPresent()) {
     
-    String absolutePath = savePath+"/purple_heart.jpg";
+    String absolutePath = savePath+"/purple_heart.png";
     file = new File(absolutePath);
    }else {
-    String absolutePath = savePath+"/red_heart.jpg";
+    String absolutePath = savePath+"/red_heart.png";
     file = new File(absolutePath);
    }
    
