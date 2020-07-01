@@ -213,6 +213,69 @@ public class GoodsController {
 
 	}
 	
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	@GetMapping(value="/sell/putonshelf")
+	public Properties putOnShelf(HttpServletRequest request,@RequestParam("gid") Long gid) {
+		Properties p = new Properties();
+		HttpSession session = request.getSession();
+		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Member m =(Member)o;
+		
+		Optional<Goods> og = repo.findById(gid);
+		if(!og.isPresent()) {
+			p.put("success",0);
+			p.put("msg", "Wrong goods_id for matching!");
+			return p;
+		}
+        
+		Goods g = og.get();
+		if(!m.getId().equals(g.getSellerId())) {
+			p.put("success",0);
+			p.put("msg", "You do not have previllege to do so!");
+			return p;
+		}
+		
+		g.setStatus(1);
+		
+		repo.save(g);
+		p.put("success",1);
+		p.put("msg","Put on shelf success!");
+		return p;
+		
+	}
+	
+	
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	@GetMapping(value="/sell/removefromshelf")
+	public Properties removeFromShelf(HttpServletRequest request,@RequestParam("gid") Long gid) {
+		Properties p = new Properties();
+		HttpSession session = request.getSession();
+		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Member m =(Member)o;
+		
+		Optional<Goods> og = repo.findById(gid);
+		if(!og.isPresent()) {
+			p.put("success",0);
+			p.put("msg", "Wrong goods_id for matching!");
+			return p;
+		}
+        
+		Goods g = og.get();
+		if(!m.getId().equals(g.getSellerId())) {
+			p.put("success",0);
+			p.put("msg", "You do not have previllege to do so!");
+			return p;
+		}
+		
+		g.setStatus(0);
+		
+		repo.save(g);
+		p.put("success",1);
+		p.put("msg","Remove success!");
+		return p;
+		
+	}
+	
 	@GetMapping(value = "sell/search")
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	public Page<Goods> goodsSelect(@RequestParam("sellerId") Long sellerId,@RequestParam("searchType1") int searchType1,@RequestParam("searchType2") String searchType2,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
