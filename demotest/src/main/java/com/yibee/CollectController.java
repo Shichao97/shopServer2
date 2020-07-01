@@ -102,6 +102,7 @@ public class CollectController {
 		    
 		 }else {
 			 Collect c = new Collect();
+			 c.setId(0L);
 			 c.setGoodsId(goodsId);
 			 c.setMemberId(memberId);
 			 try{
