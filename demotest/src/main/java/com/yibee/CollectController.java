@@ -78,20 +78,25 @@ public class CollectController {
 		 HttpSession session = request.getSession();
 		 Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
 		 Member m =(Member)o;
+		 System.out.println(m.getId());
+		 System.out.println(memberId);
 		 if(m.getId()==null || !m.getId().equals(memberId)) {
 			 p.put("success", 0);
 			 p.put("msg", "You do not have previllege to do so!");
+			 return p;
 		 }
 		 Optional<Collect> oc = repo.findByGoodsidAndMemberid(goodsId, memberId);
-		 if(!oc.isPresent()) {
+		 if(oc.isPresent()) {
 			Collect c = oc.get();
 			try {
 				repo.deleteById(c.getId());
 				p.put("success", 1);
+				return p;
 			}catch(Exception e){
 				e.printStackTrace();
 				p.put("success", 0);
 				p.put("msg","Delete collection failed!");
+				return p;
 			}
 		    
 		    
@@ -102,14 +107,16 @@ public class CollectController {
 			 try{
 				 repo.save(c);
 				 p.put("success", 1);
+				 return p;
 			 }catch(Exception e){
 				 e.printStackTrace();
 				 p.put("success", 0);
 				 p.put("msg","Add collection failed!");
+				 return p;
 			 }
 		 }
 		 
-		 return p;
+		 
 	 }
  
 }
