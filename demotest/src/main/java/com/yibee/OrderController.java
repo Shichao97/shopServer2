@@ -38,7 +38,7 @@ public class OrderController {
 	@GetMapping(value="/placeOrder")
 	public Properties placeOrder(
 			HttpServletRequest request,
-			@RequestParam("buyId") Long buyId,
+			@RequestParam("buyId") Long buyerId,
 			@RequestParam("goodsId") Long goodsId,
 			@RequestParam("receiveAddr") String receiveAddr
 			) {
@@ -47,13 +47,13 @@ public class OrderController {
 		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
 		Member m =(Member)o;
 		
-		if(m==null || m.getId() != buyId) {
+		if(m==null || m.getId() != buyerId) {
 			p.put("success", 0);
 			p.put("msg", "UserId is empty or wrong!");
 			return p;
 		}
 		Optional<Goods> gop = goodsRepo.findById(goodsId);
-		if(gop.isPresent() == false || buyId==gop.get().getSellerId() || gop.get().getStatus()!=Goods.STATUS_SALLING_NOW) {
+		if(gop.isPresent() == false || buyerId==gop.get().getSellerId() || gop.get().getStatus()!=Goods.STATUS_SALLING_NOW) {
 			p.put("success", 0);
 			p.put("msg", "goods is empty or wrong!");
 			return p;
@@ -70,7 +70,7 @@ public class OrderController {
         	goodsRepo.save(g);
         	Order order = new Order();
         	order.setId(0L);
-        	order.setBuyerId(buyId);
+        	order.setBuyerId(buyerId);
         	order.setBuyerName(m.getUserName());
         	order.setGoodsId(goodsId);
         	order.setPaymentStatus(Order.PAYMENT_NO);
