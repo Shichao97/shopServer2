@@ -95,7 +95,7 @@ public class CollectController {
 			}catch(Exception e){
 				e.printStackTrace();
 				p.put("success", 0);
-				p.put("msg","Delete collection failed!");
+				p.put("msg",e.getMessage());
 				return p;
 			}
 		    
