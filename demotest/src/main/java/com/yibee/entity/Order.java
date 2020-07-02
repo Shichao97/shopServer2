@@ -13,6 +13,14 @@ import java.util.Date;
 @Table(name="orders")
 @NamedQuery(name="Order.findAll", query="SELECT o FROM Order o")
 public class Order implements Serializable {
+	public static final int PAYMENT_NO = 0;
+	public static final int PAYMENT_YES = 1;
+	
+	public static final int STATUS_WAIT_COMPLETE = 0;
+	public static final int STATUS_COMPLETED = 1;
+	public static final int STATUS_CANCELED = -1;
+	
+	
 	private static final long serialVersionUID = 1L;
 
 	@Id

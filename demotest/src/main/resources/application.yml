@@ -7,6 +7,9 @@ spring:
     url: jdbc:mysql://115.159.101.48:3306/shop?serverTimezone=UTC
     username: root
     password: lcc12345
+    hikari:
+      max-lifetime: 1200000
+      max-idle: 5
   jpa:
     #这个参数是在建表的时候，将默认的存储引擎切换为 InnoDB 用的
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
