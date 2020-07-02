@@ -3,7 +3,6 @@ package com.yibee.entity;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.util.Date;
-import java.math.BigInteger;
 
 
 /**
@@ -26,7 +25,7 @@ public class Order implements Serializable {
 	private String buyerName;
 
 	@Column(name="goods_id")
-	private BigInteger goodsId;
+	private Long goodsId;
 
 	@Column(name="order_price")
 	private float orderPrice;
@@ -76,11 +75,11 @@ public class Order implements Serializable {
 		this.buyerName = buyerName;
 	}
 
-	public BigInteger getGoodsId() {
+	public Long getGoodsId() {
 		return this.goodsId;
 	}
 
-	public void setGoodsId(BigInteger goodsId) {
+	public void setGoodsId(Long goodsId) {
 		this.goodsId = goodsId;
 	}
 
