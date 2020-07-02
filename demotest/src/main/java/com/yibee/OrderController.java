@@ -38,7 +38,7 @@ public class OrderController {
 	@GetMapping(value="/placeOrder")
 	public Properties placeOrder(
 			HttpServletRequest request,
-			@RequestParam("buyId") Long buyerId,
+			@RequestParam("buyerId") Long buyerId,
 			@RequestParam("goodsId") Long goodsId,
 			@RequestParam("receiveAddr") String receiveAddr
 			) {
