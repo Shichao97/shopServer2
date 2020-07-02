@@ -135,6 +135,7 @@ public class OrderController {
         	g.setStatus(Goods.STATUS_SALLING_NOW);
         	goodsRepo.save(g);
         	order.setStatus(Order.STATUS_CANCELED);
+        	//TODO money must return to buyer
         	repo.save(order);
         	
             tran.commit();
