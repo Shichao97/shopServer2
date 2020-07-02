@@ -52,14 +52,14 @@ public class OrderController {
 			p.put("msg", "UserId is empty or wrong!");
 			return p;
 		}
-		Optional<Goods> op = goodsRepo.findById(goodsId);
-		if(op.isPresent() == false || buyId==op.get().getSellerId() || op.get().getStatus()!=Goods.STATUS_SALLING_NOW) {
+		Optional<Goods> gop = goodsRepo.findById(goodsId);
+		if(gop.isPresent() == false || buyId==gop.get().getSellerId() || gop.get().getStatus()!=Goods.STATUS_SALLING_NOW) {
 			p.put("success", 0);
 			p.put("msg", "goods is empty or wrong!");
 			return p;
 		}
 		
-		Goods g = op.get();
+		Goods g = gop.get();
 		Optional<Member> mop = memberRepo.findById(g.getSellerId());
 		Member seller = mop.get();
         EntityTransaction tran = em.getTransaction();
@@ -82,6 +82,8 @@ public class OrderController {
         	repo.save(order);
         	
             tran.commit();
+            p.put("success", 1);
+            return p;
 
         } catch (Exception e) {
             tran.rollback();
@@ -89,8 +91,7 @@ public class OrderController {
 			p.put("msg", e.getMessage());
 			return p;
         }
-        p.put("success", 1);
-        return p;
+        
 	}
 	
 	
@@ -104,19 +105,19 @@ public class OrderController {
 		HttpSession session = request.getSession();
 		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
 		Member m =(Member)o;
-		Optional<Order> op = repo.findById(id);
+		Optional<Order> oop = repo.findById(id);
 		if(m==null) {
 			p.put("success", 0);
 			p.put("msg", "User has not login!");
 			return p;
 		}
 		
-		if(op.isPresent()==false || op.get().getBuyerId()!=m.getId()) {
+		if(oop.isPresent()==false || oop.get().getBuyerId()!=m.getId()) {
 			p.put("success", 0);
 			p.put("msg", "Has no order or order is not yours!");
 			return p;
 		}
-		Order order = op.get();
+		Order order = oop.get();
 		if(order.getStatus()!=Order.STATUS_WAIT_COMPLETE) {
 			p.put("success", 0);
 			p.put("msg", "Order has completed or canced!");
@@ -138,14 +139,16 @@ public class OrderController {
         	
             tran.commit();
 
+            p.put("success", 1);
+            return p;
+            
         } catch (Exception e) {
             tran.rollback();
             p.put("success", 0);
 			p.put("msg", e.getMessage());
 			return p;
         }
-        p.put("success", 1);
-        return p;
+        
 	}
 	
 	
