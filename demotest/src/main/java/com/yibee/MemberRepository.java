@@ -14,4 +14,7 @@ public interface MemberRepository extends PagingAndSortingRepository<Member, Lon
 	public Long getMaxId();
 	
 	public Optional<Member> findByUserName(String userName);
+	
+	@Query(value = "select m.userName from Member m where m.id=?1")
+	public String findNameById(Long id);
 }

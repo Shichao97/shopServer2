@@ -60,8 +60,9 @@ public class OrderController {
 		}
 		
 		Goods g = gop.get();
-		Optional<Member> mop = memberRepo.findById(g.getSellerId());
-		Member seller = mop.get();
+//		Optional<Member> mop = memberRepo.findById(g.getSellerId());
+//		Member seller = mop.get();
+		String sellerName = memberRepo.findNameById(g.getSellerId());
         EntityTransaction tran = em.getTransaction();
         try {
         	tran.begin();
@@ -78,7 +79,7 @@ public class OrderController {
         	order.setOrderPrice(g.getPrice());
         	order.setReceiveAddr(receiveAddr);
         	order.setSellerId(g.getSellerId());
-        	order.setSellerName(seller.getUserName());
+        	order.setSellerName(sellerName);
         	repo.save(order);
         	
             tran.commit();
