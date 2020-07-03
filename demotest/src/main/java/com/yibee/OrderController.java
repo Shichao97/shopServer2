@@ -203,9 +203,16 @@ public class OrderController {
 			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
 			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
 			@RequestParam(value="sortBy",defaultValue="") String sortBy) {
-		
 		Page<NameOrder> page = null;
-		Pageable pageable = null;
+		Pageable pageable = null; 
+		HttpSession session = request.getSession();
+		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Member m =(Member)o;
+		if(m == null || m.getId() != buyerId) {
+			return Page.empty();
+		}
+		
+		
 		if(sortBy.length() == 0) {
 			pageable = PageRequest.of(pageNo, pageSize);
 		}else {
@@ -222,6 +229,33 @@ public class OrderController {
 		return page;
 	}
 	
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	@GetMapping(value="/payOrder")
+	public Properties payOrder(HttpServletRequest request,
+			@RequestParam("orderID") Long orderId) {
+		Properties p = new Properties();
+		HttpSession session = request.getSession();
+		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Member m =(Member)o;
+		
+		if(m==null ) {
+			p.put("success", 0);
+			p.put("msg", "User has not login!");
+			return p;
+		}
+		Optional<Order> oo= repo.findById(orderId);
+		if(!oo.isPresent() || oo.get().getBuyerId().longValue() != m.getId()) {
+			p.put("success", 0);
+			p.put("msg", "No such order exists or order is not yours!");
+			return p;
+		}
+		
+		Order order = oo.get();
+		order.setPaymentStatus(Order.PAYMENT_YES);
+		repo.save(order);
+		p.put("success", 1);
+		return p;
+ 	}
 	
 	
 }
