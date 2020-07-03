@@ -10,12 +10,12 @@ import com.yibee.entity.NameOrder;
 
 public interface OrderRepository extends PagingAndSortingRepository<Order,Long>{
 
-	@Query(value = "select new com.yibee.entity.NameOrder(g.id,g.name,o.id,o.buyerId,o.buyerName,o.sellerId,o.sellerName,o.paymentStatus,o.status,o.orderTime,o.orderPrice,o.receiveAddr) from Goods g  inner join Order o where g.id = o.goodsId and o.buyerId=?1",
-			countQuery=" select count(g.name)  from Goods g  inner join Order o where g.id = o.goodsId and o.buyerId=?1")
+	@Query(value = "select new com.yibee.entity.NameOrder(g.id,g.name,o.id,o.buyerId,o.buyerName,o.sellerId,o.sellerName,o.paymentStatus,o.status,o.orderTime,o.orderPrice,o.receiveAddr) from Goods g  inner join Order o where o.buyerId=?1 and g.id = o.goodsId ",
+			countQuery=" select count(g.name)  from Goods g  inner join Order o where  o.buyerId=?1 and g.id = o.goodsId")
 	Page<NameOrder> findNameOrder(Long buyerId,Pageable pageable);
 
-	@Query(value = "select new com.yibee.entity.NameOrder(g.id,g.name,o.id,o.buyerId,o.buyerName,o.sellerId,o.sellerName,o.paymentStatus,o.status,o.orderTime,o.orderPrice,o.receiveAddr) from Goods g  inner join Order o where g.id = o.goodsId and o.buyerId=?1 and g.name like ?2",
-			countQuery=" select count(g.name)  from Goods g  inner join Order o where g.id = o.goodsId and o.buyerId=?1 and g.name like ?2")
+	@Query(value = "select new com.yibee.entity.NameOrder(g.id,g.name,o.id,o.buyerId,o.buyerName,o.sellerId,o.sellerName,o.paymentStatus,o.status,o.orderTime,o.orderPrice,o.receiveAddr) from Goods g  inner join Order o where o.buyerId=?1 and g.id = o.goodsId and g.name like ?2",
+			countQuery=" select count(g.name)  from Goods g  inner join Order o where o.buyerId=?1 and g.id = o.goodsId and g.name like ?2")
 	Page<NameOrder> findNameOrderLikeName(Long buyerId,String name,Pageable pageable);
 
 }
