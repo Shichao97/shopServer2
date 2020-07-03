@@ -13,6 +13,10 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.hibernate.resource.transaction.spi.TransactionStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yibee.entity.Goods;
 import com.yibee.entity.Member;
+import com.yibee.entity.NameOrder;
 import com.yibee.entity.Order;
 
 @RestController
@@ -185,17 +190,34 @@ public class OrderController {
 		return p;
 	}
 	
-	/*
+	
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/searchOrder")
-	public Order searchOrder(HttpServletRequest request,
+	public Page<NameOrder> searchOrder(HttpServletRequest request,
+			@RequestParam("buyerId") Long buyerId,
 			@RequestParam(value="searchValue",defaultValue="") String searchValue,
 			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
 			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
 			@RequestParam(value="sortBy",defaultValue="") String sortBy) {
 		
+		Page<NameOrder> page = null;
+		Pageable pageable = null;
+		if(sortBy.length() == 0) {
+			pageable = PageRequest.of(pageNo, pageSize);
+		}else {
+			pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+		}
+		
+		if(searchValue.contentEquals("")) {
+			page = repo.findBuyerNameOrder(buyerId, pageable);
+		}else {
+			page = repo.findBuyerNameOrderLikeName(buyerId, searchValue, pageable);
+		}
+		
+		
+		return page;
 	}
-	*/
+	
 	
 	
 }
