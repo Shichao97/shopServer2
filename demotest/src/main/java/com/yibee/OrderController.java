@@ -1,5 +1,6 @@
 package com.yibee;
 
+import java.util.Date;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -53,7 +54,7 @@ public class OrderController {
 			return p;
 		}
 		Optional<Goods> gop = goodsRepo.findById(goodsId);
-		if(gop.isPresent() == false || buyerId==gop.get().getSellerId() || gop.get().getStatus()!=Goods.STATUS_SALLING_NOW) {
+		if(gop.isPresent() == false || buyerId==gop.get().getSellerId() || gop.get().getStatus()!=Goods.STATUS_SELLING_NOW) {
 			p.put("success", 0);
 			p.put("msg", "goods is empty or wrong!");
 			return p;
@@ -63,11 +64,12 @@ public class OrderController {
 //		Optional<Member> mop = memberRepo.findById(g.getSellerId());
 //		Member seller = mop.get();
 		String sellerName = memberRepo.findNameById(g.getSellerId());
+		Date orderTime = new Date();
         EntityTransaction tran = em.getTransaction();
         try {
         	tran.begin();
         	
-        	g.setStatus(Goods.STATUS_SELLED_OUT);
+        	g.setStatus(Goods.STATUS_SOLD_OUT);
         	goodsRepo.save(g);
         	Order order = new Order();
         	order.setId(0L);
@@ -80,6 +82,7 @@ public class OrderController {
         	order.setReceiveAddr(receiveAddr);
         	order.setSellerId(g.getSellerId());
         	order.setSellerName(sellerName);
+        	order.setOrderTime(orderTime);
         	repo.save(order);
         	
             tran.commit();
@@ -118,10 +121,11 @@ public class OrderController {
 			p.put("msg", "Has no order or order is not yours!");
 			return p;
 		}
+		
 		Order order = oop.get();
-		if(order.getStatus()!=Order.STATUS_WAIT_COMPLETE) {
+		if(order.getStatus()!=Order.STATUS_WAIT_COMPLETE || order.getPaymentStatus()!= Order.PAYMENT_NO) {
 			p.put("success", 0);
-			p.put("msg", "Order has completed or canced!");
+			p.put("msg", "Order cannot be cancled!");
 			return p;
 		}
 		
@@ -133,7 +137,7 @@ public class OrderController {
         try {
         	tran.begin();
         	
-        	g.setStatus(Goods.STATUS_SALLING_NOW);
+        	g.setStatus(Goods.STATUS_SELLING_NOW);
         	goodsRepo.save(g);
         	order.setStatus(Order.STATUS_CANCELED);
         	//TODO money must return to buyer
@@ -152,6 +156,46 @@ public class OrderController {
         }
         
 	}
+	
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	@GetMapping(value="/completeOrder")
+	public Properties completeOrder(
+			HttpServletRequest request,
+			@RequestParam("orderId") Long orderId
+			) {
+		Properties p = new Properties();
+		HttpSession session = request.getSession();
+		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Member m =(Member)o;
+		Optional<Order> oop = repo.findById(orderId);
+		if(m==null) {
+			p.put("success", 0);
+			p.put("msg", "User has not login!");
+			return p;
+		}
+		if(oop.isPresent()==false || oop.get().getBuyerId()!=m.getId()) {
+			p.put("success", 0);
+			p.put("msg", "No such order exists or order is not yours!");
+			return p;
+		}
+		Order order = oop.get();
+		order.setStatus(Order.STATUS_COMPLETED);
+		repo.save(order);
+		p.put("success", 1);
+		return p;
+	}
+	
+	/*
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	@GetMapping(value="/searchOrder")
+	public Order searchOrder(HttpServletRequest request,
+			@RequestParam(value="searchValue",defaultValue="") String searchValue,
+			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
+			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
+			@RequestParam(value="sortBy",defaultValue="") String sortBy) {
+		
+	}
+	*/
 	
 	
 }

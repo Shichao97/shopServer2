@@ -12,9 +12,9 @@ import javax.persistence.*;
 @Table(name="goods")
 @NamedQuery(name="Goods.findAll", query="SELECT g FROM Goods g")
 public class Goods implements Serializable {
-	public static final int STATUS_SALLING_NOW = 1;
+	public static final int STATUS_SELLING_NOW = 1;
 	public static final int STATUS_REMOVE_OFF = 0;
-	public static final int STATUS_SELLED_OUT = -1;
+	public static final int STATUS_SOLD_OUT = -1;
 	
 	private static final long serialVersionUID = 1L;
 
