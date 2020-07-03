@@ -35,13 +35,16 @@ import com.yibee.entity.Order;
 public class OrderController {
 	@Resource
 	private OrderRepository repo;
+	@Resource
 	private GoodsRepository goodsRepo;
+	@Resource
 	private MemberRepository memberRepo;
 	@PersistenceContext
     private EntityManager em;
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/placeOrder")
+	@Transactional
 	public Properties placeOrder(
 			HttpServletRequest request,
 			@RequestParam("buyerId") Long buyerId,
@@ -53,26 +56,26 @@ public class OrderController {
 		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
 		Member m =(Member)o;
 		
-		if(m==null || m.getId().longValue()!=buyerId.longValue() ) {
+		if(m==null || m.getId().longValue() != buyerId.longValue()) {
 			p.put("success", 0);
 			p.put("msg", "UserId is empty or wrong!");
 			return p;
 		}
-		Optional<Goods> gop = goodsRepo.findById(goodsId);
-		if(gop.isPresent() == false || buyerId.longValue()==gop.get().getSellerId().longValue() || gop.get().getStatus()!=Goods.STATUS_SELLING_NOW) {
+		Goods g = goodsRepo.findGoodsById(goodsId);
+		if(g == null || buyerId.longValue() == g.getSellerId().longValue() || g.getStatus()!=Goods.STATUS_SELLING_NOW) {
 			p.put("success", 0);
 			p.put("msg", "goods is empty or wrong!");
 			return p;
 		}
 		
-		Goods g = gop.get();
+//		Goods g = gop.get();
 //		Optional<Member> mop = memberRepo.findById(g.getSellerId());
 //		Member seller = mop.get();
 		String sellerName = memberRepo.findNameById(g.getSellerId());
 		Date orderTime = new Date();
-        EntityTransaction tran = em.getTransaction();
+//        EntityTransaction tran = em.getTransaction();
         try {
-        	tran.begin();
+//        	tran.begin();
         	
         	g.setStatus(Goods.STATUS_SOLD_OUT);
         	goodsRepo.save(g);
@@ -90,12 +93,12 @@ public class OrderController {
         	order.setOrderTime(orderTime);
         	repo.save(order);
         	
-            tran.commit();
+//            tran.commit();
             p.put("success", 1);
             return p;
 
         } catch (Exception e) {
-            tran.rollback();
+//            tran.rollback();
             p.put("success", 0);
 			p.put("msg", e.getMessage());
 			return p;
@@ -106,6 +109,7 @@ public class OrderController {
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/cancelOrder")
+	@Transactional
 	public Properties cancelOrder(
 			HttpServletRequest request,
 			@RequestParam("id") Long id
@@ -138,9 +142,9 @@ public class OrderController {
 
 		Goods g = gop.get();
 
-        EntityTransaction tran = em.getTransaction();
+//        EntityTransaction tran = em.getTransaction();
         try {
-        	tran.begin();
+//        	tran.begin();
         	
         	g.setStatus(Goods.STATUS_SELLING_NOW);
         	goodsRepo.save(g);
@@ -148,13 +152,13 @@ public class OrderController {
         	//TODO money must return to buyer
         	repo.save(order);
         	
-            tran.commit();
+//            tran.commit();
 
             p.put("success", 1);
             return p;
             
         } catch (Exception e) {
-            tran.rollback();
+//            tran.rollback();
             p.put("success", 0);
 			p.put("msg", e.getMessage());
 			return p;
