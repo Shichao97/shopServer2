@@ -6,10 +6,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
+import com.yibee.MyUtil;
+import com.yibee.entity.Member;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * <消息处理中心>
@@ -26,12 +31,14 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     /**
      * 用来存放每个客户端对应的webSocket对象。
      */
-    private static Map<String,WebSocketBeanSpring> webSocketInfo;
+    private static Map<String,WebSocketBeanSpring> webSocketMap;
+    private static Map<String,WebSocketBeanSpring> userMap;
 
     static
     {
         // concurrent包的线程安全map
-        webSocketInfo = new ConcurrentHashMap<String, WebSocketBeanSpring>();
+        webSocketMap = new ConcurrentHashMap<String, WebSocketBeanSpring>();
+        userMap = new ConcurrentHashMap<String, WebSocketBeanSpring>();
     }
 
     // 服务器与客户端初次websocket连接成功执行
@@ -44,9 +51,15 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         WebSocketBeanSpring bean = new WebSocketBeanSpring();
         bean.setSession(session);
 
-        webSocketInfo.put(session.getId(),bean);
-
-        log.info("客户端连接服务器session id :"+session.getId()+"，当前连接数：" + webSocketInfo.size());
+        webSocketMap.put(session.getId(),bean);
+        Member m = (Member)session.getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
+        String userName = null;
+        if(m != null) {
+        	userName = m.getUserName();
+        	userMap.put(userName,bean);
+        }
+        
+        log.info("客户端连接服务器session id :"+session.getId()+"，当前连接数：" + webSocketMap.size());
 
     }
 
@@ -81,7 +94,11 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         }
 
         log.debug("链接出错，关闭链接......");
-        webSocketInfo.remove(webSocketSession.getId());
+        WebSocketBeanSpring bean = webSocketMap.remove(webSocketSession.getId());
+        if(bean != null) {
+        	String userName = (String) bean.getSession().getAttributes().get(MyUtil.ATTR_LAST_USER);
+        	userMap.remove(userName);
+        }
     }
 
     // 关闭websocket时触发
@@ -89,7 +106,13 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) throws Exception {
 
         log.debug("链接关闭......" + closeStatus.toString());
-        webSocketInfo.remove(webSocketSession.getId());
+        //webSocketMap.remove(webSocketSession.getId());
+        WebSocketBeanSpring bean = webSocketMap.remove(webSocketSession.getId());
+        if(bean != null) {
+        	String userName = (String) bean.getSession().getAttributes().get(MyUtil.ATTR_LAST_USER);
+        	userMap.remove(userName);
+        }
+
     }
 
     /**
@@ -100,7 +123,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     {
         
         Set<Map.Entry<String, WebSocketBeanSpring>> setInfo =
-            webSocketInfo.entrySet();
+            webSocketMap.entrySet();
         for (Map.Entry<String, WebSocketBeanSpring> entry : setInfo)
         {
             WebSocketBeanSpring bean = entry.getValue();
@@ -115,17 +138,27 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         }
     }
 
-    /**
-     * 给指定用户发送消息
-     * @param userId
-     * @param message
-     */
-    public void sendMessage(String userId, TextMessage message)
+    public void sendToSessionId(String sessionId, TextMessage message)
     {
-        WebSocketBeanSpring bean = webSocketInfo.get(userId);
+        WebSocketBeanSpring bean = webSocketMap.get(sessionId);
         try
         {
             bean.getSession().sendMessage(message);
+        }
+        catch (IOException e)
+        {
+            log.error(e.getMessage(), e);
+        }
+    }    
+
+    public void sendMessage(String userName, TextMessage message)
+    {
+        WebSocketBeanSpring bean = userMap.get(userName);
+        try
+        {
+            if(bean !=null) {
+            	bean.getSession().sendMessage(message);
+            }
         }
         catch (IOException e)
         {

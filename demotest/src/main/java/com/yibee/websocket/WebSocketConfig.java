@@ -23,13 +23,15 @@ public class WebSocketConfig implements WebSocketConfigurer{
         // 注册消息处理器，并添加自定义拦截器，支持websocket的连接访问
         registry.addHandler(new MyWebSocketHander(), "myHandler")
             .addInterceptors(new WebSocketHandshakeInterceptor()).setAllowedOrigins("*");
+//        registry.addHandler(new MyWebSocketHander(), "myHandler")
+//        .setAllowedOrigins("*");
 
         /*
         注册消息处理器，并添加自定义拦截器,添加不支持websocket的连接访问
         SockJs是一个WebSocket的通信js库，Spring对这个js库进行了后台的自动支持，
         也就是说，如果使用SockJs，那么我们就不需要对后台进行更多的配置，只需要加上withSockJS()这一句就可以了
          */
-        registry.addHandler(new MyWebSocketHander(), "/chatjs")
-                .addInterceptors(new WebSocketHandshakeInterceptor()).withSockJS();
+//        registry.addHandler(new MyWebSocketHander(), "/chatjs")
+//                .addInterceptors(new WebSocketHandshakeInterceptor()).withSockJS();
     }
 }

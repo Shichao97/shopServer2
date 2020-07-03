@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,21 +29,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.socket.TextMessage;
 
 import com.yibee.entity.Member;
+import com.yibee.websocket.MyWebSocketHander;
 
 import net.sf.json.JSONObject;
 
 @RestController
 @RequestMapping("/member")
 public class MemberController {
+	@Autowired
+	private MyWebSocketHander webSocketHander;
 	
 	@Resource
 	private MemberRepository repo;
@@ -377,6 +382,7 @@ public class MemberController {
 			if(m.getPassWord().contentEquals(enpass)) {
 				this.entityManager.detach(m);
 				session.setAttribute(MyUtil.ATTR_LOGIN_NAME, m);
+				session.setAttribute(MyUtil.ATTR_LAST_USER, m.getUserName());
 				p.put("success", 1);
 				p.put("member",m);
 				//cookie
@@ -396,6 +402,7 @@ public class MemberController {
 					   System.out.println("Cookie:  "+co.getName() + "=" + co.getValue());
 					}
 			    }
+//			    webSocketHander.batchSendMessage( new TextMessage("{\"flag\":\"login\"}"));
 				return p;
 			}
 		}

@@ -16,6 +16,7 @@ import net.coobird.thumbnailator.Thumbnails;
 
 public class MyUtil {
 	public static final String ATTR_LOGIN_NAME="loginUser";
+	public static final String ATTR_LAST_USER="lastUserName";
 	
 	private static final String slat = "&%5123***&&%%$$#@";
 	public static String encrypt(String dataStr) {
