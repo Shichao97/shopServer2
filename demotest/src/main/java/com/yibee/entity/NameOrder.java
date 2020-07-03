@@ -81,8 +81,7 @@ public class NameOrder {
 			this.orderPrice = orderPrice;
 			this.receiveAddr = receiveAddr;
 	}		
-	
-	
+		
 	public String getGoodsName() {
 		return goodsName;
 	}
