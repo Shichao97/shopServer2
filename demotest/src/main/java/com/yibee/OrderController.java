@@ -53,13 +53,13 @@ public class OrderController {
 		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
 		Member m =(Member)o;
 		
-		if(m==null || m.getId() != buyerId) {
+		if(m==null || m.getId().longValue()!=buyerId.longValue() ) {
 			p.put("success", 0);
 			p.put("msg", "UserId is empty or wrong!");
 			return p;
 		}
 		Optional<Goods> gop = goodsRepo.findById(goodsId);
-		if(gop.isPresent() == false || buyerId==gop.get().getSellerId() || gop.get().getStatus()!=Goods.STATUS_SELLING_NOW) {
+		if(gop.isPresent() == false || buyerId.longValue()==gop.get().getSellerId().longValue() || gop.get().getStatus()!=Goods.STATUS_SELLING_NOW) {
 			p.put("success", 0);
 			p.put("msg", "goods is empty or wrong!");
 			return p;
@@ -121,7 +121,7 @@ public class OrderController {
 			return p;
 		}
 		
-		if(oop.isPresent()==false || oop.get().getBuyerId()!=m.getId()) {
+		if(oop.isPresent()==false || oop.get().getBuyerId().longValue()!=m.getId().longValue()) {
 			p.put("success", 0);
 			p.put("msg", "Has no order or order is not yours!");
 			return p;
@@ -178,7 +178,7 @@ public class OrderController {
 			p.put("msg", "User has not login!");
 			return p;
 		}
-		if(oop.isPresent()==false || oop.get().getBuyerId()!=m.getId()) {
+		if(oop.isPresent()==false || oop.get().getBuyerId().longValue()!=m.getId().longValue()) {
 			p.put("success", 0);
 			p.put("msg", "No such order exists or order is not yours!");
 			return p;
