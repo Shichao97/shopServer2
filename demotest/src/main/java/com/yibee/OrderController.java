@@ -81,7 +81,9 @@ public class OrderController {
         	g.setStatus(Goods.STATUS_SOLD_OUT);
         	goodsRepo.save(g);
         	Order order = new Order();
-        	order.setId(0L);
+        	
+        	Long maxId = repo.getMaxId();
+        	order.setId(maxId+1);
         	order.setBuyerId(buyerId);
         	order.setBuyerName(m.getUserName());
         	order.setGoodsId(goodsId);
@@ -95,8 +97,9 @@ public class OrderController {
         	order.setReceiveMethod(receiveMethod);
         	repo.save(order);
         	
-//            tran.commit();
-            p.put("success", 1);
+
+            p.put("success", maxId+1);
+            
             return p;
 
         } catch (Exception e) {

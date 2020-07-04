@@ -17,7 +17,7 @@ import org.apache.commons.lang.StringUtils;
 //配置拦截路径
 //@WebFilter(filterName = "loginFilter",urlPatterns = {"/goods/sell/*,/goods/buy/*,/member/upIcon,/member/edit*"})
 
-@WebFilter(filterName = "loginFilter",urlPatterns = {"/goods/sell/*","/goods/buy/*","/member/upIcon","/member/edit*","/collect/edit/*"})
+@WebFilter(filterName = "loginFilter",urlPatterns = {"/goods/sell/*","/goods/buy/*","/member/upIcon","/member/edit*","/collect/edit/*","/order/*"})
 public class LoginFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
