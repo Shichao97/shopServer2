@@ -49,7 +49,8 @@ public class OrderController {
 			HttpServletRequest request,
 			@RequestParam("buyerId") Long buyerId,
 			@RequestParam("goodsId") Long goodsId,
-			@RequestParam("receiveAddr") String receiveAddr
+			@RequestParam("receiveAddr") String receiveAddr,
+			@RequestParam("receiveMethod") byte receiveMethod
 			) {
 		Properties p = new Properties();
 		HttpSession session = request.getSession();
@@ -91,6 +92,7 @@ public class OrderController {
         	order.setSellerId(g.getSellerId());
         	order.setSellerName(sellerName);
         	order.setOrderTime(orderTime);
+        	order.setReceiveMethod(receiveMethod);
         	repo.save(order);
         	
 //            tran.commit();

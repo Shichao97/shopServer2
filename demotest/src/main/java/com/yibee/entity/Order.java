@@ -47,6 +47,9 @@ public class Order implements Serializable {
 
 	@Column(name="receive_addr")
 	private String receiveAddr;
+	
+	@Column(name="receive_method")
+	private byte receiveMethod;
 
 	@Column(name="seller_id")
 	private Long sellerId;
@@ -121,6 +124,14 @@ public class Order implements Serializable {
 
 	public void setReceiveAddr(String receiveAddr) {
 		this.receiveAddr = receiveAddr;
+	}
+	
+	public byte getReceiveMethod() {
+		return this.receiveMethod;
+	}
+
+	public void setReceiveMethod(byte receiveMethod) {
+		this.receiveMethod = receiveMethod;
 	}
 
 	public Long getSellerId() {
