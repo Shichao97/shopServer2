@@ -2,18 +2,25 @@ package com.yibee.websocket;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
+import com.yibee.MessageRepository;
 import com.yibee.MyUtil;
 import com.yibee.entity.Member;
+import com.yibee.entity.Message;
+
+import net.sf.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -24,10 +31,24 @@ import javax.servlet.http.HttpSession;
  * @see [相关类/方法] (可选)
  **/
 @Component("webSocketHander")
+//@EnableJpaRepositories
 public class MyWebSocketHander extends AbstractWebSocketHandler{
 
     private Logger log = LogManager.getLogger(MyWebSocketHander.class);
+    //@Resource
+//    private static MessageService messageService;
+//    @Autowired
+//    public void setMessageService(MessageService messageService) {
+//    	MyWebSocketHander.messageService = messageService;
+//    }    
+    //***websocket注入repository或bean必须static才行，否则为null
+    private static MessageRepository repo;
+    @Autowired
+    public void setMessageService(MessageRepository repo) {
+    	MyWebSocketHander.repo = repo;
+    }    
 
+    
     /**
      * 用来存放每个客户端对应的webSocket对象。
      */
@@ -59,6 +80,8 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         	userMap.put(userName,bean);
         }
         
+        long n = repo.count();
+        
         log.info("客户端连接服务器session id :"+session.getId()+"，当前连接数：" + webSocketMap.size());
 
     }
@@ -70,20 +93,42 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         throws Exception
     {
         /*
-        获取客户端发送的消息,这里使用文件消息，也就是字符串进行接收
-        消息可以通过字符串，或者字节流进行接收
-        TextMessage String/byte[]接收均可以
-        BinaryMessage byte[]接收
+		        获取客户端发送的消息,这里使用文件消息，也就是字符串进行接收
+		        消息可以通过字符串，或者字节流进行接收
+	        TextMessage String/byte[]接收均可以
+	        BinaryMessage byte[]接收
         */
         log.info("客户端发送消息" + webSocketMessage.getPayload().toString());
-        TextMessage message = new TextMessage(webSocketMessage.getPayload().toString());
-        /*
-        这里直接是字符串，做群发，如果要指定发送，可以在前台平均ID，后台拆分后获取需要发送的人。
-        也可以做一个单独的controller，前台把ID传递过来，调用方法发送，在登录的时候把所有好友的标识符传递到前台，
-        然后通过标识符发送私信消息
-        */
-        this.batchSendMessage(message);
+        JSONObject jsonObject = JSONObject.fromObject(webSocketMessage.getPayload());
+        String flag = jsonObject.getString("flag");
+        Member sender = (Member)webSocketSession.getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
+        if(flag.equals("msg") && sender !=null) {
+        	Long toId = jsonObject.getLong("toId");
+        	if(toId > 0) {
+	        	Message mes = new Message();
+	        	mes.setContent(jsonObject.getString("content"));
+	        	mes.setHasRead(0);
+	        	mes.setReceiverId(jsonObject.getLong("toId"));
+	        	mes.setSenderId(sender.getId());
+	        	mes.setSenderName(sender.getUserName());
+	        	mes.setId(0L);
+	        	repo.save(mes);
+        	}
+        	jsonObject.put("fromId", sender.getId());
+        	jsonObject.put("fromName", sender.getUserName());
+        	jsonObject.remove("toId");
+        	String toName = jsonObject.remove("toName").toString();
+            TextMessage tm = new TextMessage(jsonObject.toString());
+            this.sendMessage(toName, tm);
+        }
 
+        //WebSocketBeanSpring bean = userMap.get(toName);
+        //Member receiver = null;
+        //if(bean ==null) receiver = (Member)bean.getSession().getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
+        //this.batchSendMessage(message);
+
+
+        
     }
 
     // 连接错误时触发
