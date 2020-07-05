@@ -223,14 +223,14 @@ public class OrderController {
 			@RequestParam(value="searchValue",defaultValue="") String searchValue,
 			@RequestParam(value="searchStatus",defaultValue="") String searchStatus,
 			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
-			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
+			@RequestParam(value="pageSize",defaultValue="5") Integer pageSize,
 			@RequestParam(value="sortBy",defaultValue="") String sortBy) {
 		Page<NameOrder> page = null;
 		Pageable pageable = null; 
 		HttpSession session = request.getSession();
 		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
 		Member m =(Member)o;
-		if(m == null || m.getId() != buyerId) {
+		if(m == null || m.getId().longValue() != buyerId.longValue()) {
 			return Page.empty();
 		}
 		
