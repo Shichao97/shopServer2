@@ -344,6 +344,14 @@ public class MemberController {
 	     
 	  return repo.getMaxId();
 	}
+
+	
+	@GetMapping("/getMemberById")
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	 public Optional<Member> getMemberById(@RequestParam("id") Long id) {
+		  return repo.findById(id);
+	}	
+	
 	
 	@PostMapping(value = "/login")
 	//@CrossOrigin(origins = "*", maxAge = 3600)

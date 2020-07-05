@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yibee.entity.Goods;
+import com.yibee.entity.GoodsWithMember;
 import com.yibee.entity.Member;
 
 @RestController
@@ -302,6 +303,27 @@ public class GoodsController {
 		
 	}
 	
+	/*
+	 * 买家搜索,Goods带卖家信息
+	 */
+	@GetMapping(value = "search2")
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	public Page<GoodsWithMember> goodsSearch2(@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
+		
+		Page<GoodsWithMember> page = null;
+		
+		Pageable pageable = null;
+		if(sortBy.length() == 0) {
+			pageable = PageRequest.of(pageNo, pageSize);
+		}else {
+			pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+		}
+		
+		page = repo.findGMByStatus("%"+searchValue+"%",pageable); //未发布
+						
+		return page;
+		
+	}	
 	
 	/*
 	 * 卖家家搜索自己的商品
