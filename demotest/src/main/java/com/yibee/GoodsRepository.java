@@ -1,5 +1,7 @@
 package com.yibee;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +17,10 @@ public interface GoodsRepository extends PagingAndSortingRepository<Goods, Long>
 	
 	@Query(value = "from Goods g where g.id = ?1")
 	Goods findGoodsById(Long id);
+
+	@Query(value = "select new com.yibee.entity.GoodsWithMember(g,m) from Goods g left join Member m on g.sellerId=m.id where g.id = ?1")
+	Optional<GoodsWithMember> findGMById(Long id);
+	
 	
 	@Query(value = "from Goods g where g.sellerId=?1 and g.status = ?2 and g.name like ?3")
     Page<Goods> findBySelleridAndStatusAndName(Long sellerId, int status,String name,Pageable pageable);
