@@ -205,6 +205,7 @@ public class OrderController {
 	public Page<NameOrder> searchOrder(HttpServletRequest request,
 			@RequestParam("buyerId") Long buyerId,
 			@RequestParam(value="searchValue",defaultValue="") String searchValue,
+			@RequestParam(value="searchStatus",defaultValue="") String searchStatus,
 			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
 			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
 			@RequestParam(value="sortBy",defaultValue="") String sortBy) {
@@ -224,8 +225,12 @@ public class OrderController {
 			pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
 		}
 		
-		if(searchValue.contentEquals("")) {
+		if(searchValue.contentEquals("") && searchStatus.contentEquals("")) {
 			page = repo.findBuyerNameOrder(buyerId, pageable);
+		}else if(searchValue.contentEquals("") && searchStatus.contentEquals("notPaid")) {
+			page = repo.findBuyerNameOrderNotPaid(buyerId, pageable);
+		}else if(searchValue.contentEquals("") && searchStatus.contentEquals("notFinished")) {
+			page = repo.findBuyerNameOrderNotFinished(buyerId, pageable);
 		}else {
 			page = repo.findBuyerNameOrderLikeName(buyerId, searchValue, pageable);
 		}
