@@ -28,11 +28,8 @@ public class NameOrder {
 
 	private int status;
 
-	
-	public NameOrder() {
-		
-	}
-	
+	private String orderNo;
+
 	public NameOrder(		
 			String goodsName
 			) 
@@ -65,7 +62,8 @@ public class NameOrder {
 		int status,
 		java.util.Date orderTime,
 		float orderPrice,
-		String receiveAddr
+		String receiveAddr,
+		String orderNo
 		) 
 	{
 			this.goodsId = goodsId;
@@ -80,6 +78,7 @@ public class NameOrder {
 			this.orderTime = orderTime;
 			this.orderPrice = orderPrice;
 			this.receiveAddr = receiveAddr;
+			this.orderNo = orderNo;
 	}		
 		
 	public String getGoodsName() {
@@ -178,6 +177,18 @@ public class NameOrder {
 		this.status = status;
 	}
 
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+	
+	public NameOrder() {
+		
+	}
+	
 
 	
 }

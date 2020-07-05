@@ -1,5 +1,7 @@
 package com.yibee;
 
+import java.text.NumberFormat;
+import java.text.spi.NumberFormatProvider;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Properties;
@@ -81,6 +83,7 @@ public class OrderController {
         	g.setStatus(Goods.STATUS_SOLD_OUT);
         	goodsRepo.save(g);
         	Order order = new Order();
+        	String orderNo = produceOrderNo(g.getId());
         	
         	Long maxId = repo.getMaxId();
         	order.setId(maxId+1);
@@ -95,11 +98,12 @@ public class OrderController {
         	order.setSellerName(sellerName);
         	order.setOrderTime(orderTime);
         	order.setReceiveMethod(receiveMethod);
+        	order.setOrderNo(orderNo);
         	repo.save(order);
         	
 
             p.put("success", maxId+1);
-            
+            p.put("orderNo",orderNo);
             return p;
 
         } catch (Exception e) {
@@ -111,6 +115,18 @@ public class OrderController {
         
 	}
 	
+	private String produceOrderNo(Long gid) {
+		int r1=(int)(Math.random()*(10));//产生2个0-9的随机数
+		int r2=(int)(Math.random()*(10));
+		long now = System.currentTimeMillis();//一个13位的时间戳
+		String paymentID =String.valueOf(r1)+String.valueOf(r2)+String.valueOf(now);// 订单ID
+		NumberFormat numberFormat = NumberFormat.getNumberInstance();
+	    numberFormat.setMinimumIntegerDigits(4);//最小位数
+	    numberFormat.setMaximumIntegerDigits(4);//最大位数
+	    numberFormat.setGroupingUsed(false);
+	    String num = numberFormat.format(gid);
+		return paymentID+num;
+	}
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/cancelOrder")

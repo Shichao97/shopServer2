@@ -57,6 +57,17 @@ public class Order implements Serializable {
 	@Column(name="seller_name")
 	private String sellerName;
 
+	@Column(name="order_no")
+	private String orderNo;
+
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
 	private int status;
 
 	public Order() {
