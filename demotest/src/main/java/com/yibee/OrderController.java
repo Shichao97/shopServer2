@@ -31,6 +31,7 @@ import com.yibee.entity.Goods;
 import com.yibee.entity.Member;
 import com.yibee.entity.NameOrder;
 import com.yibee.entity.Order;
+import com.yibee.entity.OrderWithGoods;
 
 @RestController
 @RequestMapping("/order")
@@ -256,9 +257,26 @@ public class OrderController {
 	}
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
+	@GetMapping(value="/getOGById")
+	public Optional<OrderWithGoods> getOGById(
+			HttpServletRequest request,
+			@RequestParam("orderId") Long orderId){
+		HttpSession session = request.getSession();
+		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Member m =(Member)o;
+		Optional<OrderWithGoods> oog =  repo.findOGById(orderId);
+		if(oog.isPresent() && oog.get().getOrder().getBuyerId().longValue() != m.getId().longValue()) {
+			return Optional.empty();
+		}else {
+			return oog;
+		}
+		
+	}
+	
+	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/payOrder")
 	public Properties payOrder(HttpServletRequest request,
-			@RequestParam("orderID") Long orderId) {
+			@RequestParam("orderId") Long orderId) {
 		Properties p = new Properties();
 		HttpSession session = request.getSession();
 		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
