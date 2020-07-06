@@ -120,10 +120,6 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
 	        	mes.setId(0L);
 	        	repo.save(mes);
         	}
-        	else {//send all users new messages
-        		//List<CountMessage> list = repo.findNewCountById(sender.getId());
-        		this.sendAllCountMessages(webSocketSession,sender.getId());
-        	}
         	jsonObject.put("fromId", sender.getId());
         	jsonObject.put("fromName", sender.getUserName());
         	//jsonObject.remove("toId");
@@ -132,6 +128,9 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
             this.sendMessage(toName, tm);
             //回送给自己
             webSocketSession.sendMessage(tm);
+        }
+        else if(flag.equals("msg_new") && sender !=null) {
+        	this.sendAllCountMessages(webSocketSession,sender.getId());
         }
         else if(flag.equals("msg_init") && sender !=null) {
         	Long toId = jsonObject.getLong("toId");
