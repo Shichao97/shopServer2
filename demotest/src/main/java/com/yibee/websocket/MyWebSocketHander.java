@@ -130,30 +130,30 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
             webSocketSession.sendMessage(tm);
         }
         else if(flag.equals("msg_new") && sender !=null) {
-        	this.sendAllCountMessages(webSocketSession,sender.getId());
+        	this.sendAllCountMessages(flag,webSocketSession,sender.getId());
         }
         else if(flag.equals("msg_init") && sender !=null) {
         	Long toId = jsonObject.getLong("toId");
-        	this.sendHistoryMsg(webSocketSession,sender.getId(),toId);
+        	this.sendHistoryMsg(flag,webSocketSession,sender.getId(),toId);
         }
     }
 
     
-    private void sendAllCountMessages(WebSocketSession webSocketSession,
+    private void sendAllCountMessages(String flag,WebSocketSession webSocketSession,
     		Long toId) throws Exception
     {
     	List<CountMessage> list = repo.findNewCountById(toId);
     	for(int i=0;i<list.size();i++) {
     		CountMessage cm = list.get(i);
     		JSONObject jsonObject = JSONObject.fromObject(cm);
-    		jsonObject.put("flag","init_new");
+    		jsonObject.put("flag",flag);
     		TextMessage tm = new TextMessage(jsonObject.toString());
     		webSocketSession.sendMessage(tm);
     	}
     }
 
     
-    private void sendHistoryMsg(WebSocketSession webSocketSession,
+    private void sendHistoryMsg(String flag,WebSocketSession webSocketSession,
     		Long fromId,Long toId) throws Exception
     {
     	Pageable pageable = PageRequest.of(0, 100, Sort.by("sendTime").descending());
@@ -163,7 +163,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     	for(int i=0;i<list.size();i++) {
     		Message mes = list.get(list.size()-i-1);
     		JSONObject jsonObject = JSONObject.fromObject(mes);
-    		jsonObject.put("flag","init_msg");
+    		jsonObject.put("flag",flag);
     		TextMessage tm = new TextMessage(jsonObject.toString());
     		webSocketSession.sendMessage(tm);
     	}
