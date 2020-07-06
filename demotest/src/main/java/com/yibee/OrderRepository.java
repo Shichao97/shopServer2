@@ -1,11 +1,15 @@
 package com.yibee;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.yibee.entity.Order;
+import com.yibee.entity.OrderWithGoods;
+import com.yibee.entity.GoodsWithMember;
 import com.yibee.entity.NameOrder;
 
 public interface OrderRepository extends PagingAndSortingRepository<Order,Long>{
@@ -29,5 +33,8 @@ public interface OrderRepository extends PagingAndSortingRepository<Order,Long>{
 	
 	@Query(value = "select MAX(o.id) FROM Order o")
 	public Long getMaxId();
+	
+	@Query(value="select new com.yibee.entity.OrderWithGoods(o,g) from Order o inner join Goods g on o.goodsId=g.id where o.id = ?1")
+	Optional<OrderWithGoods> findOGById(Long id);
 
 }
