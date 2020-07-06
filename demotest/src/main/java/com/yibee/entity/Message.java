@@ -24,17 +24,17 @@ public class Message implements Serializable {
 	private int hasRead;
 
 	@Column(name="receiver_id")
-	private Long receiverId;
+	private Long toId;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="send_time")
 	private Date sendTime;
 
 	@Column(name="sender_id")
-	private Long senderId;
+	private Long fromId;
 
 	@Column(name="sender_name")
-	private String senderName;
+	private String fromName;
 
 	public Message() {
 	}
@@ -63,12 +63,12 @@ public class Message implements Serializable {
 		this.hasRead = hasRead;
 	}
 
-	public Long getReceiverId() {
-		return this.receiverId;
+	public Long getToId() {
+		return this.toId;
 	}
 
-	public void setReceiverId(Long receiverId) {
-		this.receiverId = receiverId;
+	public void setToId(Long receiverId) {
+		this.toId = receiverId;
 	}
 
 	public Date getSendTime() {
@@ -79,20 +79,20 @@ public class Message implements Serializable {
 		this.sendTime = sendTime;
 	}
 
-	public Long getSenderId() {
-		return this.senderId;
+	public Long getFromId() {
+		return this.fromId;
 	}
 
-	public void setSenderId(Long senderId) {
-		this.senderId = senderId;
+	public void setFromId(Long senderId) {
+		this.fromId = senderId;
 	}
 
-	public String getSenderName() {
-		return this.senderName;
+	public String getFromName() {
+		return this.fromName;
 	}
 
-	public void setSenderName(String senderName) {
-		this.senderName = senderName;
+	public void setFromName(String senderName) {
+		this.fromName = senderName;
 	}
 
 }

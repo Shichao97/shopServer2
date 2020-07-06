@@ -3,6 +3,10 @@ package com.yibee.websocket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
@@ -10,12 +14,14 @@ import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 import com.yibee.MessageRepository;
 import com.yibee.MyUtil;
+import com.yibee.entity.CountMessage;
 import com.yibee.entity.Member;
 import com.yibee.entity.Message;
 
 import net.sf.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -108,27 +114,60 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
 	        	Message mes = new Message();
 	        	mes.setContent(jsonObject.getString("content"));
 	        	mes.setHasRead(0);
-	        	mes.setReceiverId(jsonObject.getLong("toId"));
-	        	mes.setSenderId(sender.getId());
-	        	mes.setSenderName(sender.getUserName());
+	        	mes.setToId(jsonObject.getLong("toId"));
+	        	mes.setFromId(sender.getId());
+	        	mes.setFromName(sender.getUserName());
 	        	mes.setId(0L);
 	        	repo.save(mes);
         	}
+        	else {//send all users new messages
+        		//List<CountMessage> list = repo.findNewCountById(sender.getId());
+        		this.sendAllCountMessages(webSocketSession,sender.getId());
+        	}
         	jsonObject.put("fromId", sender.getId());
         	jsonObject.put("fromName", sender.getUserName());
-        	jsonObject.remove("toId");
+        	//jsonObject.remove("toId");
         	String toName = jsonObject.remove("toName").toString();
             TextMessage tm = new TextMessage(jsonObject.toString());
             this.sendMessage(toName, tm);
+            //回送给自己
+            webSocketSession.sendMessage(tm);
         }
+        else if(flag.equals("msg_init") && sender !=null) {
+        	Long toId = jsonObject.getLong("toId");
+        	this.sendHistoryMsg(webSocketSession,sender.getId(),toId);
+        }
+    }
 
-        //WebSocketBeanSpring bean = userMap.get(toName);
-        //Member receiver = null;
-        //if(bean ==null) receiver = (Member)bean.getSession().getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
-        //this.batchSendMessage(message);
+    
+    private void sendAllCountMessages(WebSocketSession webSocketSession,
+    		Long toId) throws Exception
+    {
+    	List<CountMessage> list = repo.findNewCountById(toId);
+    	for(int i=0;i<list.size();i++) {
+    		CountMessage cm = list.get(i);
+    		JSONObject jsonObject = JSONObject.fromObject(cm);
+    		jsonObject.put("flag","init_new");
+    		TextMessage tm = new TextMessage(jsonObject.toString());
+    		webSocketSession.sendMessage(tm);
+    	}
+    }
 
-
-        
+    
+    private void sendHistoryMsg(WebSocketSession webSocketSession,
+    		Long fromId,Long toId) throws Exception
+    {
+    	Pageable pageable = PageRequest.of(0, 100, Sort.by("sendTime").descending());
+    	Page<Message> page = repo.findMessageByIDs(fromId, toId, pageable);
+    
+    	List<Message> list  = page.getContent();
+    	for(int i=0;i<list.size();i++) {
+    		Message mes = list.get(list.size()-i-1);
+    		JSONObject jsonObject = JSONObject.fromObject(mes);
+    		jsonObject.put("flag","init_msg");
+    		TextMessage tm = new TextMessage(jsonObject.toString());
+    		webSocketSession.sendMessage(tm);
+    	}
     }
 
     // 连接错误时触发
@@ -210,5 +249,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
             log.error(e.getMessage(), e);
         }
     }
+    
+
 
 }
