@@ -9,6 +9,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.yibee.entity.Goods;
 import com.yibee.entity.GoodsWithMember;
+import com.yibee.entity.OrderWithGoods;
 
 
 public interface GoodsRepository extends PagingAndSortingRepository<Goods, Long>{
@@ -39,5 +40,21 @@ public interface GoodsRepository extends PagingAndSortingRepository<Goods, Long>
 
 	@Query(value = "select new com.yibee.entity.GoodsWithMember(g,m) from Goods g left join Member m on g.sellerId=m.id where g.status = 1 and g.name like ?1")
     Page<GoodsWithMember> findGMByStatus(String name,Pageable pageable);
+	
+	//在售
+	@Query(value = "from Goods g where g.status = 1")
+    Page<Goods> findSellingNow(Pageable pageable);
+	
+	//在途
+	@Query(value="select new com.yibee.entity.OrderWithGoods(o,g) from Order o inner join Goods g on o.goodsId=g.id where o.status = 0")
+	Page<OrderWithGoods> findOnTheWay(Pageable pageable);
+	
+	//已售
+	@Query(value="select new com.yibee.entity.OrderWithGoods(o,g) from Order o inner join Goods g on o.goodsId=g.id where o.status = 1")
+	Page<OrderWithGoods> find(Pageable pageable);
+	
+	//下架
+	@Query(value = "from Goods g where g.status = 0")
+    Page<Goods> findRemoveOff(Pageable pageable);
 
 }
