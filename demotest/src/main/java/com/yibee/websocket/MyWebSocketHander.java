@@ -93,24 +93,24 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     }
 
     
-    // 接受消息处理消息
+    /*
+	    获取客户端发送的消息,这里使用文件消息，也就是字符串进行接收
+	    消息可以通过字符串，或者字节流进行接收
+	TextMessage String/byte[]接收均可以
+	BinaryMessage byte[]接收
+	*/
     @Override
     public void handleMessage(WebSocketSession webSocketSession,
         WebSocketMessage<?> webSocketMessage)
         throws Exception
     {
-        /*
-		        获取客户端发送的消息,这里使用文件消息，也就是字符串进行接收
-		        消息可以通过字符串，或者字节流进行接收
-	        TextMessage String/byte[]接收均可以
-	        BinaryMessage byte[]接收
-        */
         log.info("客户端发送消息" + webSocketMessage.getPayload().toString());
         JSONObject jsonObject = JSONObject.fromObject(webSocketMessage.getPayload());
         String flag = jsonObject.getString("flag");
         Member sender = (Member)webSocketSession.getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
         if(flag.equals("msg") && sender !=null) {
         	Long toId = jsonObject.getLong("toId");
+        	Long msgId = 0L;
         	if(toId > 0) {
 	        	Message mes = new Message();
 	        	mes.setContent(jsonObject.getString("content"));
@@ -120,20 +120,27 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
 	        	mes.setFromName(sender.getUserName());
 	        	mes.setId(0L);
 	        	repo.save(mes);
+	        	msgId = repo.findLastInsertId();
         	}
-        	jsonObject.put("fromId", sender.getId());
-        	jsonObject.put("fromName", sender.getUserName());
-        	//jsonObject.remove("toId");
-        	String toName = jsonObject.remove("toName").toString();
-            TextMessage tm = new TextMessage(jsonObject.toString());
-            this.sendMessage(toName, tm);
-            //回送给自己
-            webSocketSession.sendMessage(tm);
+        	if(msgId.longValue()>0L) {
+	        	jsonObject.put("fromId", sender.getId());
+	        	jsonObject.put("fromName", sender.getUserName());
+	        	jsonObject.put("msgId",msgId);
+	        	String toName = jsonObject.remove("toName").toString();
+	            TextMessage tm = new TextMessage(jsonObject.toString());
+	            this.sendMessage(toName, tm);
+	            //回送给自己
+	            webSocketSession.sendMessage(tm);
+        	}
         }
         else if(flag.equals("msg_new") && sender !=null) {
         	this.sendAllCountMessages(flag,webSocketSession,sender.getId());
         }
         else if(flag.equals("msg_init") && sender !=null) {
+        	Long toId = jsonObject.getLong("toId");
+        	this.sendHistoryMsg(flag,webSocketSession,sender.getId(),toId);
+        }
+        else if(flag.equals("msg_read") && sender !=null) {
         	Long toId = jsonObject.getLong("toId");
         	this.sendHistoryMsg(flag,webSocketSession,sender.getId(),toId);
         }
@@ -144,6 +151,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     		Long toId) throws Exception
     {
     	List<CountMessage> list = repo.findHistoryByToId(toId);
+    	this.merge(list,repo.findHistoryByFromId(toId));
     	for(int i=0;i<list.size();i++) {
     		CountMessage cm = list.get(i);
     		JSONObject jsonObject = JSONObject.fromObject(cm);
@@ -152,7 +160,21 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     		webSocketSession.sendMessage(tm);
     	}
     }
+    
+    private void merge(List<CountMessage> list,List<CountMessage> list2){
+    	for(CountMessage cm : list2) {
+    		boolean b = containsFromId(list,cm.getToId());
+    		if(!b) list.add(cm);
+    	}
+    	
+    }
 
+    private boolean containsFromId(List<CountMessage> list,Long id) {
+    	for(CountMessage cm : list) {
+    		if(cm.getFromId().longValue() == id.longValue()) return true;
+    	}
+    	return false;
+    }
     
     private void sendHistoryMsg(String flag,WebSocketSession webSocketSession,
     		Long fromId,Long toId) throws Exception
@@ -162,9 +184,10 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     
     	List<Message> list  = page.getContent();
     	for(int i=0;i<list.size();i++) {
-    		Message mes = list.get(list.size()-i-1);
-    		JSONObject jsonObject = JSONObject.fromObject(mes);
+    		Message msg = list.get(list.size()-i-1);
+    		JSONObject jsonObject = JSONObject.fromObject(msg);
     		jsonObject.put("flag",flag);
+    		jsonObject.put("msgId",msg.getId());
     		TextMessage tm = new TextMessage(jsonObject.toString());
     		webSocketSession.sendMessage(tm);
     	}
