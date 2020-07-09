@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
@@ -47,8 +48,15 @@ public class LoginFilter implements Filter {
         String method = request.getMethod();
 		//OPTIONS是预请求，一律放行。
         if(!b && o == null && !method.equals("OPTIONS")) {
-        	//response.sendError(604, "未登录用户，限制访问。");
-    		response.setStatus(604);
+			Cookie c = new Cookie("userId", "");
+			Cookie c2 = new Cookie("username","");
+			c.setPath("/");
+			c2.setPath("/");
+			
+			response.addCookie(c);//添加到response中
+			response.addCookie(c2);
+
+			response.setStatus(604);
     		response.setContentType("text/html");
     		response.setContentLength(0);
     		response.flushBuffer();

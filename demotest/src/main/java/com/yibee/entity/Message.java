@@ -20,20 +20,20 @@ public class Message implements Serializable {
 
 	private String content;
 
-	@Column(name="has_read")
-	private int hasRead;
+	@Column(name="not_read")
+	private int notRead;
 
-	@Column(name="receiver_id")
+	@Column(name="to_id")
 	private Long toId;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="send_time")
 	private Date sendTime;
 
-	@Column(name="sender_id")
+	@Column(name="from_id")
 	private Long fromId;
 
-	@Column(name="sender_name")
+	@Column(name="from_name")
 	private String fromName;
 
 	public Message() {
@@ -55,12 +55,12 @@ public class Message implements Serializable {
 		this.content = content;
 	}
 
-	public int getHasRead() {
-		return this.hasRead;
+	public int getNotRead() {
+		return this.notRead;
 	}
 
-	public void setHasRead(int hasRead) {
-		this.hasRead = hasRead;
+	public void setNotRead(int hasRead) {
+		this.notRead = hasRead;
 	}
 
 	public Long getToId() {

@@ -113,7 +113,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         	if(toId > 0) {
 	        	Message mes = new Message();
 	        	mes.setContent(jsonObject.getString("content"));
-	        	mes.setHasRead(0);
+	        	mes.setNotRead(1);
 	        	mes.setToId(jsonObject.getLong("toId"));
 	        	mes.setFromId(sender.getId());
 	        	mes.setFromName(sender.getUserName());
@@ -142,7 +142,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     private void sendAllCountMessages(String flag,WebSocketSession webSocketSession,
     		Long toId) throws Exception
     {
-    	List<CountMessage> list = repo.findNewCountById(toId);
+    	List<CountMessage> list = repo.findHistoryByToId(toId);
     	for(int i=0;i<list.size();i++) {
     		CountMessage cm = list.get(i);
     		JSONObject jsonObject = JSONObject.fromObject(cm);

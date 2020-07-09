@@ -5,6 +5,15 @@ public class CountMessage {
 	private Long toId;
 	private Long fromId;
 	private String fromName;
+	
+	public CountMessage(Long toId, Long fromId, String fromName) {
+		super();
+		this.count = 0;
+		this.toId = toId;
+		this.fromId = fromId;
+		this.fromName = fromName;
+	}
+
 	public CountMessage(long count, Long toId, Long fromId, String fromName) {
 		super();
 		this.count = count;
