@@ -15,11 +15,15 @@ import com.yibee.entity.Message;
 public interface MessageRepository extends PagingAndSortingRepository<Message, Long>{
 	@Query(value = "FROM Message m where (m.toId=?1 and m.fromId=?2) or (m.toId=?2 and m.fromId=?1)")
 	Page<Message> findMessageByIDs(Long id1,Long id2,Pageable pageable);
+
+	@Query(value = "select sum(m.notRead) FROM Message m where m.toId=?1")
+	int getNewMsgByToId(Long toId);
 	
-	@Query(value = "select new com.yibee.entity.CountMessage(sum(m.notRead),m.toId,m.fromId,u.userName) FROM Message m left join Member u on m.fromId=u.id where m.toId=?1 group by m.fromId")
+	
+	@Query(value = "select new com.yibee.entity.CountMessage(sum(m.notRead),m.toId,m.fromId,m.fromId,u.userName) FROM Message m left join Member u on m.fromId=u.id where m.toId=?1 group by m.fromId")
 	List<CountMessage> findHistoryByToId(Long toId);
 
-	@Query(value = "select new com.yibee.entity.CountMessage(m.toId,m.fromId,m.fromName) FROM Message m where m.fromId=?1 group by m.toId")
+	@Query(value = "select new com.yibee.entity.CountMessage(m.toId,m.fromId,m.toId,u.userName) FROM Message m left join Member u on m.toId=u.id where m.fromId=?1 group by m.toId")
 	List<CountMessage> findHistoryByFromId(Long fromId);
 
 	@Query(value = "SELECT LAST_INSERT_ID() from messages",nativeQuery = true)

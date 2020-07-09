@@ -390,7 +390,7 @@ public class MemberController {
 			if(m.getPassWord().contentEquals(enpass)) {
 				this.entityManager.detach(m);
 				session.setAttribute(MyUtil.ATTR_LOGIN_NAME, m);
-				session.setAttribute(MyUtil.ATTR_LAST_USER, m.getUserName());
+				session.setAttribute(MyUtil.ATTR_LAST_USERID, m.getId());
 				p.put("success", 1);
 				p.put("member",m);
 				//cookie

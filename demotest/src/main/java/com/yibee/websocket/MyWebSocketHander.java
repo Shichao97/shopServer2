@@ -80,10 +80,10 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
 
         webSocketMap.put(session.getId(),bean);
         Member m = (Member)session.getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
-        String userName = null;
+        String sId = null;
         if(m != null) {
-        	userName = m.getUserName();
-        	userMap.put(userName,bean);
+        	sId = m.getId().toString();
+        	userMap.put(sId,bean);
         }
         
         long n = repo.count();
@@ -112,37 +112,46 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         	Long toId = jsonObject.getLong("toId");
         	Long msgId = 0L;
         	if(toId > 0) {
-	        	Message mes = new Message();
-	        	mes.setContent(jsonObject.getString("content"));
-	        	mes.setNotRead(1);
-	        	mes.setToId(jsonObject.getLong("toId"));
-	        	mes.setFromId(sender.getId());
-	        	mes.setFromName(sender.getUserName());
-	        	mes.setId(0L);
-	        	repo.save(mes);
+	        	Message msg = new Message();
+	        	msg.setContent(jsonObject.getString("content"));
+	        	msg.setNotRead(1);
+	        	msg.setToId(jsonObject.getLong("toId"));
+	        	msg.setFromId(sender.getId());
+
+	        	msg.setId(0L);
+	        	repo.save(msg);
 	        	msgId = repo.findLastInsertId();
         	}
         	if(msgId.longValue()>0L) {
 	        	jsonObject.put("fromId", sender.getId());
-	        	jsonObject.put("fromName", sender.getUserName());
+
 	        	jsonObject.put("msgId",msgId);
-	        	String toName = jsonObject.remove("toName").toString();
+
 	            TextMessage tm = new TextMessage(jsonObject.toString());
-	            this.sendMessage(toName, tm);
+	            this.sendMessage(toId.toString(), tm);
 	            //回送给自己
 	            webSocketSession.sendMessage(tm);
         	}
         }
-        else if(flag.equals("msg_new") && sender !=null) {
+        else if(flag.equals("msg_new") && sender !=null) {//Main Message handshake
         	this.sendAllCountMessages(flag,webSocketSession,sender.getId());
         }
-        else if(flag.equals("msg_init") && sender !=null) {
+        else if(flag.equals("msg_init") && sender !=null) {//MainPanel init
         	Long toId = jsonObject.getLong("toId");
         	this.sendHistoryMsg(flag,webSocketSession,sender.getId(),toId);
         }
         else if(flag.equals("msg_read") && sender !=null) {
-        	Long toId = jsonObject.getLong("toId");
-        	this.sendHistoryMsg(flag,webSocketSession,sender.getId(),toId);
+        	Long id = jsonObject.getLong("msgId");
+
+        	repo.readMessageById(id);
+        	webSocketSession.sendMessage(webSocketMessage);
+        }
+        else if(flag.equals("msg_readAll") && sender !=null) {
+        	Long toId = sender.getId();
+        	Long fromId = jsonObject.getLong("fromId");
+
+        	repo.readAllByToAndFrom(toId,fromId);
+        	webSocketSession.sendMessage(webSocketMessage);
         }
     }
 
@@ -163,7 +172,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     
     private void merge(List<CountMessage> list,List<CountMessage> list2){
     	for(CountMessage cm : list2) {
-    		boolean b = containsFromId(list,cm.getToId());
+    		boolean b = containsFromId(list,cm.getOtherId());
     		if(!b) list.add(cm);
     	}
     	
@@ -171,7 +180,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
 
     private boolean containsFromId(List<CountMessage> list,Long id) {
     	for(CountMessage cm : list) {
-    		if(cm.getFromId().longValue() == id.longValue()) return true;
+    		if(cm.getOtherId().longValue() == id.longValue()) return true;
     	}
     	return false;
     }
@@ -203,8 +212,8 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         log.debug("链接出错，关闭链接......");
         WebSocketBeanSpring bean = webSocketMap.remove(webSocketSession.getId());
         if(bean != null) {
-        	String userName = (String) bean.getSession().getAttributes().get(MyUtil.ATTR_LAST_USER);
-        	userMap.remove(userName);
+        	String sId = bean.getSession().getAttributes().get(MyUtil.ATTR_LAST_USERID).toString();
+        	userMap.remove(sId);
         }
     }
 
@@ -216,8 +225,8 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         //webSocketMap.remove(webSocketSession.getId());
         WebSocketBeanSpring bean = webSocketMap.remove(webSocketSession.getId());
         if(bean != null) {
-        	String userName = (String) bean.getSession().getAttributes().get(MyUtil.ATTR_LAST_USER);
-        	userMap.remove(userName);
+        	String sId = (String) bean.getSession().getAttributes().get(MyUtil.ATTR_LAST_USERID);
+        	userMap.remove(sId);
         }
 
     }
@@ -258,9 +267,9 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         }
     }    
 
-    public void sendMessage(String userName, TextMessage message)
+    public void sendMessage(String sId, TextMessage message)
     {
-        WebSocketBeanSpring bean = userMap.get(userName);
+        WebSocketBeanSpring bean = userMap.get(sId);
         try
         {
             if(bean !=null) {

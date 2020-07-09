@@ -4,23 +4,36 @@ public class CountMessage {
 	private long count;
 	private Long toId;
 	private Long fromId;
-	private String fromName;
+	private Long otherId;
+	private String otherName;
 	
-	public CountMessage(Long toId, Long fromId, String fromName) {
+	public CountMessage(Long toId, Long fromId, Long otherId,String otherName) {
 		super();
 		this.count = 0;
 		this.toId = toId;
 		this.fromId = fromId;
-		this.fromName = fromName;
+		this.otherId = otherId;
+		this.otherName = otherName;
 	}
 
-	public CountMessage(long count, Long toId, Long fromId, String fromName) {
+	public CountMessage(long count, Long toId, Long fromId, Long otherId,String otherName) {
 		super();
 		this.count = count;
 		this.toId = toId;
 		this.fromId = fromId;
-		this.fromName = fromName;
+		this.otherId = otherId;
+		this.otherName = otherName;
 	}
+	
+	
+	public Long getOtherId() {
+		return otherId;
+	}
+
+	public void setOtherId(Long myId) {
+		this.otherId = myId;
+	}
+
 	public CountMessage() {
 		super();
 	}
@@ -42,11 +55,11 @@ public class CountMessage {
 	public void setFromId(Long fromId) {
 		this.fromId = fromId;
 	}
-	public String getFromName() {
-		return fromName;
+	public String getOtherName() {
+		return otherName;
 	}
-	public void setFromName(String fromName) {
-		this.fromName = fromName;
+	public void setOtherName(String fromName) {
+		this.otherName = fromName;
 	}
 	
 	
