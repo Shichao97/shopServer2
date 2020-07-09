@@ -375,7 +375,7 @@ public class GoodsController {
 				page = repo.findOnTheWay(sellerId,pageable); 
 			}else if(searchType.contentEquals("3")) {
 				page = repo.findSold(sellerId,pageable); 
-			}else if(searchType.contentEquals("3")) {
+			}else if(searchType.contentEquals("4")) {
 				page = repo.findRemoveOff(sellerId,pageable); 
 			}
 							
