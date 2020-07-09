@@ -27,11 +27,11 @@ public interface MessageRepository extends PagingAndSortingRepository<Message, L
 	
 	@Modifying
 	@Query(value = "update Message m set m.notRead=0 where toId=?1 and fromId=?2 and m.notRead=1")
-	void readMessagesByToAndFrom(Long toId,Long fromId);
+	void readAllByToAndFrom(Long toId,Long fromId);
 	
 	@Modifying
 	@Query(value = "update Message m set m.notRead=0 where id=?1")
-	void readMessagesById(Long id);
+	void readMessageById(Long id);
 
 	
 }
