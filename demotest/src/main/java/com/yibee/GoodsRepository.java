@@ -42,19 +42,19 @@ public interface GoodsRepository extends PagingAndSortingRepository<Goods, Long>
     Page<GoodsWithMember> findGMByStatus(String name,Pageable pageable);
 	
 	//在售
-	@Query(value = "from Goods g where g.status = 1")
-    Page<Goods> findSellingNow(Pageable pageable);
+	@Query(value = "from Goods g where g.status = 1 and g.sellerId=?1")
+    Page<Goods> findSellingNow(Long sellerId, Pageable pageable);
 	
 	//在途
-	@Query(value="select new com.yibee.entity.OrderWithGoods(o,g) from Order o inner join Goods g on o.goodsId=g.id where o.status = 0")
-	Page<OrderWithGoods> findOnTheWay(Pageable pageable);
+	@Query(value="select g from Goods g inner join Order o on g.id=o.goodsId where o.status = 0 and g.sellerId=?1")
+	Page<Goods> findOnTheWay(Long sellerId, Pageable pageable);
 	
 	//已售
-	@Query(value="select new com.yibee.entity.OrderWithGoods(o,g) from Order o inner join Goods g on o.goodsId=g.id where o.status = 1")
-	Page<OrderWithGoods> find(Pageable pageable);
+	@Query(value="select g from Goods g inner join Order o on g.id=o.goodsId where o.status = 1 and g.sellerId=?1")
+	Page<Goods> findSold(Long sellerId, Pageable pageable);
 	
 	//下架
-	@Query(value = "from Goods g where g.status = 0")
-    Page<Goods> findRemoveOff(Pageable pageable);
+	@Query(value = "from Goods g where g.status = 0 and g.sellerId=?1")
+    Page<Goods> findRemoveOff(Long sellerId, Pageable pageable);
 
 }

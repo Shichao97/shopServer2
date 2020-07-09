@@ -329,7 +329,7 @@ public class GoodsController {
 	 * 卖家家搜索自己的商品
 	 */
 	
-	public Page<Goods> goodsSelect(@RequestParam("sellerId") Long sellerId,@RequestParam("searchType1") int searchType1,@RequestParam("searchType2") String searchType2,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
+	public Page<Goods> goodsSelect0(@RequestParam("sellerId") Long sellerId,@RequestParam("searchType1") int searchType1,@RequestParam("searchType2") String searchType2,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
 		
 		Page<Goods> page = null;
 		
@@ -354,7 +354,34 @@ public class GoodsController {
 	//real sell search
 	@GetMapping(value = "sell/search")
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	
+	public Page<Goods> goodsSelect(@RequestParam("sellerId") Long sellerId,
+			@RequestParam("searchType") String searchType,
+			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
+			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
+			@RequestParam(value="sortBy",defaultValue="") String sortBy){
+			
+			Page<Goods> page = null;
+			
+			Pageable pageable = null;
+			if(sortBy.length() == 0) {
+				pageable = PageRequest.of(pageNo, pageSize);
+			}else {
+				pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+			}
+			
+			if(searchType.contentEquals("1")){
+				page = repo.findSellingNow(sellerId,pageable); 
+			}else if(searchType.contentEquals("2")){
+				page = repo.findOnTheWay(sellerId,pageable); 
+			}else if(searchType.contentEquals("3")) {
+				page = repo.findSold(sellerId,pageable); 
+			}else if(searchType.contentEquals("3")) {
+				page = repo.findRemoveOff(sellerId,pageable); 
+			}
+							
+			return page;
+			
+		}	
 	
 	
 	public int getMaxId(String str) {
