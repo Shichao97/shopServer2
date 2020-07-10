@@ -124,7 +124,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         	}
         	if(msgId.longValue()>0L) {
 	        	jsonObject.put("fromId", sender.getId());
-
+	        	jsonObject.put("fromName", sender.getUserName());
 	        	jsonObject.put("msgId",msgId);
 
 	            TextMessage tm = new TextMessage(jsonObject.toString());
@@ -139,6 +139,10 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         else if(flag.equals("msg_init") && sender !=null) {//MainPanel init
         	Long toId = jsonObject.getLong("toId");
         	this.sendHistoryMsg(flag,webSocketSession,sender.getId(),toId);
+        	//send end of init
+    		jsonObject.put("flag","msg_inited");
+    		TextMessage tm = new TextMessage(jsonObject.toString());
+    		webSocketSession.sendMessage(tm);
         }
         else if(flag.equals("msg_read") && sender !=null) {
         	Long id = jsonObject.getLong("msgId");
@@ -148,9 +152,9 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         }
         else if(flag.equals("msg_readAll") && sender !=null) {
         	Long toId = sender.getId();
-        	Long fromId = jsonObject.getLong("fromId");
+        	Long fromId = jsonObject.getLong("otherId");
 
-        	repo.readAllByToAndFrom(toId,fromId);
+        	//repo.readAllByToAndFrom(toId,fromId);
         	webSocketSession.sendMessage(webSocketMessage);
         }
     }
@@ -193,7 +197,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     
     	List<Message> list  = page.getContent();
     	for(int i=0;i<list.size();i++) {
-    		Message msg = list.get(i);
+    		Message msg = list.get(list.size()-i-1);
     		JSONObject jsonObject = JSONObject.fromObject(msg);
     		jsonObject.put("flag",flag);
     		jsonObject.put("msgId",msg.getId());
