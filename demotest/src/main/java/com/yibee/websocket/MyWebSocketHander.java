@@ -193,7 +193,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     
     	List<Message> list  = page.getContent();
     	for(int i=0;i<list.size();i++) {
-    		Message msg = list.get(list.size()-i-1);
+    		Message msg = list.get(i);
     		JSONObject jsonObject = JSONObject.fromObject(msg);
     		jsonObject.put("flag",flag);
     		jsonObject.put("msgId",msg.getId());
@@ -225,7 +225,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         //webSocketMap.remove(webSocketSession.getId());
         WebSocketBeanSpring bean = webSocketMap.remove(webSocketSession.getId());
         if(bean != null) {
-        	String sId = (String) bean.getSession().getAttributes().get(MyUtil.ATTR_LAST_USERID);
+        	String sId = bean.getSession().getAttributes().get(MyUtil.ATTR_LAST_USERID).toString();
         	userMap.remove(sId);
         }
 

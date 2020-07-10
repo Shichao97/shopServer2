@@ -33,9 +33,6 @@ public class Message implements Serializable {
 	@Column(name="from_id")
 	private Long fromId;
 
-	@Column(name="from_name")
-	private String fromName;
-
 	public Message() {
 	}
 
@@ -87,12 +84,5 @@ public class Message implements Serializable {
 		this.fromId = senderId;
 	}
 
-	public String getFromName() {
-		return this.fromName;
-	}
-
-	public void setFromName(String senderName) {
-		this.fromName = senderName;
-	}
 
 }
