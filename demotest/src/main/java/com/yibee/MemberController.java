@@ -190,7 +190,7 @@ public class MemberController {
 		Properties pp;
 		try {
 			pp = MyUtil.getConfProperties();
-			String url = pp.getProperty("active.url")+"?userName="+userName+"&actcode="+codestring;
+			String url = pp.getProperty("active.url")+"userName="+userName+"&actcode="+codestring;
 			System.out.println(url);
 			MailSendObj send = new MailSendObj();
 			send.sendOut("shichaostats@outlook.com", "Website", email, "you", "Website Activation", "activate your account here: "+url);
@@ -212,6 +212,24 @@ public class MemberController {
 		}
 		
 		
+	}
+	
+	@GetMapping(value="/active")
+	public Properties memberActive(@RequestParam("username") String username, 
+			@RequestParam("code") int code) {
+		Properties p = new Properties();
+		Optional<Member> om = repo.findByUserName(username);
+		if(!om.isPresent()) {
+			p.put("success", 0);
+			return p;
+		}
+		Member m = om.get();
+		if(code != -m.getActived()) {
+			p.put("success", 0);
+			return p;
+		}
+		p.put("success", 1);
+		return p;
 	}
 	
 	@PostMapping(value="/add")
