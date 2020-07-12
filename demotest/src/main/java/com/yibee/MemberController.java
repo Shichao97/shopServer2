@@ -214,21 +214,30 @@ public class MemberController {
 		
 	}
 	
+	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/active")
-	public Properties memberActive(@RequestParam("username") String username, 
-			@RequestParam("code") int code) {
+	public Properties memberActive(@RequestParam("userName") String userName, 
+			@RequestParam("actcode") int actcode) {
 		Properties p = new Properties();
-		Optional<Member> om = repo.findByUserName(username);
+		Optional<Member> om = repo.findByUserName(userName);
 		if(!om.isPresent()) {
 			p.put("success", 0);
+			p.put("msg", "The account does not exist, please regioster first to get activated.");
 			return p;
 		}
 		Member m = om.get();
-		if(code != -m.getActived()) {
+		if(m.getActived() == 1) {
 			p.put("success", 0);
+			p.put("msg","You have already activated your account!");
+			return p;
+		}
+		if(actcode != -m.getActived()) {
+			p.put("success", 0);
+			p.put("msg","The activate code is wrong!");
 			return p;
 		}
 		p.put("success", 1);
+		p.put("msg",userName);
 		return p;
 	}
 	
