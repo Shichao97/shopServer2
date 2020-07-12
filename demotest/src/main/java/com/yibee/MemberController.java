@@ -236,6 +236,8 @@ public class MemberController {
 			p.put("msg","The activate code is wrong!");
 			return p;
 		}
+		m.setActived(1);
+		repo.save(m);
 		p.put("success", 1);
 		p.put("msg",userName);
 		return p;
