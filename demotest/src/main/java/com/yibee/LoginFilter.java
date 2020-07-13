@@ -18,7 +18,7 @@ import org.apache.commons.lang.StringUtils;
 //配置拦截路径
 //@WebFilter(filterName = "loginFilter",urlPatterns = {"/goods/sell/*,/goods/buy/*,/member/upIcon,/member/edit*"})
 
-@WebFilter(filterName = "loginFilter",urlPatterns = {"/goods/sell/*","/goods/buy/*","/member/upIcon","/member/edit*","/collect/edit/*","/order/*"})
+@WebFilter(filterName = "loginFilter",urlPatterns = {"/goods/sell/*","/goods/buy/*","/member/upIcon","/member/edit/*","/collect/edit/*","/order/*"})
 public class LoginFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -32,7 +32,7 @@ public class LoginFilter implements Filter {
         //Part part = request.getPart("photo");
         //String id = request.getParameter("id");
         //System.out.println("TestFilter,"+request.getRequestURI());
-        
+        Cookie[] cookies = request.getCookies();
         Object o = request.getSession().getAttribute(MyUtil.ATTR_LOGIN_NAME);
         boolean b = request.getRequestURI().startsWith("/goods/search");
 
@@ -42,7 +42,7 @@ public class LoginFilter implements Filter {
 			response.addHeader("Access-Control-Allow-Origin", url);                
 			response.addHeader("Access-Control-Allow-Credentials", "true");                   
 			response.addHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT, OPTIONS");                
-			//response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type");                   
+			response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type");                   
 		}
 		
         String method = request.getMethod();

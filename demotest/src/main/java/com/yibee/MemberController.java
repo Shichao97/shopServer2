@@ -92,6 +92,47 @@ public class MemberController {
 		return p;
 	}
 	
+	
+	@RequestMapping(value = "/edit/upIcon")
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	public Properties upIcon2(HttpServletRequest request,HttpServletResponse response) throws IOException, ServletException {
+		HttpSession session = request.getSession();
+		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Member m =(Member)o;
+		String sid = request.getParameter("id");
+		Long id = Long.parseLong(sid);
+		Properties p = new Properties();
+		if(m == null || m.getId().longValue() != id.longValue()) {
+			response.setStatus(606);
+			return null;
+		}
+		
+		
+		p.put("ID", id);
+		Part part;
+		Properties pp;
+		try {
+			part = (Part) request.getParts().toArray()[0];
+			pp = MyUtil.getConfProperties();
+			String savePath = pp.getProperty("member_icon.dir");
+			int folderName = (int)Math.floor(id/1000);
+			String save2Path = savePath + ("/"+folderName); 
+			File fileSaveDir = new File(save2Path);
+	        if (!fileSaveDir.exists()) {
+	            fileSaveDir.mkdir();
+	        }
+			part.write(save2Path + File.separator + id+".jpg");
+			MyUtil.manageImage(160,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_2.jpg");
+			MyUtil.manageImage(64,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_1.jpg");
+			MyUtil.manageImage(32,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_0.jpg");
+			p.put("msg", 1);
+		} catch (IOException | ServletException e) {
+			p.put("msg", 0);
+			e.printStackTrace();
+		}
+		return p;
+	}	
+	
 	/*
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/editicon")
@@ -179,7 +220,7 @@ public class MemberController {
 		}
 		else {
 			p.put("success",0);
-			p.put("msg","Username has used,please try another.");
+			p.put("msg","Username has been used,please try another.");
 		}
 		return p;
 	}
