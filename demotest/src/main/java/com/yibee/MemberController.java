@@ -55,6 +55,7 @@ public class MemberController {
 	@PersistenceContext
     private EntityManager entityManager;
 
+	/*
 	@RequestMapping(value = "/upIcon")
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	public Properties upIcon(HttpServletRequest request,HttpServletResponse response,@RequestParam("id") int id) throws IOException, ServletException {
@@ -91,7 +92,7 @@ public class MemberController {
 		}
 		return p;
 	}
-	
+	*/
 	
 	@RequestMapping(value = "/edit/upIcon")
 	@CrossOrigin(origins = "*", maxAge = 3600)
