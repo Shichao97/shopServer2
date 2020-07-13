@@ -168,6 +168,24 @@ public class MemberController {
 
 	}
 	
+	
+	@CrossOrigin(origins = "*")
+	@GetMapping(value="/checkUsername")
+	public Properties memberRegister(HttpServletResponse response,@RequestParam("userName") String userName) throws IOException {
+		Properties p = new Properties();
+		Optional op = repo.findByUserName(userName);
+		if(!op.isPresent()) {
+			p.put("success", 1);
+		}
+		else {
+			p.put("success",0);
+			p.put("msg","Username has used,please try another.");
+		}
+		return p;
+	}
+	
+
+	
 	@CrossOrigin(origins = "*")
 	@PostMapping(value="/register")
 	public Member memberRegister(HttpServletResponse response,@RequestParam("userName") String userName,
