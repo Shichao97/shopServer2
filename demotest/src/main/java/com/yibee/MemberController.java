@@ -171,7 +171,8 @@ public class MemberController {
 	@CrossOrigin(origins = "*")
 	@PostMapping(value="/register")
 	public Member memberRegister(HttpServletResponse response,@RequestParam("userName") String userName,
-			@RequestParam("passWord") String passWord,@RequestParam("email") String email) throws IOException {
+			@RequestParam("passWord") String passWord,@RequestParam("email") String email,
+			@RequestParam("schoolCode") String schoolCode) throws IOException {
 		
 		Member m = new Member();
 		Long mid = repo.getMaxId();
@@ -184,6 +185,7 @@ public class MemberController {
 		m.setUserName(userName);
 		passWord = MyUtil.encrypt(passWord);
 		m.setPassWord(passWord);
+		m.setSchoolCode(schoolCode);
 		//response.sendError(601, "wrong!");
 		int actcode = (int)((Math.random()*9+1)*100000);
 		String codestring = Integer.toString(actcode);

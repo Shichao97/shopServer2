@@ -154,6 +154,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         	Long toId = sender.getId();
         	Long fromId = jsonObject.getLong("otherId");
 
+        	//TODO uncomment the next line
         	//repo.readAllByToAndFrom(toId,fromId);
         	webSocketSession.sendMessage(webSocketMessage);
         }

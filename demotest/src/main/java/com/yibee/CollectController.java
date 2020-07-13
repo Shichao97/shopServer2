@@ -73,7 +73,8 @@ public class CollectController {
 	 
 	 @CrossOrigin(origins = "*", maxAge = 3600)
 	 @GetMapping(value="/edit/clickcollect")
-	 public Properties clickCollect(HttpServletRequest request,@RequestParam("goodsId") Long goodsId,@RequestParam("memberId") Long memberId) {
+	 public Properties clickCollect(HttpServletRequest request,@RequestParam("goodsId") Long goodsId,
+			 @RequestParam("memberId") Long memberId) {
 		 Properties p = new Properties();
 		 HttpSession session = request.getSession();
 		 Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
@@ -91,6 +92,7 @@ public class CollectController {
 			try {
 				repo.deleteById(c.getId());
 				p.put("success", 1);
+				p.put("like",false);
 				return p;
 			}catch(Exception e){
 				e.printStackTrace();
@@ -108,6 +110,7 @@ public class CollectController {
 			 try{
 				 repo.save(c);
 				 p.put("success", 1);
+				 p.put("like",true);
 				 return p;
 			 }catch(Exception e){
 				 e.printStackTrace();
@@ -119,5 +122,43 @@ public class CollectController {
 		 
 		 
 	 }
+	 
+	 @CrossOrigin(origins = "*", maxAge = 3600)
+	 @GetMapping(value="/edit/getIsLike")
+	 public Properties getIsLike(HttpServletRequest request,@RequestParam("goodsId") Long goodsId,
+			 @RequestParam("memberId") Long memberId) {
+		 Properties p = new Properties();
+		 HttpSession session = request.getSession();
+		 Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		 Member m =(Member)o;
+		 System.out.println(m.getId());
+		 System.out.println(memberId);
+		 if(m.getId()==null || !m.getId().equals(memberId)) {
+			 p.put("success", 0);
+			 p.put("msg", "You do not have previllege to do so!");
+			 return p;
+		 }
+		 Optional<Collect> oc = repo.findByGoodsidAndMemberid(goodsId, memberId);
+		 if(oc.isPresent()) {
+			Collect c = oc.get();
+			try {
+				//repo.deleteById(c.getId());
+				p.put("success", 1);
+				p.put("like",true);
+				return p;
+			}catch(Exception e){
+				e.printStackTrace();
+				p.put("success", 0);
+				p.put("msg",e.getMessage());
+				return p;
+			}
+		 }
+		 else {
+			 p.put("success", 1);
+				p.put("like",false);
+				return p;
+		 }
+		 
+	 }	 
  
 }
