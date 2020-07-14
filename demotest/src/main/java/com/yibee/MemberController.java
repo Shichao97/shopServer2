@@ -511,4 +511,45 @@ public class MemberController {
 		p.put("msg", "Username or password is wrong.");
 		return p;
     }		
+	
+	@PostMapping(value = "/logout")
+	//@CrossOrigin(origins = "*", maxAge = 3600)
+    public Properties login(HttpServletRequest request,HttpServletResponse response,    		
+    		@RequestParam(value="id",defaultValue="0") long id) throws IOException, ServletException {
+		
+		Properties p = new Properties();
+		HttpSession session = request.getSession();
+		//Optional<Member> op = repo.findByUserName(userName);
+		Member m = (Member)session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		
+		String url = request.getHeader("Origin");  
+		if(url !=null && url.length()>0) {
+			response.addHeader("Access-Control-Allow-Origin", url);                
+			response.addHeader("Access-Control-Allow-Credentials", "true");     
+			Cookie c = new Cookie("userId", "");
+			Cookie c2 = new Cookie("username","");
+			c.setPath("/");
+			c2.setPath("/");
+			
+			response.addCookie(c);//添加到response中
+			response.addCookie(c2);
+		}
+		//System.out.println("Login username="+userName);
+		
+		if(m == null || m.getId().longValue() == id) {
+			session.removeAttribute(MyUtil.ATTR_LOGIN_NAME);
+			
+			session.removeAttribute(MyUtil.ATTR_LAST_USERID);
+			
+			p.put("success", 1);
+			p.put("member",m);
+			return p;
+			
+		}
+		
+		
+		p.put("success", 0);
+		p.put("msg", "Username is wrong.");
+		return p;
+    }			
 }
