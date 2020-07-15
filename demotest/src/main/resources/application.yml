@@ -8,8 +8,17 @@ spring:
     username: root
     password: lcc12345
     hikari:
-      max-lifetime: 1200000
+      max-lifetime: 120000
+      initial-size: 5
       max-idle: 5
+      max-active: 20
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
   jpa:
     #这个参数是在建表的时候，将默认的存储引擎切换为 InnoDB 用的
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect

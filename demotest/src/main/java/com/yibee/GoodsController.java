@@ -356,17 +356,17 @@ public class GoodsController {
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	public Page<Goods> goodsSelect(@RequestParam("sellerId") Long sellerId,
 			@RequestParam("searchType") String searchType,
-			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
+			@RequestParam(value="pageNo",defaultValue="1") Integer pageNo,
 			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
 			@RequestParam(value="sortBy",defaultValue="") String sortBy){
 			
 			Page<Goods> page = null;
-			
+			int pnum = pageNo-1;
 			Pageable pageable = null;
 			if(sortBy.length() == 0) {
-				pageable = PageRequest.of(pageNo, pageSize);
+				pageable = PageRequest.of(pnum, pageSize);
 			}else {
-				pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+				pageable = PageRequest.of(pnum, pageSize, Sort.by(sortBy));
 			}
 			
 			if(searchType.contentEquals("1")){
