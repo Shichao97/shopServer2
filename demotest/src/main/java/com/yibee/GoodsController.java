@@ -574,4 +574,13 @@ public class GoodsController {
 		
 		
 	}
+	
+	@GetMapping(value = "/getGMById")
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	public Optional findGMById(@RequestParam("id") long id)
+	{
+		Optional op = repo.findGMById(id);
+		
+		return op;
+	}
 }
