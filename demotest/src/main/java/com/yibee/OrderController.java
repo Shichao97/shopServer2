@@ -223,7 +223,7 @@ public class OrderController {
 			@RequestParam("buyerId") Long buyerId,
 			@RequestParam(value="searchValue",defaultValue="") String searchValue,
 			@RequestParam(value="searchStatus",defaultValue="") String searchStatus,
-			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
+			@RequestParam(value="pageNo",defaultValue="1") Integer pageNo,
 			@RequestParam(value="pageSize",defaultValue="5") Integer pageSize,
 			@RequestParam(value="sortBy",defaultValue="") String sortBy) {
 		Page<NameOrder> page = null;
@@ -234,7 +234,7 @@ public class OrderController {
 		if(m == null || m.getId().longValue() != buyerId.longValue()) {
 			return Page.empty();
 		}
-		
+		pageNo--;
 		
 		if(sortBy.length() == 0) {
 			pageable = PageRequest.of(pageNo, pageSize);
