@@ -35,12 +35,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yibee.entity.Goods;
 import com.yibee.entity.GoodsWithMember;
 import com.yibee.entity.Member;
+import com.yibee.entity.Order;
 
 @RestController
 @RequestMapping("/goods")
 public class GoodsController {
 	@Resource
 	private GoodsRepository repo;
+	@Resource
+	private OrderRepository orderRepo;
 	
 	@PostMapping(value = "/add2")
 	@CrossOrigin(origins = "*", maxAge = 3600)
@@ -577,10 +580,23 @@ public class GoodsController {
 	
 	@GetMapping(value = "/getGMById")
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	public Optional findGMById(@RequestParam("id") long id)
+	public Optional findGMById(HttpServletRequest request,@RequestParam("id") long id)
 	{
-		Optional op = repo.findGMById(id);
-		
+		Optional<GoodsWithMember> op = repo.findGMById(id);
+		if(op.isPresent()) {
+			HttpSession session = request.getSession();
+			GoodsWithMember gm = op.get();
+			Member m = (Member)session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+			if(m == null) {
+				if(gm.getG().getStatus() != Goods.STATUS_SELLING_NOW) {
+					return Optional.empty();
+				}
+			}
+			else if(m.getId().longValue() != gm.getG().getSellerId().longValue()) {
+				Optional<Order> o = orderRepo.findByBuyerId(id);
+				if(!o.isPresent()) return Optional.empty();
+			}
+		}
 		return op;
 	}
 }

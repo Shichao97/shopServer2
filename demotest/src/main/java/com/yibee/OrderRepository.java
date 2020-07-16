@@ -37,4 +37,6 @@ public interface OrderRepository extends PagingAndSortingRepository<Order,Long>{
 	@Query(value="select new com.yibee.entity.OrderWithGoods(o,g) from Order o inner join Goods g on o.goodsId=g.id where o.id = ?1")
 	Optional<OrderWithGoods> findOGById(Long id);
 
+	//@Query(value="select new com.yibee.entity.OrderWithGoods(o,g) from Order o inner join Goods g on o.goodsId=g.id where o.id = ?1")
+	Optional<Order> findByBuyerId(Long id);
 }
