@@ -301,5 +301,20 @@ public class OrderController {
 		return p;
  	}
 	
-	
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	@GetMapping(value="/getCountOrder")
+	public Properties getCountOrder(HttpServletRequest request) {
+		Properties p = new Properties();
+		HttpSession session = request.getSession();
+		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Member m =(Member)o;
+		if(m !=null) {
+			long n1 = repo.getCountNotPaid(m.getId());
+			long n2 = repo.getCountNotFinished(m.getId());
+			p.put("notPaidCount",n1);
+			p.put("notFinishCount",n2);
+		}
+		System.out.println("getCountOrder");
+		return p;
+	}	
 }
