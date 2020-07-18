@@ -445,7 +445,7 @@ public class MemberController {
 	
 	
 	@PostMapping(value = "/login")
-	//@CrossOrigin(origins = "*", maxAge = 3600)
+	@CrossOrigin(origins = "*", maxAge = 3600)
     public Properties login(HttpServletRequest request,
     		HttpServletResponse response,
     		@RequestParam(value="userName",defaultValue="") String userName,
@@ -456,11 +456,12 @@ public class MemberController {
 		HttpSession session = request.getSession();
 		Optional<Member> op = repo.findByUserName(userName);
 		
-		String url = request.getHeader("Origin");  
-		if(url !=null && url.length()>0) {
-			response.addHeader("Access-Control-Allow-Origin", url);                
-			response.addHeader("Access-Control-Allow-Credentials", "true");     
-		}
+//		String url = request.getHeader("Origin");  
+//		if(url !=null && url.length()>0) {
+//			response.addHeader("Access-Control-Allow-Origin", url);                
+//			response.addHeader("Access-Control-Allow-Credentials", "true");     
+//		}
+		
 		System.out.println("Login username="+userName);
 		
 		if(op.isPresent()) {

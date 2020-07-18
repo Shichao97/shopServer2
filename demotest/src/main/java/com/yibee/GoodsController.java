@@ -598,11 +598,12 @@ public class GoodsController {
 		if(op.isPresent()) {
 			HttpSession session = request.getSession();
 			GoodsWithMember gm = op.get();
+			if(gm.getG().getStatus() == Goods.STATUS_SELLING_NOW) {
+				return op;
+			}
 			Member m = (Member)session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
 			if(m == null) {
-				if(gm.getG().getStatus() != Goods.STATUS_SELLING_NOW) {
-					return Optional.empty();
-				}
+				return Optional.empty();
 			}
 			else if(m.getId().longValue() != gm.getG().getSellerId().longValue()) {
 				Optional<Order> o = orderRepo.findByBuyerId(id);

@@ -32,30 +32,32 @@ public class LoginFilter implements Filter {
         //Part part = request.getPart("photo");
         //String id = request.getParameter("id");
         //System.out.println("TestFilter,"+request.getRequestURI());
-        Cookie[] cookies = request.getCookies();
+        
         Object o = request.getSession().getAttribute(MyUtil.ATTR_LOGIN_NAME);
         boolean b = request.getRequestURI().startsWith("/goods/search");
 
 		String url = request.getHeader("Origin");  
-		System.out.println(url);
-		if (!StringUtils.isEmpty(url)) {                          
-			response.addHeader("Access-Control-Allow-Origin", url);                
-			response.addHeader("Access-Control-Allow-Credentials", "true");                   
-			response.addHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT, OPTIONS");                
-			response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type");                   
-		}
-		
-        String method = request.getMethod();
-		//OPTIONS是预请求，一律放行。
-        if(!b && o == null && !method.equals("OPTIONS")) {
+		System.out.println("Log:"+url);
+//		if (!StringUtils.isEmpty(url)) {//moved to CommonFilter                          
+//			response.addHeader("Access-Control-Allow-Origin", url);                
+//			response.addHeader("Access-Control-Allow-Credentials", "true");                   
+//			response.addHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT, OPTIONS");                
+//			response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type");                   
+//		}
+        Cookie[] cookies = request.getCookies();
+        if(o == null && this.getCookies(cookies, "userId").length()>0) {
 			Cookie c = new Cookie("userId", "");
 			Cookie c2 = new Cookie("username","");
 			c.setPath("/");
 			c2.setPath("/");
 			
 			response.addCookie(c);//添加到response中
-			response.addCookie(c2);
+			response.addCookie(c2);        	
+        }
 
+        String method = request.getMethod();
+		//OPTIONS是预请求，一律放行。
+        if(!b && o == null && !method.equals("OPTIONS")) {
 			response.setStatus(604);
     		response.setContentType("text/html");
     		response.setContentLength(0);
@@ -64,6 +66,21 @@ public class LoginFilter implements Filter {
         }
         //执行
         else filterChain.doFilter(servletRequest, servletResponse);
+    }
+    
+	public String getCookies(Cookie[] cookies,String name){
+    	//HttpServletRequest 装请求信息类
+    	//HttpServletRespionse 装相应信息的类
+    	// Cookie cookie=new Cookie("sessionId","CookieTestInfo");
+    	//Cookie[] cookies = request.getCookies();
+    	if(cookies != null){
+	    	for(Cookie cookie : cookies){
+	    		if(cookie.getName().equals(name)){
+	    			return cookie.getValue();
+	    		}
+	    	}
+    	}
+    	return "";
     }
 
     @Override
