@@ -33,7 +33,7 @@ public interface GoodsRepository extends PagingAndSortingRepository<Goods, Long>
     Page<Goods> findByStatusAndName(String name,Pageable pageable);
 	
 	@Query(value = "from Goods g where g.status = 1 and g.description like ?1")
-    Page<Goods> findByStatusAndDesc(String desc,Pageable pageable);
+    Page<Goods> findByStatusAndDesc(String desc,Pageable pageable); 
 
 	@Query(value = "select new com.yibee.entity.GoodsWithMember(g,m) from Goods g left join Member m on g.sellerId=m.id where g.sellerId=?1 and g.status = ?2 and g.name like ?3")
     Page<GoodsWithMember> findGMBySellerAndStatusAndName(Long sellerId, int status,String name,Pageable pageable);
