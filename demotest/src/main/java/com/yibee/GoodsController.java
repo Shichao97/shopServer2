@@ -421,7 +421,8 @@ public class GoodsController {
 	public Properties editGoods(HttpServletRequest request,
 			@RequestParam("gid") Long gid,
 			@RequestParam(value = "typeCode",defaultValue = "A0001") String typeCode, 
-			@RequestParam("location") String location,
+			@RequestParam(value = "location",defaultValue = "") String location,
+			@RequestParam("description") String description,
 			@RequestParam("name") String name,
 			@RequestParam("price") float price, 
 			@RequestParam(value = "method1",defaultValue = "0") byte method1,
@@ -450,6 +451,7 @@ public class GoodsController {
 		//g.setSellerId(m.getId());
 		g.setTypeCode(typeCode);
 		g.setLocation(location);
+		g.setDescription(description);
 		g.setName(name);
 		g.setPrice(price);
 		byte sellingMethod =(byte) (method1 | method2 | method3) ;
@@ -511,7 +513,8 @@ public class GoodsController {
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	public Optional<Goods> addGoods(HttpServletRequest request,
 			@RequestParam(value = "typeCode",defaultValue = "A0001") String typeCode, 
-			@RequestParam("location") String location,
+			@RequestParam(value = "location",defaultValue = "") String location,
+			@RequestParam("description") String description,
 			@RequestParam("name") String name,
 			@RequestParam("price") float price, 
 			@RequestParam(value = "method1",defaultValue = "0") byte method1,
@@ -542,6 +545,7 @@ public class GoodsController {
 		g.setTypeCode(typeCode);
 		g.setLocation(location);
 		g.setName(name);
+		g.setDescription(description);
 		g.setPrice(price);
 		byte sellingMethod =(byte) (method1 | method2 | method3) ;
 		g.setSellingMethod(sellingMethod);

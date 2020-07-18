@@ -525,8 +525,8 @@ public class MemberController {
 		
 		String url = request.getHeader("Origin");  
 		if(url !=null && url.length()>0) {
-			response.addHeader("Access-Control-Allow-Origin", url);                
-			response.addHeader("Access-Control-Allow-Credentials", "true");     
+			//response.addHeader("Access-Control-Allow-Origin", url);                
+			//response.addHeader("Access-Control-Allow-Credentials", "true");     
 			Cookie c = new Cookie("userId", "");
 			Cookie c2 = new Cookie("username","");
 			c.setPath("/");
