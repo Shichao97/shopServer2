@@ -285,7 +285,11 @@ public class GoodsController {
 	 */
 	@GetMapping(value = "search")
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	public Page<Goods> goodsSearch(@RequestParam("searchType") String searchType,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
+	public Page<Goods> goodsSearch(@RequestParam("searchType") String searchType,
+			@RequestParam(value="searchValue",defaultValue="") String searchValue,
+			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
+			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
+			@RequestParam(value="sortBy",defaultValue="") String sortBy){
 		
 		Page<Goods> page = null;
 		

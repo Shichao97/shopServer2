@@ -12,6 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yibee.entity.Collect;
+import com.yibee.entity.CollectWithGoodsAndMember;
 import com.yibee.entity.Goods;
 import com.yibee.entity.Member;
 
@@ -159,6 +164,26 @@ public class CollectController {
 				return p;
 		 }
 		 
-	 }	 
+	 }
+	 
+	 @CrossOrigin(origins = "*", maxAge = 3600)
+	 @GetMapping(value="/edit/searchCollect")
+	 public Page<CollectWithGoodsAndMember> searchCollect(
+			@RequestParam("uid") Long uid,
+			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
+			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
+			@RequestParam(value="sortBy",defaultValue="") String sortBy){
+		 	Page<CollectWithGoodsAndMember> page = null;
+			
+			Pageable pageable = null;
+			if(sortBy.length() == 0) {
+				pageable = PageRequest.of(pageNo, pageSize);
+			}else {
+				pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+			}
+			page = repo.findCGMByUID(uid, pageable);
+							
+			return page;
+	 }
  
 }
