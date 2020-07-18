@@ -68,6 +68,7 @@ public class LoginFilter implements Filter {
         else filterChain.doFilter(servletRequest, servletResponse);
     }
     
+    
 	public String getCookies(Cookie[] cookies,String name){
     	//HttpServletRequest 装请求信息类
     	//HttpServletRespionse 装相应信息的类
