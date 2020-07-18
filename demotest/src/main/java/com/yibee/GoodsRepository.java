@@ -36,11 +36,17 @@ public interface GoodsRepository extends PagingAndSortingRepository<Goods, Long>
     Page<Goods> findByStatusAndDesc(String desc,Pageable pageable);
 
 	@Query(value = "select new com.yibee.entity.GoodsWithMember(g,m) from Goods g left join Member m on g.sellerId=m.id where g.sellerId=?1 and g.status = ?2 and g.name like ?3")
-    Page<GoodsWithMember> findGMBySelleridAndStatus(Long sellerId, int status,String name,Pageable pageable);
+    Page<GoodsWithMember> findGMBySellerAndStatusAndName(Long sellerId, int status,String name,Pageable pageable);
 
 	@Query(value = "select new com.yibee.entity.GoodsWithMember(g,m) from Goods g left join Member m on g.sellerId=m.id where g.status = 1 and g.name like ?1")
-    Page<GoodsWithMember> findGMByStatus(String name,Pageable pageable);
-	
+    Page<GoodsWithMember> findSellingGMByName(String name,Pageable pageable);
+
+	@Query(value = "select new com.yibee.entity.GoodsWithMember(g,m) from Goods g left join Member m on g.sellerId=m.id where g.status = 1 and g.name like ?1 and m.schoolCode=?2")
+    Page<GoodsWithMember> findSellingGMByNameAndSchool(String name,String schoolCode,Pageable pageable);
+
+	@Query(value = "select new com.yibee.entity.GoodsWithMember(g,m) from Goods g left join Member m on g.sellerId=m.id where g.sellerId=?1 and g.status = 1 and g.name like ?2")
+    Page<GoodsWithMember> findSellingGMBySellerAndName(Long sellerId,String name,Pageable pageable);
+
 	//在售
 	@Query(value = "from Goods g where g.status = 1 and g.sellerId=?1")
     Page<Goods> findSellingNow(Long sellerId, Pageable pageable);

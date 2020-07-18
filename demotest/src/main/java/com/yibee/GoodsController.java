@@ -315,7 +315,11 @@ public class GoodsController {
 	 */
 	@GetMapping(value = "search2")
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	public Page<GoodsWithMember> goodsSearch2(@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="1") Integer pageNo,@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
+	public Page<GoodsWithMember> goodsSearch2(@RequestParam(value="searchValue",defaultValue="") String searchValue,
+			@RequestParam(value="pageNo",defaultValue="1") Integer pageNo,
+			@RequestParam(value="schoolCode",defaultValue="") String schoolCode,
+			@RequestParam(value="sellerId",defaultValue="0") Long sellerId,
+			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
 		
 		Page<GoodsWithMember> page = null;
 		int pnum = pageNo-1;
@@ -326,7 +330,15 @@ public class GoodsController {
 			pageable = PageRequest.of(pnum, pageSize, Sort.by(sortBy));
 		}
 		
-		page = repo.findGMByStatus("%"+searchValue+"%",pageable); //未发布
+		if(schoolCode.length()==0 && sellerId.longValue()==0L) {
+			page = repo.findSellingGMByName("%"+searchValue+"%",pageable); //未发布
+		}
+		else if(sellerId.longValue() == 0L) {
+			page = repo.findSellingGMByNameAndSchool("%"+searchValue+"%", schoolCode,pageable); 
+		}
+		else {
+			page = repo.findSellingGMBySellerAndName(sellerId, "%"+searchValue, pageable);
+		}
 						
 		return page;
 		
