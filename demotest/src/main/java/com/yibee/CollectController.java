@@ -168,13 +168,14 @@ public class CollectController {
 	 
 	 @CrossOrigin(origins = "*", maxAge = 3600)
 	 @GetMapping(value="/edit/searchCollect")
-	 public Page<CollectWithGoodsAndMember> searchCollect(
-			@RequestParam("uid") Long uid,
+	 public Page<CollectWithGoodsAndMember> searchCollect(HttpServletRequest request,
 			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
 			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
 			@RequestParam(value="sortBy",defaultValue="") String sortBy){
 		 	Page<CollectWithGoodsAndMember> page = null;
-			
+		 	HttpSession session = request.getSession();
+		 	Member m = (Member)session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+			Long uid = m.getId();
 			Pageable pageable = null;
 			if(sortBy.length() == 0) {
 				pageable = PageRequest.of(pageNo, pageSize);
