@@ -489,7 +489,7 @@ public class GoodsController {
 			            fileSaveDir.mkdir();
 			        }
 			        part.write(save2Path + File.separator + newId +".jpg");
-			        MyUtil.manageImage(240,save2Path + File.separator + newId+".jpg",save2Path + File.separator + newId+"_l.jpg");
+			        MyUtil.resizeImage(240,save2Path + File.separator + newId+".jpg",save2Path + File.separator + newId+"_l.jpg");
 			       
 				}
 			}
@@ -577,7 +577,7 @@ public class GoodsController {
 			            fileSaveDir.mkdir();
 			        }
 			        part.write(save2Path + File.separator + imgId +".jpg");
-			        MyUtil.manageImage(240,save2Path + File.separator + imgId+".jpg",save2Path + File.separator + imgId+"_l.jpg");
+			        MyUtil.resizeImage(240,save2Path + File.separator + imgId+".jpg",save2Path + File.separator + imgId+"_l.jpg");
 				}
 			}
 			

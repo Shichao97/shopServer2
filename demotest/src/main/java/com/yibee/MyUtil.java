@@ -1,5 +1,8 @@
 package com.yibee;
 
+
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,7 +15,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import javax.imageio.ImageIO;
+
 import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.Thumbnails.Builder;
+import net.coobird.thumbnailator.geometry.Positions;
 
 public class MyUtil {
 	public static final String ATTR_LOGIN_NAME="loginUser";
@@ -56,12 +63,38 @@ public class MyUtil {
 
 		
 	}
-	public static void manageImage(int sizeOf,String oriPath,String afterPath) throws IOException {
-        File originalImg = new File(oriPath);   
-        File thumbnailImg = new File(afterPath);
-        Thumbnails.of(originalImg)
-                .size(sizeOf, sizeOf)    
-                .outputQuality(0.8f)    
-                .toFile(thumbnailImg);
+	public static void main(String[] args) {
+		
+	}
+	public static void resizeImage(int sizeOf,String oriPath,String afterPath) throws IOException {
+        resizeImage(new Rectangle(0,0,sizeOf,sizeOf),oriPath,afterPath);
     }
+	
+	public static void resizeImage(Rectangle rect,String fromPic,String toPic)throws IOException {
+        File fromFile = new File(fromPic);   
+
+        Thumbnails.of(fromFile)
+                .size(rect.width, rect.height)    
+                .outputQuality(1f)    
+                .toFile(toPic);
+	}	
+	
+	public static void resizeCenterRegionImage(Rectangle rect,String fromPic,String toPic)throws IOException {
+		BufferedImage image = ImageIO.read(new File(fromPic));  
+		Builder<BufferedImage> builder = null;  
+		  
+		int imageWidth = image.getWidth();  
+		int imageHeitht = image.getHeight();  
+		if ((float)rect.width / rect.height != (float)imageWidth / imageHeitht) {  
+		    if ((float)rect.width / rect.height > (float)imageWidth / imageHeitht) {  
+		        image = Thumbnails.of(fromPic).height(300).asBufferedImage();  
+		    } else {  
+		        image = Thumbnails.of(fromPic).width(400).asBufferedImage();  
+		    }  
+		    builder = Thumbnails.of(image).sourceRegion(Positions.CENTER, 400, 300).size(400, 300);  
+		} else {  
+		    builder = Thumbnails.of(image).size(400, 300);  
+		}  
+		builder.outputFormat("jpg").toFile(toPic);  
+	}
 }

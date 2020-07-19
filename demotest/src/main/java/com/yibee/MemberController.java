@@ -123,9 +123,9 @@ public class MemberController {
 	            fileSaveDir.mkdir();
 	        }
 			part.write(save2Path + File.separator + id+".jpg");
-			MyUtil.manageImage(160,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_2.jpg");
-			MyUtil.manageImage(64,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_1.jpg");
-			MyUtil.manageImage(32,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_0.jpg");
+			MyUtil.resizeImage(160,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_2.jpg");
+			MyUtil.resizeImage(64,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_1.jpg");
+			MyUtil.resizeImage(32,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_0.jpg");
 			p.put("msg", 1);
 		} catch (IOException | ServletException e) {
 			p.put("msg", 0);
@@ -371,9 +371,9 @@ public class MemberController {
 	            fileSaveDir.mkdir();
 	        }
 			part.write(savePath + File.separator + id+".jpg");
-			MyUtil.manageImage(160,savePath + File.separator + id+".jpg",savePath + File.separator + id+"_l.jpg");
-			MyUtil.manageImage(64,savePath + File.separator + id+".jpg",savePath + File.separator + id+"_m.jpg");
-			MyUtil.manageImage(32,savePath + File.separator + id+".jpg",savePath + File.separator + id+"_s.jpg");
+			MyUtil.resizeImage(160,savePath + File.separator + id+".jpg",savePath + File.separator + id+"_l.jpg");
+			MyUtil.resizeImage(64,savePath + File.separator + id+".jpg",savePath + File.separator + id+"_m.jpg");
+			MyUtil.resizeImage(32,savePath + File.separator + id+".jpg",savePath + File.separator + id+"_s.jpg");
 			
 		} catch (IOException | ServletException e) {
 			e.printStackTrace();
