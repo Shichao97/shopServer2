@@ -2,8 +2,8 @@ package com.yibee.entity;
 
 public class CollectWithGoodsAndMember {
 	private Collect collect;
-	private Goods goods;
-	private Member member;
+	private Goods g;
+	private Member m;
 	
 	public CollectWithGoodsAndMember() {
 		
@@ -11,8 +11,8 @@ public class CollectWithGoodsAndMember {
 	
 	public CollectWithGoodsAndMember(Collect collect,Goods goods,Member member) {
 		this.collect = collect;
-		this.goods = goods;
-		this.member = member;
+		this.g = goods;
+		this.m = member;
 	}
 
 	public Collect getCollect() {
@@ -23,20 +23,20 @@ public class CollectWithGoodsAndMember {
 		this.collect = collect;
 	}
 
-	public Goods getGoods() {
-		return goods;
+	public Goods getG() {
+		return g;
 	}
 
-	public void setGoods(Goods goods) {
-		this.goods = goods;
+	public void setG(Goods goods) {
+		this.g = goods;
 	}
 
-	public Member getMember() {
-		return member;
+	public Member getM() {
+		return m;
 	}
 
-	public void setMember(Member member) {
-		this.member = member;
+	public void setM(Member member) {
+		this.m = member;
 	}
 	
 	

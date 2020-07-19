@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yibee.entity.Collect;
 import com.yibee.entity.CollectWithGoodsAndMember;
 import com.yibee.entity.Goods;
+import com.yibee.entity.GoodsWithMember;
 import com.yibee.entity.Member;
 
 @RestController
@@ -168,21 +169,28 @@ public class CollectController {
 	 
 	 @CrossOrigin(origins = "*", maxAge = 3600)
 	 @GetMapping(value="/edit/searchCollect")
-	 public Page<CollectWithGoodsAndMember> searchCollect(HttpServletRequest request,
+
+	 public Page<GoodsWithMember> searchCollect(HttpServletRequest request,
 			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
 			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
+			@RequestParam(value="searchValue",defaultValue="") String searchValue,
 			@RequestParam(value="sortBy",defaultValue="") String sortBy){
-		 	Page<CollectWithGoodsAndMember> page = null;
+		 	
 		 	HttpSession session = request.getSession();
 		 	Member m = (Member)session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
 			Long uid = m.getId();
+		 	Page<GoodsWithMember> page = null;
 			Pageable pageable = null;
+			
+			
+			
 			if(sortBy.length() == 0) {
 				pageable = PageRequest.of(pageNo, pageSize);
 			}else {
 				pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
 			}
-			page = repo.findCGMByUID(uid, pageable);
+			if(searchValue.length()==0) page = repo.findGMByUID(m.getId(), pageable);
+			else page = repo.findGMByUIDAndGoodsName(m.getId(),"%"+searchValue+"%", pageable);
 							
 			return page;
 	 }

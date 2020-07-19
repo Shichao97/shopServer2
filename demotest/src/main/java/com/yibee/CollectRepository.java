@@ -10,7 +10,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import com.yibee.entity.Collect;
 import com.yibee.entity.CollectWithGoodsAndMember;
 import com.yibee.entity.GoodsWithMember;
-import com.yibee.entity.NameOrder;
 
 public interface CollectRepository  extends PagingAndSortingRepository<Collect, Long>{
 	 @Query(value = "from Collect c where c.goodsId=?1 and c.memberId = ?2")
@@ -25,6 +24,9 @@ public interface CollectRepository  extends PagingAndSortingRepository<Collect, 
 	  @Query(value = "select new com.yibee.entity.GoodsWithMember(g,m) from Goods g left join Member m on g.sellerId=m.id where g.sellerId=?1 and g.status = ?2 and g.name like ?3")
     Page<GoodsWithMember> findGMBySelleridAndStatus(Long sellerId, int status,String name,Pageable pageable);
 	  */
-	 @Query(value="select new com.yibee.entity.CollectWithGoodsAndMember(c,g,m) from Collect c inner join Goods g on c.goodsId = g.id inner join Member m on g.sellerId = m.id where c.memberId = ?1")
-	 Page<CollectWithGoodsAndMember> findCGMByUID(Long uid,Pageable pageable);
+	 @Query(value="select new com.yibee.entity.GoodsWithMember(g,m) from Collect c inner join Goods g on c.goodsId = g.id inner join Member m on g.sellerId = m.id where c.memberId = ?1")
+	 Page<GoodsWithMember> findGMByUID(Long uid,Pageable pageable);
+	 
+	 @Query(value="select new com.yibee.entity.GoodsWithMember(g,m) from Collect c inner join Goods g on c.goodsId = g.id inner join Member m on g.sellerId = m.id where c.memberId = ?1 and g.name like?2")
+	 Page<GoodsWithMember> findGMByUIDAndGoodsName(Long uid,String goodsName,Pageable pageable);
 }
