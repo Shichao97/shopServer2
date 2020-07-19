@@ -298,6 +298,8 @@ public class OrderController {
 		order.setPaymentStatus(Order.PAYMENT_YES);
 		repo.save(order);
 		p.put("success", 1);
+		String on = repo.findOrderNoById(orderId);
+		p.put("orderNo", on);
 		return p;
  	}
 	
