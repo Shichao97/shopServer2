@@ -177,6 +177,7 @@ public class CollectController {
 			@RequestParam(value="sortBy",defaultValue="") String sortBy){
 		 	
 		 	HttpSession session = request.getSession();
+		 	
 		 	Member m = (Member)session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
 			Long uid = m.getId();
 		 	Page<GoodsWithMember> page = null;
