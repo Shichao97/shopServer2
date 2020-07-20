@@ -272,6 +272,25 @@ public class OrderController {
 		}
 		
 	}
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	@GetMapping(value="/getOrder")
+	public Properties getOrder(
+			HttpServletRequest request,
+			@RequestParam("orderId") Long orderId) {
+		Properties p = new Properties();
+		HttpSession session = request.getSession();
+		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Member m =(Member)o;
+		Optional<Order> oo= repo.findById(orderId);
+		if(!oo.isPresent() || oo.get().getBuyerId().longValue() != m.getId()) {
+			p.put("success", 0);
+			p.put("msg", "No such order exists or order is not yours!");
+			return p;
+		}
+		p.put("success", 1);
+		p.put("price",oo.get().getOrderPrice());
+		return p;
+	}
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/payOrder")
@@ -298,8 +317,10 @@ public class OrderController {
 		order.setPaymentStatus(Order.PAYMENT_YES);
 		repo.save(order);
 		p.put("success", 1);
-		String on = repo.findOrderNoById(orderId);
+		String on = oo.get().getOrderNo();
 		p.put("orderNo", on);
+//		float op = oo.get().getOrderPrice();
+//		p.put("price",op);
 		return p;
  	}
 	
