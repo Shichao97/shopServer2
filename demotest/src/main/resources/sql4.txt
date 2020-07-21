@@ -1,0 +1,77 @@
+ CREATE TABLE  goods_types  (
+   id  int NOT NULL AUTO_INCREMENT,
+   code  varchar(20) NOT NULL,
+   name  varchar(32) NOT NULL,
+   category_code  varchar(20) DEFAULT NULL,
+   category_name  varchar(20) DEFAULT NULL,
+   description  varchar(255) DEFAULT NULL,
+  PRIMARY KEY ( id),
+  KEY  code ( code ),
+  KEY  category  ( category_code )
+) ;
+
+CREATE TABLE  schools  (
+   id  int NOT NULL AUTO_INCREMENT,
+   code  varchar(10) NOT NULL,
+   name  varchar(100) NOT NULL,
+   city  varchar(32) DEFAULT NULL,
+  PRIMARY KEY ( id ),
+  UNIQUE KEY  code  ( code ),
+  UNIQUE KEY  name  ( name )
+) ;
+
+CREATE TABLE  members  (
+   id  bigint NOT NULL AUTO_INCREMENT,
+   user_name  varchar(32) NOT NULL,
+   pass_word  varchar(32) NOT NULL,
+   school_code  varchar(32) DEFAULT NULL,
+   birthday  date DEFAULT NULL,
+   last_name  varchar(32) DEFAULT NULL,
+   first_name  varchar(32) DEFAULT NULL,
+   gender  int DEFAULT NULL,
+   register_date  datetime DEFAULT NULL default now(),
+   email  varchar(100) NOT NULL,
+   phone_number  varchar(32) DEFAULT NULL,
+   actived  int NOT NULL default 0,
+   disabled  int NOT NULL default 0,
+   sell_disabled  int NOT NULL default 0,
+  PRIMARY KEY ( id ),
+  UNIQUE KEY  user_name  ( user_name  ),
+  KEY  school_code  ( school_code  )
+);
+
+
+ CREATE TABLE  goods  (
+   id  bigint NOT NULL AUTO_INCREMENT,
+   seller_id  bigint NOT NULL,
+   type_code  varchar(20) NOT NULL,
+   location  varchar(100) DEFAULT NULL,
+   name  varchar(100) DEFAULT NULL,
+   price  float NOT NULL,
+   selling_method  tinyint DEFAULT NULL,
+   description  varchar(255) DEFAULT NULL,
+   status  int NOT NULL default 0,
+   img_names varchar(255),
+  PRIMARY KEY ( id ),
+  KEY  seller_id  ( seller_id ),
+  KEY  type_code  (type_code),
+  KEY status (status)
+) ;
+
+CREATE TABLE  goods_images  (
+   id  bigint NOT NULL AUTO_INCREMENT,
+   goods_id  bigint NOT NULL,
+   image_path  varchar(255) DEFAULT NULL,
+  PRIMARY KEY ( id ),
+  KEY  goods_id  ( goods_id )
+) ;
+
+
+create table orders(id bigint auto_increment primary key,order_no varchar(32) unique,buyer_id bigint,buyer_name varchar(32),seller_id bigint,seller_name varchar(32),order_time datetime not null, order_price float not null,goods_id bigint,receive_addr varchar(255) not null,status int not null default 0,payment_status int not null default 0 ,receive_method tinyint,KEY  buyer_id  ( buyer_id  ),key seller_id (seller_id),key order_time (order_time), key order_price (order_price), key status (status), key payment_status (payment_status));
+
+create table collect(id bigint auto_increment primary key,member_id bigint,goods_id bigint,key member_id (member_id), key goods_id(goods_id),UNIQUE(member_id,goods_id)
+);
+
+create table messages(id bigint auto_increment primary key, from_id bigin,to_id bigint,content varchar(255),send_time datetime,not_read int DEFAULT 1,key from_id (from_id), key to_id (to_id), key send_time (send_time));
+
+create table follow(id bigint auto_increment primary key,from_id bigint,from_name varchar(32),to_id bigint,to_name varchar(32),key from_id(from_id), key to_id (to_id));
