@@ -1,5 +1,9 @@
 server:
-  port: 8080
+  port: 80
+  compression:
+    enabled: true
+    min-size: 2048
+    mime-types: text/html,text/xml,text/javascript,application/javascript,text/css,text/plain,application/json,text/json
 spring:
   #通用的数据源配置
   datasource:
