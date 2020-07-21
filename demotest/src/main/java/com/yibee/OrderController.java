@@ -87,7 +87,8 @@ public class OrderController {
         	String orderNo = produceOrderNo(g.getId());
         	
         	Long maxId = repo.getMaxId();
-        	order.setId(maxId+1);
+        	Long id = maxId==null?1L:maxId + 1;
+        	order.setId(id);
         	order.setBuyerId(buyerId);
         	order.setBuyerName(m.getUserName());
         	order.setGoodsId(goodsId);
