@@ -220,14 +220,14 @@ public class OrderController {
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/searchOrder")
-	public Page<NameOrder> searchOrder(HttpServletRequest request,
+	public Page<OrderWithGoods> searchOrder(HttpServletRequest request,
 			@RequestParam("buyerId") Long buyerId,
 			@RequestParam(value="searchValue",defaultValue="") String searchValue,
 			@RequestParam(value="searchStatus",defaultValue="") String searchStatus,
 			@RequestParam(value="pageNo",defaultValue="1") Integer pageNo,
 			@RequestParam(value="pageSize",defaultValue="5") Integer pageSize,
 			@RequestParam(value="sortBy",defaultValue="") String sortBy) {
-		Page<NameOrder> page = null;
+		Page<OrderWithGoods> page = null;
 		Pageable pageable = null; 
 		HttpSession session = request.getSession();
 		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
