@@ -313,6 +313,11 @@ public class OrderController {
 			p.put("msg", "No such order exists or order is not yours!");
 			return p;
 		}
+		else if(oo.get().getPaymentStatus() != Order.PAYMENT_NO||oo.get().getStatus()!=Order.STATUS_WAIT_COMPLETE) {
+			p.put("success", 0);
+			p.put("msg", "This order has payed or has canced!");
+			return p;
+		}
 		
 		Order order = oo.get();
 		order.setPaymentStatus(Order.PAYMENT_YES);
