@@ -237,12 +237,9 @@ public class MemberController {
 		Member m = new Member();
 		
 		Long mid = repo.getMaxId();
-		if(mid == null) {
-			mid = 0L;
-		}
-		Long id = mid + 1;
+		Long id = mid==null?1L:mid + 1;
+		Date registerDate = new Date(); 
 		m.setId(id);
-		Date registerDate = new Date();
 		m.setSellDisabled(1);
 		m.setEmail(email);
 		m.setRegisterDate(registerDate);
@@ -341,7 +338,7 @@ public class MemberController {
 		
 		Member m = new Member();
 		Long mid = repo.getMaxId();
-		Long id = mid + 1;
+		Long id = mid==null?1L:mid + 1;
 		Date registerDate = new Date(); 
 		m.setId(id);
 		m.setActived(actived);

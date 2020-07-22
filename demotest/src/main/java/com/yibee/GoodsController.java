@@ -537,7 +537,8 @@ public class GoodsController {
 		
 		
 		Long gid = repo.getMaxId();
-		Long id = gid + 1;
+		
+		Long id = gid==null?1L:gid + 1;
 		
 		Goods g = new Goods();
 		

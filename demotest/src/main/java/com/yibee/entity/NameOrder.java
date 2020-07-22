@@ -9,6 +9,7 @@ public class NameOrder {
 	private String goodsName;
 	private Long id;
 
+	private String imgNames;
 	private Long buyerId;
 	private String buyerName;
 
@@ -53,6 +54,7 @@ public class NameOrder {
 	public NameOrder(
 		Long goodsId,
 		String goodsName,
+		String imgNames,
 		Long id,
 		Long buyerId,
 		String buyerName,
@@ -68,6 +70,7 @@ public class NameOrder {
 	{
 			this.goodsId = goodsId;
 			this.goodsName = goodsName;
+			this.imgNames = imgNames;
 			this.id = id;
 			this.buyerId = buyerId;
 			this.buyerName = buyerName;
@@ -187,6 +190,16 @@ public class NameOrder {
 	
 	public NameOrder() {
 		
+	}
+
+
+	public String getImgNames() {
+		return imgNames;
+	}
+
+
+	public void setImgNames(String imgNames) {
+		this.imgNames = imgNames;
 	}
 	
 

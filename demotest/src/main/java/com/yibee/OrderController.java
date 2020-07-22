@@ -87,7 +87,8 @@ public class OrderController {
         	String orderNo = produceOrderNo(g.getId());
         	
         	Long maxId = repo.getMaxId();
-        	order.setId(maxId+1);
+        	Long id = maxId==null?1L:maxId + 1;
+        	order.setId(id);
         	order.setBuyerId(buyerId);
         	order.setBuyerName(m.getUserName());
         	order.setGoodsId(goodsId);
@@ -103,7 +104,7 @@ public class OrderController {
         	repo.save(order);
         	
 
-            p.put("success", maxId+1);
+            p.put("success", id);
             p.put("orderNo",orderNo);
             return p;
 
@@ -219,14 +220,14 @@ public class OrderController {
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/searchOrder")
-	public Page<NameOrder> searchOrder(HttpServletRequest request,
+	public Page<OrderWithGoods> searchOrder(HttpServletRequest request,
 			@RequestParam("buyerId") Long buyerId,
 			@RequestParam(value="searchValue",defaultValue="") String searchValue,
 			@RequestParam(value="searchStatus",defaultValue="") String searchStatus,
 			@RequestParam(value="pageNo",defaultValue="1") Integer pageNo,
 			@RequestParam(value="pageSize",defaultValue="5") Integer pageSize,
 			@RequestParam(value="sortBy",defaultValue="") String sortBy) {
-		Page<NameOrder> page = null;
+		Page<OrderWithGoods> page = null;
 		Pageable pageable = null; 
 		HttpSession session = request.getSession();
 		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
@@ -310,6 +311,11 @@ public class OrderController {
 		if(!oo.isPresent() || oo.get().getBuyerId().longValue() != m.getId()) {
 			p.put("success", 0);
 			p.put("msg", "No such order exists or order is not yours!");
+			return p;
+		}
+		else if(oo.get().getPaymentStatus() != Order.PAYMENT_NO||oo.get().getStatus()!=Order.STATUS_WAIT_COMPLETE) {
+			p.put("success", 0);
+			p.put("msg", "This order has payed or has canced!");
 			return p;
 		}
 		
