@@ -4,7 +4,7 @@ spring:
   #通用的数据源配置
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://115.159.101.48:3306/shop?serverTimezone=UTC
+    url: jdbc:mysql://115.159.101.48:3306/shop2?serverTimezone=UTC
     username: root
     password: lcc12345
     hikari:
