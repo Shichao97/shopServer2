@@ -127,6 +127,12 @@ public class MemberController {
 			MyUtil.resizeImage(64,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_1.jpg");
 			MyUtil.resizeImage(32,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_0.jpg");
 			p.put("msg", 1);
+			//tell client icon has updated
+			JSONObject jsonObject = new JSONObject();
+        	jsonObject.put("flag","icon_update");
+            TextMessage tm = new TextMessage(jsonObject.toString());
+			webSocketHander.sendMessage(""+id, tm);
+			
 		} catch (IOException | ServletException e) {
 			p.put("msg", 0);
 			e.printStackTrace();
@@ -251,7 +257,7 @@ public class MemberController {
 		int count = repo.findUniqueEmail(email);
 		if(count == 0) {
 			p.put("success","0");
-			p.put("msg","No valid account for this account!");
+			p.put("msg","Member of input email is not found!");
 			return p;
 		}
 		//else count == 1
