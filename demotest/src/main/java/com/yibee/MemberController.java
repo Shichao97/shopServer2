@@ -314,7 +314,6 @@ public class MemberController {
 			@RequestParam("schoolCode") String schoolCode) throws IOException {
 		
 		Member m = new Member();
-		
 		Long mid = repo.getMaxId();
 		Long id = mid==null?1L:mid + 1;
 		Date registerDate = new Date(); 

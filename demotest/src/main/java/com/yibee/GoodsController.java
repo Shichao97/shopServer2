@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yibee.entity.Goods;
 import com.yibee.entity.GoodsWithMember;
+import com.yibee.entity.GoodsWithOrder;
 import com.yibee.entity.Member;
 import com.yibee.entity.Order;
 
@@ -283,32 +284,32 @@ public class GoodsController {
 	/*
 	 * 买家搜索
 	 */
-	@GetMapping(value = "search")
-	@CrossOrigin(origins = "*", maxAge = 3600)
-	public Page<Goods> goodsSearch(@RequestParam("searchType") String searchType,
-			@RequestParam(value="searchValue",defaultValue="") String searchValue,
-			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
-			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
-			@RequestParam(value="sortBy",defaultValue="") String sortBy){
-		
-		Page<Goods> page = null;
-		
-		Pageable pageable = null;
-		if(sortBy.length() == 0) {
-			pageable = PageRequest.of(pageNo, pageSize);
-		}else {
-			pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-		}
-		
-		if(searchType.contentEquals("name")){
-			page = repo.findByStatusAndName("%"+searchValue+"%",pageable); //未发布
-		}else{
-			page = repo.findByStatusAndDesc("%"+searchValue+"%",pageable); 
-		}
-						
-		return page;
-		
-	}
+//	@GetMapping(value = "search")
+//	@CrossOrigin(origins = "*", maxAge = 3600)
+//	public Page<Goods> goodsSearch(@RequestParam("searchType") String searchType,
+//			@RequestParam(value="searchValue",defaultValue="") String searchValue,
+//			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
+//			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
+//			@RequestParam(value="sortBy",defaultValue="") String sortBy){
+//		
+//		Page<Goods> page = null;
+//		
+//		Pageable pageable = null;
+//		if(sortBy.length() == 0) {
+//			pageable = PageRequest.of(pageNo, pageSize);
+//		}else {
+//			pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+//		}
+//		
+//		if(searchType.contentEquals("name")){
+//			page = repo.findByStatusAndName("%"+searchValue+"%",pageable); //未发布
+//		}else{
+//			page = repo.findByStatusAndDesc("%"+searchValue+"%",pageable); 
+//		}
+//						
+//		return page;
+//		
+//	}
 	
 	/*
 	 * 买家搜索,Goods带卖家信息
@@ -348,59 +349,60 @@ public class GoodsController {
 	 * 卖家家搜索自己的商品
 	 */
 	
-	public Page<Goods> goodsSelect0(@RequestParam("sellerId") Long sellerId,@RequestParam("searchType1") int searchType1,@RequestParam("searchType2") String searchType2,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
-		
-		Page<Goods> page = null;
-		
-		Pageable pageable = null;
-		if(sortBy.length() == 0) {
-			pageable = PageRequest.of(pageNo, pageSize);
-		}else {
-			pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-		}
-		
-		if(searchType2.contentEquals("name")){
-			page = repo.findBySelleridAndStatusAndName(sellerId,searchType1,"%"+searchValue+"%",pageable); //未发布
-		}else{
-			page = repo.findBySelleridAndStatusAndDesc(sellerId,searchType1,"%"+searchValue+"%",pageable); 
-		}
-						
-		return page;
-		
-	}	
+//	public Page<Goods> goodsSelect0(@RequestParam("sellerId") Long sellerId,@RequestParam("searchType1") int searchType1,@RequestParam("searchType2") String searchType2,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
+//		
+//		Page<Goods> page = null;
+//		
+//		Pageable pageable = null;
+//		if(sortBy.length() == 0) {
+//			pageable = PageRequest.of(pageNo, pageSize);
+//		}else {
+//			pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+//		}
+//		
+//		if(searchType2.contentEquals("name")){
+//			page = repo.findBySelleridAndStatusAndName(sellerId,searchType1,"%"+searchValue+"%",pageable); //未发布
+//		}else{
+//			page = repo.findBySelleridAndStatusAndDesc(sellerId,searchType1,"%"+searchValue+"%",pageable); 
+//		}
+//						
+//		return page;
+//		
+//	}	
 	
 	
 	//real sell search
 	@GetMapping(value = "sell/search")
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	public Page<Goods> goodsSelect(@RequestParam("sellerId") Long sellerId,
+	public Page<GoodsWithOrder> goodsSelect(@RequestParam("sellerId") Long sellerId,
 			@RequestParam("searchType") String searchType,
 			@RequestParam(value="pageNo",defaultValue="1") Integer pageNo,
-			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
-			@RequestParam(value="sortBy",defaultValue="") String sortBy){
+			@RequestParam(value="pageSize",defaultValue="10") Integer pageSize,
+			@RequestParam(value="sortBy",defaultValue="") String sortBy)
+	{
 			
-			Page<Goods> page = null;
-			int pnum = pageNo-1;
-			Pageable pageable = null;
-			if(sortBy.length() == 0) {
-				pageable = PageRequest.of(pnum, pageSize);
-			}else {
-				pageable = PageRequest.of(pnum, pageSize, Sort.by(sortBy));
-			}
-			
-			if(searchType.contentEquals("1")){
-				page = repo.findSellingNow(sellerId,pageable); 
-			}else if(searchType.contentEquals("2")){
-				page = repo.findOnTheWay(sellerId,pageable); 
-			}else if(searchType.contentEquals("3")) {
-				page = repo.findSold(sellerId,pageable); 
-			}else if(searchType.contentEquals("4")) {
-				page = repo.findRemoveOff(sellerId,pageable); 
-			}
-							
-			return page;
-			
-		}	
+		Page<GoodsWithOrder> page = null;
+		int pnum = pageNo-1;
+		Pageable pageable = null;
+		if(sortBy.length() == 0) {
+			pageable = PageRequest.of(pnum, pageSize);
+		}else {
+			pageable = PageRequest.of(pnum, pageSize, Sort.by(sortBy));
+		}
+		
+		if(searchType.contentEquals("1")){
+			page = repo.findSellingNow(sellerId,pageable); 
+		}else if(searchType.contentEquals("2")){
+			page = repo.findOnTheWay(sellerId,pageable); 
+		}else if(searchType.contentEquals("3")) {
+			page = repo.findSold(sellerId,pageable); 
+		}else if(searchType.contentEquals("4")) {
+			page = repo.findRemoveOff(sellerId,pageable); 
+		}
+						
+		return page;
+		
+	}	
 	
 	
 	public int getMaxId(String str) {

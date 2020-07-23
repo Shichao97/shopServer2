@@ -273,6 +273,24 @@ public class OrderController {
 		}
 		
 	}
+	
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	@GetMapping(value="/getSellerOGById")
+	public Optional<OrderWithGoods> getSellerOGById(
+			HttpServletRequest request,
+			@RequestParam("orderId") Long orderId){
+		HttpSession session = request.getSession();
+		Object o = session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Member m =(Member)o;
+		Optional<OrderWithGoods> oog =  repo.findOGById(orderId);
+		if(oog.isPresent() && oog.get().getOrder().getSellerId().longValue() != m.getId().longValue()) {
+			return Optional.empty();
+		}else {
+			return oog;
+		}
+		
+	}	
+	
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/getOrder")
 	public Properties getOrder(

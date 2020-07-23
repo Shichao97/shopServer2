@@ -9,6 +9,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.yibee.entity.Goods;
 import com.yibee.entity.GoodsWithMember;
+import com.yibee.entity.GoodsWithOrder;
 import com.yibee.entity.OrderWithGoods;
 
 
@@ -47,20 +48,21 @@ public interface GoodsRepository extends PagingAndSortingRepository<Goods, Long>
 	@Query(value = "select new com.yibee.entity.GoodsWithMember(g,m) from Goods g left join Member m on g.sellerId=m.id where g.sellerId=?1 and g.status = 1 and g.name like ?2")
     Page<GoodsWithMember> findSellingGMBySellerAndName(Long sellerId,String name,Pageable pageable);
 
+	
 	//在售
-	@Query(value = "from Goods g where g.status = 1 and g.sellerId=?1")
-    Page<Goods> findSellingNow(Long sellerId, Pageable pageable);
+	@Query(value = "select new com.yibee.entity.GoodsWithOrder(g,o) from Goods g left join Order o on g.id=o.sellerId where g.status = 1 and g.sellerId=?1")
+    Page<GoodsWithOrder> findSellingNow(Long sellerId, Pageable pageable);
 	
 	//在途
-	@Query(value="select g from Goods g inner join Order o on g.id=o.goodsId where o.status = 0 and g.sellerId=?1")
-	Page<Goods> findOnTheWay(Long sellerId, Pageable pageable);
+	@Query(value="select new com.yibee.entity.GoodsWithOrder(g,o) from Goods g inner join Order o on g.id=o.goodsId where o.status = 0 and g.sellerId=?1")
+	Page<GoodsWithOrder> findOnTheWay(Long sellerId, Pageable pageable);
 	
 	//已售
-	@Query(value="select g from Goods g inner join Order o on g.id=o.goodsId where o.status = 1 and g.sellerId=?1")
-	Page<Goods> findSold(Long sellerId, Pageable pageable);
+	@Query(value="select new com.yibee.entity.GoodsWithOrder(g,o) from Goods g inner join Order o on g.id=o.goodsId where o.status = 1 and g.sellerId=?1")
+	Page<GoodsWithOrder> findSold(Long sellerId, Pageable pageable);
 	
 	//下架
-	@Query(value = "from Goods g where g.status = 0 and g.sellerId=?1")
-    Page<Goods> findRemoveOff(Long sellerId, Pageable pageable);
+	@Query(value = "select new com.yibee.entity.GoodsWithOrder(g,o) from Goods g left join Order o on g.id=o.sellerId where g.status = 0 and g.sellerId=?1")
+    Page<GoodsWithOrder> findRemoveOff(Long sellerId, Pageable pageable);
 
 }
