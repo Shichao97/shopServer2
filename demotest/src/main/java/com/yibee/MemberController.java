@@ -303,6 +303,7 @@ public class MemberController {
 		repo.save(m);
 		p.put("success", 1);
 		return p;
+		
 	}
 	
 
