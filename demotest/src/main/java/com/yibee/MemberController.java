@@ -226,6 +226,8 @@ public class MemberController {
 		return p;
 	}
 	
+	
+	
 	@CrossOrigin(origins = "*")
 	@GetMapping(value="/checkEmail")
 	public Properties checkEmail(HttpServletResponse response,@RequestParam("email") String email)  {
@@ -238,6 +240,68 @@ public class MemberController {
 			p.put("success",0);
 			p.put("msg","This email address has been used,please try another.");
 		}
+		return p;
+	} 
+	
+	@CrossOrigin(origins = "*")
+	@PostMapping(value="/beginReset")
+	public Properties beginReset(@RequestParam("email") String email) {
+		//生成code存入数据库，发邮件
+		Properties p = new Properties();
+		int count = repo.findUniqueEmail(email);
+		if(count == 0) {
+			p.put("success","0");
+			p.put("msg","No valid account for this account!");
+			return p;
+		}
+		//else count == 1
+		Member m = repo.findMemberByEmail(email);
+		int resetcode = (int)((Math.random()*9+1)*100000);  //generate random reset code
+		String codestring = Integer.toString(resetcode);
+		String userName = m.getUserName();
+		
+		Properties pp;
+		try {
+			pp = MyUtil.getConfProperties();
+			String url = pp.getProperty("reset.url")+"userName="+userName+"&resetcode="+codestring;
+			System.out.println(url);
+			MailSendObj send = new MailSendObj();
+			send.sendOut("shichaostats@outlook.com", "Yibee", email, "you", "Password Reset", "Hi! Please reset your password here: "+url +
+					". If you haven't request that, please ignore this email.");
+			m.setResetCode(codestring);
+		} catch (IOException e
+				) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		repo.save(m);
+		p.put("success","1");
+		return p;
+	}
+	
+	@CrossOrigin(origins = "*")
+	@PostMapping(value="/resetPassword")
+	public Properties resetPassword(@RequestParam("userName") String userName,
+			@RequestParam("resetcode") String resetcode,
+			@RequestParam("passWord") String passWord) {
+		Properties p = new Properties();
+		Optional<Member> om = repo.findByUserName(userName);
+		if(!om.isPresent()) {
+			p.put("success", 0);
+			p.put("msg", "The account does not exist, please register first.");
+			return p;
+		}
+		Member m = om.get();
+		if(!m.getResetCode().contentEquals(resetcode)) {
+			p.put("success", 0);
+			p.put("msg", "Wrong code! You do not have the right to reset.");
+			return p;
+		}
+		passWord = MyUtil.encrypt(passWord);
+		m.setPassWord(passWord);
+		m.setResetCode(null);
+		repo.save(m);
+		p.put("success", 1);
 		return p;
 	}
 	
@@ -263,7 +327,7 @@ public class MemberController {
 		m.setPassWord(passWord);
 		m.setSchoolCode(schoolCode);
 		//response.sendError(601, "wrong!");
-		int actcode = (int)((Math.random()*9+1)*100000);
+		int actcode = (int)((Math.random()*9+1)*100000);  //generate random activate code
 		String codestring = Integer.toString(actcode);
 		Properties pp;
 		try {
@@ -300,10 +364,16 @@ public class MemberController {
 		Optional<Member> om = repo.findByUserName(userName);
 		if(!om.isPresent()) {
 			p.put("success", 0);
-			p.put("msg", "The account does not exist, please regioster first to get activated.");
+			p.put("msg", "The account does not exist, please register first to get activated.");
 			return p;
 		}
 		Member m = om.get();
+		int count = repo.findUniqueEmail(m.getEmail()); //same email ,already activated
+		if(count > 0) {
+			p.put("success", 0);
+			p.put("msg","You cannot active two account with same email, please use another email to register!");
+			return p;
+		}
 		if(m.getActived() == 1) {
 			p.put("success", 0);
 			p.put("msg","You have already activated your account!");

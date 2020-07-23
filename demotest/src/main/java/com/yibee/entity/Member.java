@@ -62,6 +62,12 @@ public class Member implements Serializable {
 
 	@Column(name="user_name", nullable=false, length=32)
 	private String userName;
+	
+	@JsonIgnore
+	@Column(name="reset_code", length=32)
+	private String resetCode;
+
+	
 
 	public Member() {
 	}
@@ -176,6 +182,13 @@ public class Member implements Serializable {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+	public String getResetCode() {
+		return resetCode;
+	}
+
+	public void setResetCode(String resetCode) {
+		this.resetCode = resetCode;
 	}
 
 }
