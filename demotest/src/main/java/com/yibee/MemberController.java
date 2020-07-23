@@ -213,7 +213,7 @@ public class MemberController {
 	
 	@CrossOrigin(origins = "*")
 	@GetMapping(value="/checkUsername")
-	public Properties memberRegister(HttpServletResponse response,@RequestParam("userName") String userName) throws IOException {
+	public Properties checkUsername(HttpServletResponse response,@RequestParam("userName") String userName) throws IOException {
 		Properties p = new Properties();
 		Optional op = repo.findByUserName(userName);
 		if(!op.isPresent()) {
@@ -222,6 +222,21 @@ public class MemberController {
 		else {
 			p.put("success",0);
 			p.put("msg","Username has been used,please try another.");
+		}
+		return p;
+	}
+	
+	@CrossOrigin(origins = "*")
+	@GetMapping(value="/checkEmail")
+	public Properties checkEmail(HttpServletResponse response,@RequestParam("email") String email)  {
+		Properties p = new Properties();
+		int om = repo.findUniqueEmail(email);
+		if(om == 0) {
+			p.put("success", 1);
+		}
+		else {
+			p.put("success",0);
+			p.put("msg","This email address has been used,please try another.");
 		}
 		return p;
 	}

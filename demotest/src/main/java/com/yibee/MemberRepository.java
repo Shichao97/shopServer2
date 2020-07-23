@@ -15,6 +15,9 @@ public interface MemberRepository extends PagingAndSortingRepository<Member, Lon
 	
 	public Optional<Member> findByUserName(String userName);
 	
+	@Query(value = "select count(m) from Member m where m.actived = 1 and m.email = ?1")
+	public int findUniqueEmail(String email);
+	
 	@Query(value = "select m.userName from Member m where m.id=?1")
 	public String findNameById(Long id);
 }
