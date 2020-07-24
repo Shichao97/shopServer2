@@ -92,6 +92,32 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
 
     }
 
+    public void sendSysMessage(Long toId,String content) {
+    	Long sysId = 1L;
+    	String sysName="<System>";
+    	Message msg = new Message();
+    	msg.setContent(content);
+    	msg.setNotRead(1);
+    	msg.setToId(toId);
+    	msg.setFromId(sysId);
+
+    	msg.setId(0L);
+    	repo.save(msg);
+    	long msgId = repo.findLastInsertId();    	
+    	if(msgId>0L) {
+    		JSONObject jsonObject = new JSONObject();
+    		jsonObject.put("toId", toId);
+        	jsonObject.put("fromId", sysId);
+        	jsonObject.put("fromName", sysName);
+        	jsonObject.put("msgId",msgId);
+        	jsonObject.put("flag","msg");
+        	jsonObject.put("content",content);
+
+            TextMessage tm = new TextMessage(jsonObject.toString());
+            this.sendMessage(toId.toString(), tm);
+            
+    	}
+    }
     
     /*
 	    获取客户端发送的消息,这里使用文件消息，也就是字符串进行接收

@@ -349,32 +349,25 @@ public class GoodsController {
 	 * 卖家家搜索自己的商品
 	 */
 	
-//	public Page<Goods> goodsSelect0(@RequestParam("sellerId") Long sellerId,@RequestParam("searchType1") int searchType1,@RequestParam("searchType2") String searchType2,@RequestParam(value="searchValue",defaultValue="") String searchValue,@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,@RequestParam(value="sortBy",defaultValue="") String sortBy){
-//		
-//		Page<Goods> page = null;
-//		
-//		Pageable pageable = null;
-//		if(sortBy.length() == 0) {
-//			pageable = PageRequest.of(pageNo, pageSize);
-//		}else {
-//			pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-//		}
-//		
-//		if(searchType2.contentEquals("name")){
-//			page = repo.findBySelleridAndStatusAndName(sellerId,searchType1,"%"+searchValue+"%",pageable); //未发布
-//		}else{
-//			page = repo.findBySelleridAndStatusAndDesc(sellerId,searchType1,"%"+searchValue+"%",pageable); 
-//		}
-//						
-//		return page;
-//		
-//	}	
-	
+	@GetMapping(value = "sell/getSellCount")
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	public Properties getSellCount(HttpServletRequest request)
+	{
+		Properties p = new Properties();
+		HttpSession session = request.getSession();
+		Member m =(Member)session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Long sellerId = m.getId();
+		int n1 = repo.getSellingCount(sellerId);
+		int n2 = repo.getOnTheWayCount(sellerId);
+		p.put("sellingCount",n1);
+		p.put("onTheWayCount",n2);
+		return p;
+	}
 	
 	//real sell search
 	@GetMapping(value = "sell/search")
 	@CrossOrigin(origins = "*", maxAge = 3600)
-	public Page<GoodsWithOrder> goodsSelect(@RequestParam("sellerId") Long sellerId,
+	public Page<GoodsWithOrder> goodsSelect(HttpServletRequest request,
 			@RequestParam("searchType") String searchType,
 			@RequestParam(value="pageNo",defaultValue="1") Integer pageNo,
 			@RequestParam(value="pageSize",defaultValue="10") Integer pageSize,
@@ -382,6 +375,9 @@ public class GoodsController {
 	{
 			
 		Page<GoodsWithOrder> page = null;
+		HttpSession session = request.getSession();
+		Member m =(Member)session.getAttribute(MyUtil.ATTR_LOGIN_NAME);
+		Long sellerId = m.getId();
 		int pnum = pageNo-1;
 		Pageable pageable = null;
 		if(sortBy.length() == 0) {

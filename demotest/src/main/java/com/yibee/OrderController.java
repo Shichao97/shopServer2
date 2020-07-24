@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.hibernate.resource.transaction.spi.TransactionStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,10 +33,14 @@ import com.yibee.entity.Member;
 import com.yibee.entity.NameOrder;
 import com.yibee.entity.Order;
 import com.yibee.entity.OrderWithGoods;
+import com.yibee.websocket.MyWebSocketHander;
 
 @RestController
 @RequestMapping("/order")
 public class OrderController {
+	@Autowired
+	private MyWebSocketHander webSocketHander;
+
 	@Resource
 	private OrderRepository repo;
 	@Resource
@@ -103,8 +108,9 @@ public class OrderController {
         	order.setOrderNo(orderNo);
         	repo.save(order);
         	
-
-            p.put("success", id);
+        	webSocketHander.sendSysMessage(g.getSellerId(), "Your goods '"+g.getName()+"' is placed order by "+m.getUserName());
+            
+        	p.put("success", id);
             p.put("orderNo",orderNo);
             return p;
 

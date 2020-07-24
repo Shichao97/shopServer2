@@ -65,4 +65,13 @@ public interface GoodsRepository extends PagingAndSortingRepository<Goods, Long>
 	@Query(value = "select new com.yibee.entity.GoodsWithOrder(g,o) from Goods g left join Order o on g.id=o.sellerId where g.status = 0 and g.sellerId=?1")
     Page<GoodsWithOrder> findRemoveOff(Long sellerId, Pageable pageable);
 
+
+	//selling count
+	@Query(value = "select count(g) from Goods g where g.status = 1 and g.sellerId=?1")
+    int getSellingCount(Long sellerId);
+	
+	//not finish count
+	@Query(value="select count(g) from Goods g inner join Order o on g.id=o.goodsId where o.status = 0 and g.sellerId=?1")
+	int getOnTheWayCount(Long sellerId);
+
 }

@@ -322,7 +322,8 @@ public class MemberController {
 		
 		Member m = new Member();
 		Long mid = repo.getMaxId();
-		Long id = mid==null?1L:mid + 1;
+		//id<100 is system user
+		Long id = mid==null?100L:mid + 1;
 		Date registerDate = new Date(); 
 		m.setId(id);
 		m.setSellDisabled(1);
