@@ -104,6 +104,9 @@ public class CollectController {
 				repo.deleteById(c.getId());
 				p.put("success", 1);
 				p.put("like",false);
+		         Optional<Goods> og = goodsRepo.findById(goodsId);
+		         if(og.isPresent() && og.get().getStatus()==Goods.STATUS_SELLING_NOW)
+		        	 webSocketHander.sendSysMessage(og.get().getSellerId(), "Your goods '"+og.get().getName()+"' is disliked by "+m.getUserName());
 				return p;
 			}catch(Exception e){
 				e.printStackTrace();
@@ -124,7 +127,7 @@ public class CollectController {
 				 p.put("success", 1);
 				 p.put("like",true);
 		         Optional<Goods> og = goodsRepo.findById(goodsId);
-		         if(og.isPresent())
+		         if(og.isPresent() && og.get().getStatus()==Goods.STATUS_SELLING_NOW)
 		        	 webSocketHander.sendSysMessage(og.get().getSellerId(), "Your goods '"+og.get().getName()+"' is liked by "+m.getUserName());
 
 				 return p;
