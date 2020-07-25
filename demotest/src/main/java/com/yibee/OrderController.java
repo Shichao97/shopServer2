@@ -181,7 +181,8 @@ public class OrderController {
         	//TODO money must return to buyer
         	repo.save(order);
         	
-//            tran.commit();
+        	webSocketHander.sendSysMessage(g.getSellerId(), "Your goods '"+g.getName()+"' is canceled by "+m.getUserName());
+
 
             p.put("success", 1);
             return p;
@@ -220,6 +221,8 @@ public class OrderController {
 		order.setStatus(Order.STATUS_COMPLETED);
 		repo.save(order);
 		p.put("success", 1);
+    	webSocketHander.sendSysMessage(order.getSellerId(), "Your order '"+order.getOrderNo()+"' is finished by "+m.getUserName());
+
 		return p;
 	}
 	
@@ -349,8 +352,9 @@ public class OrderController {
 		p.put("success", 1);
 		String on = oo.get().getOrderNo();
 		p.put("orderNo", on);
-//		float op = oo.get().getOrderPrice();
-//		p.put("price",op);
+		
+    	webSocketHander.sendSysMessage(order.getSellerId(), "Your goods orderNo:'"+order.getOrderNo()+"' has payed by "+m.getUserName());
+
 		return p;
  	}
 	

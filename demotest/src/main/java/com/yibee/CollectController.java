@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,13 +31,17 @@ import com.yibee.entity.CollectWithGoodsAndMember;
 import com.yibee.entity.Goods;
 import com.yibee.entity.GoodsWithMember;
 import com.yibee.entity.Member;
+import com.yibee.websocket.MyWebSocketHander;
 
 @RestController
 @RequestMapping("/collect")
 public class CollectController {
-	
+	 @Autowired
+	 private MyWebSocketHander webSocketHander;
 	 @Resource
 	 private CollectRepository repo;
+	 @Resource
+	 private GoodsRepository goodsRepo;
  
 	 @CrossOrigin(origins = "*", maxAge = 3600)
 	 @GetMapping(value="/getcollecticon")
@@ -113,10 +118,15 @@ public class CollectController {
 			 c.setId(0L);
 			 c.setGoodsId(goodsId);
 			 c.setMemberId(memberId);
+			 
 			 try{
 				 repo.save(c);
 				 p.put("success", 1);
 				 p.put("like",true);
+		         Optional<Goods> og = goodsRepo.findById(goodsId);
+		         if(og.isPresent())
+		        	 webSocketHander.sendSysMessage(og.get().getSellerId(), "Your goods '"+og.get().getName()+"' is liked by "+m.getUserName());
+
 				 return p;
 			 }catch(Exception e){
 				 e.printStackTrace();
@@ -148,7 +158,7 @@ public class CollectController {
 		 if(oc.isPresent()) {
 			Collect c = oc.get();
 			try {
-				//repo.deleteById(c.getId());
+
 				p.put("success", 1);
 				p.put("like",true);
 				return p;
