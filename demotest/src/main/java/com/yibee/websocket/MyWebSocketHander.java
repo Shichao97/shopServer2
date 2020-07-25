@@ -21,6 +21,7 @@ import com.yibee.entity.Message;
 import net.sf.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -100,7 +101,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     	msg.setNotRead(1);
     	msg.setToId(toId);
     	msg.setFromId(sysId);
-
+    	msg.setSendTime(new Date());
     	msg.setId(0L);
     	repo.save(msg);
     	long msgId = repo.findLastInsertId();    	
@@ -143,7 +144,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
 	        	msg.setNotRead(1);
 	        	msg.setToId(jsonObject.getLong("toId"));
 	        	msg.setFromId(sender.getId());
-
+	        	msg.setSendTime(new Date());
 	        	msg.setId(0L);
 	        	repo.save(msg);
 	        	msgId = repo.findLastInsertId();
@@ -152,7 +153,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
 	        	jsonObject.put("fromId", sender.getId());
 	        	jsonObject.put("fromName", sender.getUserName());
 	        	jsonObject.put("msgId",msgId);
-
+	        	jsonObject.put("sendTime",new Date());
 	            TextMessage tm = new TextMessage(jsonObject.toString());
 	            this.sendMessage(toId.toString(), tm);
 	            //回送给自己
@@ -228,6 +229,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     		JSONObject jsonObject = JSONObject.fromObject(msg);
     		jsonObject.put("flag",flag);
     		jsonObject.put("msgId",msg.getId());
+    		jsonObject.put("sendTime",msg.getSendTime());
     		TextMessage tm = new TextMessage(jsonObject.toString());
     		webSocketSession.sendMessage(tm);
     	}
