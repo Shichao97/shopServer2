@@ -2,6 +2,12 @@ package com.yibee.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.util.Date;
 
 
@@ -38,6 +44,8 @@ public class Order implements Serializable {
 	@Column(name="order_price")
 	private float orderPrice;
 
+
+	@JsonSerialize(using = DateToLongSerializer.class)
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="order_time")
 	private Date orderTime;
