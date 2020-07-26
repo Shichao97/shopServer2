@@ -153,7 +153,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
 	        	jsonObject.put("fromId", sender.getId());
 	        	jsonObject.put("fromName", sender.getUserName());
 	        	jsonObject.put("msgId",msgId);
-	        	jsonObject.put("sendTime",new Date());
+	        	jsonObject.put("sendTime",new Date().getTime());
 	            TextMessage tm = new TextMessage(jsonObject.toString());
 	            this.sendMessage(toId.toString(), tm);
 	            //回送给自己
@@ -229,7 +229,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     		JSONObject jsonObject = JSONObject.fromObject(msg);
     		jsonObject.put("flag",flag);
     		jsonObject.put("msgId",msg.getId());
-    		jsonObject.put("sendTime",msg.getSendTime());
+    		jsonObject.put("sendTime",msg.getSendTime().getTime());
     		TextMessage tm = new TextMessage(jsonObject.toString());
     		webSocketSession.sendMessage(tm);
     	}
@@ -258,8 +258,8 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         //webSocketMap.remove(webSocketSession.getId());
         WebSocketBeanSpring bean = webSocketMap.remove(webSocketSession.getId());
         if(bean != null) {
-        	String sId = bean.getSession().getAttributes().get(MyUtil.ATTR_LAST_USERID).toString();
-        	userMap.remove(sId);
+        	Long id = (Long)bean.getSession().getAttributes().get(MyUtil.ATTR_LAST_USERID);
+        	if(id !=null) userMap.remove(id.toString());
         }
 
     }
