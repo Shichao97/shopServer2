@@ -636,7 +636,7 @@ public class MemberController {
 			session.removeAttribute(MyUtil.ATTR_LAST_USERID);
 			
 			p.put("success", 1);
-			p.put("member",m);
+			//p.put("member",m);
 			return p;
 			
 		}
