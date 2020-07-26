@@ -539,7 +539,7 @@ public class GoodsController {
 		Long id = gid==null?1L:gid + 1;
 		
 		Goods g = new Goods();
-		
+		Date addTime = new Date();
 		g.setSellerId(m.getId());
 		g.setTypeCode(typeCode);
 		g.setLocation(location);
@@ -549,6 +549,7 @@ public class GoodsController {
 		byte sellingMethod =(byte) (method1 | method2 | method3) ;
 		g.setSellingMethod(sellingMethod);
 		g.setStatus(status);
+		g.setAddTime(addTime);
 		
 		
 		//Part part;

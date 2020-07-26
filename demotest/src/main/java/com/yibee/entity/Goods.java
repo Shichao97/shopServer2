@@ -1,7 +1,11 @@
 package com.yibee.entity;
 
 import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.*;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 /**
@@ -42,7 +46,13 @@ public class Goods implements Serializable {
 
 	@Column(name="type_code")
 	private String typeCode;
+	
+	@JsonSerialize(using = DateToLongSerializer.class)
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="add_time")
+	private Date addTime;
 
+	
 	public Goods() {
 	}
 
@@ -124,6 +134,14 @@ public class Goods implements Serializable {
 
 	public void setTypeCode(String typeCode) {
 		this.typeCode = typeCode;
+	}
+	
+	public Date getAddTime() {
+		return addTime;
+	}
+
+	public void setAddTime(Date addTime) {
+		this.addTime = addTime;
 	}
 
 }
