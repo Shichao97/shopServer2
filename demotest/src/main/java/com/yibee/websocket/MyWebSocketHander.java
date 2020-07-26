@@ -210,6 +210,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     	
     }
 
+    
     private boolean containsFromId(List<CountMessage> list,Long id) {
     	for(CountMessage cm : list) {
     		if(cm.getOtherId().longValue() == id.longValue()) return true;
