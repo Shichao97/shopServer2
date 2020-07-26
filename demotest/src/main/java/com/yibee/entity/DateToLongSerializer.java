@@ -13,4 +13,5 @@ public class DateToLongSerializer extends JsonSerializer<Date> {
                 SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeNumber(date.getTime());
     }
+    
 }
