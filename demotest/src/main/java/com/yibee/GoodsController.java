@@ -614,8 +614,8 @@ public class GoodsController {
 				return Optional.empty();
 			}
 			else if(m.getId().longValue() != gm.getG().getSellerId().longValue()) {
-				Optional<Order> o = orderRepo.findByBuyerId(id);
-				if(!o.isPresent()) return Optional.empty();
+				int n = orderRepo.getCountByGoodsIdAndBuyerId(id,m.getId());
+				if(n==0) return Optional.empty();
 			}
 		}
 		return op;

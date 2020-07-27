@@ -40,8 +40,8 @@ public interface OrderRepository extends PagingAndSortingRepository<Order,Long>{
 	@Query(value="select new com.yibee.entity.OrderWithGoods(o,g) from Order o inner join Goods g on o.goodsId=g.id where o.id = ?1")
 	Optional<OrderWithGoods> findOGById(Long id);
 
-	//@Query(value="select new com.yibee.entity.OrderWithGoods(o,g) from Order o inner join Goods g on o.goodsId=g.id where o.id = ?1")
-	Optional<Order> findByBuyerId(Long id);
+	@Query(value="select count(o) from Order o where o.goodsId = ?1 and o.buyerId=?2 and o.status>=0")
+	int getCountByGoodsIdAndBuyerId(Long goodsId,Long buyerId);
 	
 	
 	@Query(value = "select count(o) from Goods g  inner join Order o on g.id = o.goodsId where o.buyerId=?1 and o.status = 0 and o.paymentStatus = 0",
