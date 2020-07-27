@@ -83,7 +83,19 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
         Member m = (Member)session.getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
         String sId = null;
         if(m != null) {
+        	
+        	
         	sId = m.getId().toString();
+        	WebSocketBeanSpring oldBean = userMap.get(sId);
+        	if(oldBean != null) {//logout is another is login
+	        	JSONObject jsonObject = new JSONObject();
+	        	jsonObject.put("fromId", 1);
+	        	jsonObject.put("fromName", "<System>");
+	        	jsonObject.put("flag","logout");
+	        	this.sendMessage(sId, new TextMessage(jsonObject.toString()));
+	        	userMap.remove(sId);
+	        	//this.sendSysMessage(m.getId(), "You are forced to logout because the same username login at other place");
+        	}
         	userMap.put(sId,bean);
         }
         

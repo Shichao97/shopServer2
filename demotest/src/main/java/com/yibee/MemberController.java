@@ -395,6 +395,7 @@ public class MemberController {
 		repo.save(m);
 		p.put("success", 1);
 		p.put("msg",userName);
+		webSocketHander.sendSysMessage(m.getId(), "Active success! Wellcome to Yibee Second Hands website.");
 		return p;
 	}
 	
