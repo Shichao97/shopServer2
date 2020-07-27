@@ -109,7 +109,7 @@ public class OrderController {
         	order.setOrderNo(orderNo);
         	repo.save(order);
         	
-        	webSocketHander.sendSysMessage(g.getSellerId(), "Your goods '"+g.getName()+"' is placed order by "+m.getUserName());
+        	webSocketHander.sendSysMessage(g.getSellerId(), "Your goods '"+g.getName()+"' is ordered by "+m.getUserName());
             
         	p.put("success", id);
             p.put("orderNo",orderNo);
@@ -182,7 +182,7 @@ public class OrderController {
         	//TODO money must return to buyer
         	repo.save(order);
         	
-        	webSocketHander.sendSysMessage(g.getSellerId(), "Your goods '"+g.getName()+"' is canceled by "+m.getUserName());
+        	webSocketHander.sendSysMessage(g.getSellerId(), "The order with goods '"+g.getName()+"' is canceled by "+m.getUserName());
 
 
             p.put("success", 1);
@@ -354,7 +354,7 @@ public class OrderController {
 		String on = oo.get().getOrderNo();
 		p.put("orderNo", on);
 		
-    	webSocketHander.sendSysMessage(order.getSellerId(), "Your goods orderNo:'"+order.getOrderNo()+"' has payed by "+m.getUserName());
+    	webSocketHander.sendSysMessage(order.getSellerId(), "The order ( orderNo:'"+order.getOrderNo()+"') has been payed by "+m.getUserName());
 
 		return p;
  	}
