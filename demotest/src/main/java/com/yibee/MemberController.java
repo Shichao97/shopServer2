@@ -1,5 +1,6 @@
 package com.yibee;
 
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -123,9 +124,14 @@ public class MemberController {
 	            fileSaveDir.mkdir();
 	        }
 			part.write(save2Path + File.separator + id+".jpg");
-			MyUtil.resizeImage(160,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_2.jpg");
-			MyUtil.resizeImage(64,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_1.jpg");
-			MyUtil.resizeImage(32,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_0.jpg");
+//			MyUtil.resizeImage(160,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_2.jpg");
+//			MyUtil.resizeImage(64,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_1.jpg");
+//			MyUtil.resizeImage(32,save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_0.jpg");
+
+			MyUtil.resizeCenterRegionImage(new Rectangle(0,0,160,160),save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_2.jpg");
+			MyUtil.resizeCenterRegionImage(new Rectangle(0,0,64,64),save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_1.jpg");
+			MyUtil.resizeCenterRegionImage(new Rectangle(0,0,32,32),save2Path + File.separator + id+".jpg",save2Path + File.separator + id+"_0.jpg");
+			
 			p.put("msg", 1);
 			//tell client icon has updated
 			JSONObject jsonObject = new JSONObject();

@@ -85,16 +85,17 @@ public class MyUtil {
 		  
 		int imageWidth = image.getWidth();  
 		int imageHeitht = image.getHeight();  
+		
 		if ((float)rect.width / rect.height != (float)imageWidth / imageHeitht) {  
-		    if ((float)rect.width / rect.height > (float)imageWidth / imageHeitht) {  
-		        image = Thumbnails.of(fromPic).height(300).asBufferedImage();  
+		    if ((float)rect.width / rect.height < (float)imageWidth / imageHeitht) {  
+		        image = Thumbnails.of(fromPic).height(rect.height).asBufferedImage();  
 		    } else {  
-		        image = Thumbnails.of(fromPic).width(400).asBufferedImage();  
+		        image = Thumbnails.of(fromPic).width(rect.width).asBufferedImage();  
 		    }  
-		    builder = Thumbnails.of(image).sourceRegion(Positions.CENTER, 400, 300).size(400, 300);  
+		    builder = Thumbnails.of(image).sourceRegion(Positions.CENTER, rect.width, rect.height).size(rect.width, rect.height);  
 		} else {  
-		    builder = Thumbnails.of(image).size(400, 300);  
+		    builder = Thumbnails.of(image).size(rect.width, rect.height);  
 		}  
-		builder.outputFormat("jpg").toFile(toPic);  
+		builder.outputFormat("jpg").outputQuality(1f).toFile(toPic);  
 	}
 }
