@@ -39,9 +39,9 @@ import javax.servlet.http.HttpSession;
  **/
 @Component("webSocketHander")
 //@EnableJpaRepositories
-public class MyWebSocketHander extends AbstractWebSocketHandler{
+public class MyWebSocketHandler extends AbstractWebSocketHandler{
 
-    private Logger log = LogManager.getLogger(MyWebSocketHander.class);
+    private Logger log = LogManager.getLogger(MyWebSocketHandler.class);
     //@Resource
 //    private static MessageService messageService;
 //    @Autowired
@@ -52,7 +52,7 @@ public class MyWebSocketHander extends AbstractWebSocketHandler{
     private static MessageRepository repo;
     @Autowired
     public void setMessageService(MessageRepository repo) {
-    	MyWebSocketHander.repo = repo;
+    	MyWebSocketHandler.repo = repo;
     }    
 
     

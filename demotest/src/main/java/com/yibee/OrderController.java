@@ -34,13 +34,13 @@ import com.yibee.entity.Member;
 import com.yibee.entity.NameOrder;
 import com.yibee.entity.Order;
 import com.yibee.entity.OrderWithGoods;
-import com.yibee.websocket.MyWebSocketHander;
+import com.yibee.websocket.MyWebSocketHandler;
 
 @RestController
 @RequestMapping("/order")
 public class OrderController {
 	@Autowired
-	private MyWebSocketHander webSocketHander;
+	private MyWebSocketHandler webSocketHander;
 
 	@Resource
 	private OrderRepository repo;

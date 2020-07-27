@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.TextMessage;
 
 import com.yibee.entity.Member;
-import com.yibee.websocket.MyWebSocketHander;
+import com.yibee.websocket.MyWebSocketHandler;
 
 import net.sf.json.JSONObject;
 
@@ -48,7 +48,7 @@ import net.sf.json.JSONObject;
 @RequestMapping("/member")
 public class MemberController {
 	@Autowired
-	private MyWebSocketHander webSocketHander;
+	private MyWebSocketHandler webSocketHander;
 	
 	@Resource
 	private MemberRepository repo;

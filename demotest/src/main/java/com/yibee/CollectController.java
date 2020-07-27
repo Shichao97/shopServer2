@@ -31,13 +31,13 @@ import com.yibee.entity.CollectWithGoodsAndMember;
 import com.yibee.entity.Goods;
 import com.yibee.entity.GoodsWithMember;
 import com.yibee.entity.Member;
-import com.yibee.websocket.MyWebSocketHander;
+import com.yibee.websocket.MyWebSocketHandler;
 
 @RestController
 @RequestMapping("/collect")
 public class CollectController {
 	 @Autowired
-	 private MyWebSocketHander webSocketHander;
+	 private MyWebSocketHandler webSocketHander;
 	 @Resource
 	 private CollectRepository repo;
 	 @Resource
