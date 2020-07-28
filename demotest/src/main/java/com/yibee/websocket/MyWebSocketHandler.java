@@ -99,7 +99,7 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
         	userMap.put(sId,bean);
         }
         
-        long n = repo.count();
+        //long n = repo.count();
         
         log.info("客户端连接服务器session id :"+session.getId()+"，当前连接数：" + webSocketMap.size());
 

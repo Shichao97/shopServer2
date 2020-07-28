@@ -45,7 +45,7 @@ public class WebSocketHandshakeInterceptor extends HttpSessionHandshakeIntercept
                 log.info("httpSession key：" + httpSession.getId());
 
                 // 获取到httpsession后，可以根据自身业务，操作其中的信息，这里只是单纯的和websocket进行关联
-//                map.put("HTTP_SESSION",httpSession);
+                map.put("HTTP_SESSION",httpSession);
 
                 
         		Object o = httpSession.getAttribute(MyUtil.ATTR_LOGIN_NAME);
@@ -58,8 +58,10 @@ public class WebSocketHandshakeInterceptor extends HttpSessionHandshakeIntercept
             }
         }
 
-        // 调用父类方法
-        return super.beforeHandshake(request,response,webSocketHandler,map);
+        // 调用父类方法，此拦截器不能删，
+        //super自动将httpSession的Attribute复制到webSocketSession
+        boolean b =super.beforeHandshake(request,response,webSocketHandler,map);
+        return b;
     }
     
     @Override
