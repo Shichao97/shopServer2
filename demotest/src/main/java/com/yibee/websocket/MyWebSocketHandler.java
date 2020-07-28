@@ -37,6 +37,7 @@ import javax.servlet.http.HttpSession;
  * <功能详细描述>
  **/
 @Component("webSocketHander")
+@Lazy
 //@EnableJpaRepositories
 public class MyWebSocketHandler extends AbstractWebSocketHandler{
 	//only for test
@@ -60,7 +61,7 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
     }    
 
 //  private MessageController mc;
-//  @Autowired
+//  @Autowired(required = false)
 //  @Lazy
 //  public void setMessageController(MessageController mc) {
 //  	this.mc = mc;
