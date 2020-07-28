@@ -33,9 +33,6 @@ import javax.servlet.http.HttpSession;
 /**
  * <消息处理中心>
  * <功能详细描述>
- * @author wzh
- * @version 2018-07-24 23:11
- * @see [相关类/方法] (可选)
  **/
 @Component("webSocketHander")
 //@EnableJpaRepositories

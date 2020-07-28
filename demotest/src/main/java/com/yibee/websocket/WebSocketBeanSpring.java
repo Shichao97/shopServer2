@@ -7,9 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * <websocket信息对象>
  * <用于存储secket连接信息>
- * @author wzh
- * @version 2018-07-29 18:24
- * @see [相关类/方法] (可选)
  **/
 public class WebSocketBeanSpring
 {

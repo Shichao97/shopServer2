@@ -17,9 +17,6 @@ import java.util.Map;
 /**
  * <websocket通讯拦截器>
  * <建立websocket连接前后的业务处理>
- * @author wzh
- * @version 2018-07-21 20:05
- * @see [相关类/方法] (可选)
  */
 public class WebSocketHandshakeInterceptor extends HttpSessionHandshakeInterceptor
 {

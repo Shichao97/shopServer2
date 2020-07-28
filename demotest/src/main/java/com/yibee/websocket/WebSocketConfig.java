@@ -8,9 +8,6 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 /**
  * <websocket配置类>
  * <功能详细描述>
- * @author wzh
- * @version 2018-08-05 22:59
- * @see [相关类/方法] (可选)
  **/
 @Configuration //标记为spring 配置类
 @EnableWebSocket //开启websocket支持
