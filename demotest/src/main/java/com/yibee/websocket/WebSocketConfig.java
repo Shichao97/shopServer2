@@ -1,5 +1,6 @@
 package com.yibee.websocket;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -13,12 +14,14 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket //开启websocket支持
 public class WebSocketConfig implements WebSocketConfigurer{
 
+	@Autowired
+	private MyWebSocketHandler myWebSocketHandler;
     // 注册消息处理器，并映射连接地址
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry)
     {
         // 注册消息处理器，并添加自定义拦截器，支持websocket的连接访问
-        registry.addHandler(new MyWebSocketHandler(), "myHandler")
+        registry.addHandler(myWebSocketHandler, "myHandler")
             .addInterceptors(new WebSocketHandshakeInterceptor()).setAllowedOrigins("*");
 //        registry.addHandler(new MyWebSocketHander(), "myHandler")
 //        .setAllowedOrigins("*");

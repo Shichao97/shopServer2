@@ -44,7 +44,7 @@ public class WebSocketHandshakeInterceptor extends HttpSessionHandshakeIntercept
                 log.info("httpSession key：" + httpSession.getId());
 
                 // 获取到httpsession后，可以根据自身业务，操作其中的信息，这里只是单纯的和websocket进行关联
-                map.put("HTTP_SESSION",httpSession);
+                // map.put("HTTP_SESSION",httpSession);
 
                 
         		Object o = httpSession.getAttribute(MyUtil.ATTR_LOGIN_NAME);
