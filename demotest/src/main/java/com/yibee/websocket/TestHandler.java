@@ -32,6 +32,7 @@ public class TestHandler extends AbstractWebSocketHandler{
 	     TextMessage tm = new TextMessage(jsonObject.toString());
 	     this.sendMessage(toId.toString(), tm);
 	     webSocketSession.sendMessage(tm);
+	     
 	 }
 	 
 	// 连接错误时触发
