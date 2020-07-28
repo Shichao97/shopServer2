@@ -37,6 +37,11 @@ import javax.servlet.http.HttpSession;
 @Component("webSocketHander")
 //@EnableJpaRepositories
 public class MyWebSocketHandler extends AbstractWebSocketHandler{
+	//only for test
+    private long dd = new Date().getTime();
+    MyWebSocketHandler(){
+    	this.dd = new Date().getTime();
+    }
 
     private Logger log = LogManager.getLogger(MyWebSocketHandler.class);
     //@Resource
