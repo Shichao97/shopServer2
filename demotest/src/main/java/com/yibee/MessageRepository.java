@@ -8,11 +8,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yibee.entity.CountMessage;
 import com.yibee.entity.Message;
 
+@Repository("msRepo")
 public interface MessageRepository extends PagingAndSortingRepository<Message, Long>{
 	@Query(value = "FROM Message m where (m.toId=?1 and m.fromId=?2) or (m.toId=?2 and m.fromId=?1)")
 	Page<Message> findMessageByIDs(Long id1,Long id2,Pageable pageable);

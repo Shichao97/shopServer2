@@ -2,7 +2,10 @@ package com.yibee.websocket;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,15 +39,10 @@ import javax.servlet.http.HttpSession;
  * <消息处理中心>
  * <功能详细描述>
  **/
-@Component("webSocketHander")
-@Lazy
+@Component
 //@EnableJpaRepositories
 public class MyWebSocketHandler extends AbstractWebSocketHandler{
-	//only for test
-    private long dd = new Date().getTime();
-    MyWebSocketHandler(){
-    	this.dd = new Date().getTime();
-    }
+
 
     private Logger log = LogManager.getLogger(MyWebSocketHandler.class);
     //@Resource
@@ -54,19 +52,14 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
 //    	MyWebSocketHander.messageService = messageService;
 //    }    
     //***websocket注入repository或bean必须static才行，否则为null
-    private static MessageRepository repo;
-    @Autowired
-    public void setMessageRepository(MessageRepository repo) {
-    	MyWebSocketHandler.repo = repo;
-    }    
+//    private static MessageRepository repo;
+//    @Autowired
+//    public void setMessageRepository(MessageRepository repo) {
+//    	MyWebSocketHandler.repo = repo;
+//    }    
 
-//  private MessageController mc;
-//  @Autowired(required = false)
-//  @Lazy
-//  public void setMessageController(MessageController mc) {
-//  	this.mc = mc;
-//  }    
-    
+    @Autowired
+    private MessageRepository repo;
     
     /**
      * 用来存放每个客户端对应的webSocket对象。
@@ -186,6 +179,9 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
         }
         else if(flag.equals("msg_new") && sender !=null) {//Main Message handshake
         	this.sendAllCountMessages(flag,webSocketSession,sender.getId());
+    		jsonObject.put("flag","msg_new_end");
+    		TextMessage tm = new TextMessage(jsonObject.toString());
+    		webSocketSession.sendMessage(tm);
         }
         else if(flag.equals("msg_init") && sender !=null) {//MainPanel init
         	Long toId = jsonObject.getLong("toId");
