@@ -16,6 +16,8 @@ public class WebSocketConfig implements WebSocketConfigurer{
 
 	@Autowired
 	private MyWebSocketHandler myWebSocketHandler;
+	@Autowired
+	private TestHandler testHandler;
     // 注册消息处理器，并映射连接地址
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry)
@@ -25,6 +27,7 @@ public class WebSocketConfig implements WebSocketConfigurer{
             .addInterceptors(new WebSocketHandshakeInterceptor()).setAllowedOrigins("*");
 //        registry.addHandler(new MyWebSocketHander(), "myHandler")
 //        .setAllowedOrigins("*");
+        registry.addHandler(testHandler, "testHandler").setAllowedOrigins("*");
 
         /*
         注册消息处理器，并添加自定义拦截器,添加不支持websocket的连接访问
