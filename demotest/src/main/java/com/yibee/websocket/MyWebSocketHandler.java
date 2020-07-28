@@ -3,6 +3,7 @@ package com.yibee.websocket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
+import com.yibee.MessageController;
 import com.yibee.MessageRepository;
 import com.yibee.MyUtil;
 import com.yibee.entity.CountMessage;
@@ -57,6 +59,13 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
     	MyWebSocketHandler.repo = repo;
     }    
 
+//  private MessageController mc;
+//  @Autowired
+//  @Lazy
+//  public void setMessageController(MessageController mc) {
+//  	this.mc = mc;
+//  }    
+    
     
     /**
      * 用来存放每个客户端对应的webSocket对象。
