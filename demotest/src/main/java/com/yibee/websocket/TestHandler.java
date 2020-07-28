@@ -29,10 +29,13 @@ public class TestHandler extends AbstractWebSocketHandler{
 		 log.info("handleMessage");
 		 JSONObject jsonObject = JSONObject.fromObject(webSocketMessage.getPayload());
 	     String flag = jsonObject.getString("flag");
-	     TextMessage tm = new TextMessage(jsonObject.toString());
-	     this.sendMessage(toId.toString(), tm);
-	     webSocketSession.sendMessage(tm);
-	     
+	     if(flag.equals("msg")) {
+	    	 jsonObject.put("data","Hello server!");
+		     TextMessage tm = new TextMessage(jsonObject.toString());
+		     webSocketSession.sendMessage(tm);
+
+	     }
+	     	     
 	 }
 	 
 	// 连接错误时触发
