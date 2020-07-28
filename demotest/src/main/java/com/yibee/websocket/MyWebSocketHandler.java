@@ -53,7 +53,7 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
     //***websocket注入repository或bean必须static才行，否则为null
     private static MessageRepository repo;
     @Autowired
-    public void setMessageService(MessageRepository repo) {
+    public void setMessageRepository(MessageRepository repo) {
     	MyWebSocketHandler.repo = repo;
     }    
 
