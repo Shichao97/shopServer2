@@ -44,7 +44,7 @@ public class TestHandler extends AbstractWebSocketHandler{
 	     Member m = (Member)webSocketSession.getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
 	     if(flag.equals("hello")) {
 	    	 if(m == null) {
-	    		 jsonObject.put("data","Not logged in! ");
+	    		 jsonObject.put("data","You are not logged in! ");
 	    	 }else {
 	    		 String email = m.getEmail();
 	    		 jsonObject.put("data",userMap.keySet());
@@ -55,10 +55,15 @@ public class TestHandler extends AbstractWebSocketHandler{
 
 	     }else if(flag.equals("msg")){
 	    	 if(m == null) {
-	    		 jsonObject.put("data","Not logged in! ");
+	    		 jsonObject.put("data","You are not logged in! ");
+	    		 TextMessage tm = new TextMessage(jsonObject.toString());
+			     webSocketSession.sendMessage(tm);
 	    	 }else {
 	    		 String toId = jsonObject.getString("toId");
-	    		 jsonObject.put("data",userMap.keySet());
+	    		 WebSocketSession session = userMap.get("toId");
+	    		 if(session == null) {
+	    			 jsonObject.put("data","toId is not logged in!");
+	    		 }
 	    	 }
     	 }
 	     	     
