@@ -1,5 +1,8 @@
 package com.yibee.websocket;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -17,10 +20,16 @@ import net.sf.json.JSONObject;
 @Component("TestHandler")
 public class TestHandler extends AbstractWebSocketHandler{
 	private Logger log = LogManager.getLogger(TestHandler.class);
+	Map<String,WebSocketSession> userMap = new ConcurrentHashMap<String, WebSocketSession>();
 	
 	 @Override
 	 public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		 log.info("afterConnectionEstablished");
+		 Member m = (Member)session.getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
+		 if(m != null) {
+			 String sId = ""+m.getId();
+			 userMap.put(sId,session);
+		 }
 		 WebSocketBeanSpring bean = new WebSocketBeanSpring();
 	     bean.setSession(session);
 	 }
@@ -58,6 +67,12 @@ public class TestHandler extends AbstractWebSocketHandler{
     @Override
     public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) throws Exception {
     	log.info("afterConnectionClosed");
+    	Member m = (Member)webSocketSession.getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
+    	if( m != null) {
+    		String sId = ""+m.getId();
+    		userMap.remove(sId);
+    	}
+    	
     }
 
 }
