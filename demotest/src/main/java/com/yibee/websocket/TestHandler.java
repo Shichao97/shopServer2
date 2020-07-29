@@ -41,20 +41,26 @@ public class TestHandler extends AbstractWebSocketHandler{
 		 log.info("handleMessage");
 		 JSONObject jsonObject = JSONObject.fromObject(webSocketMessage.getPayload());
 	     String flag = jsonObject.getString("flag");
-	     if(flag.equals("msg")) {
-	    	 Member m = (Member)webSocketSession.getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
-	    	
+	     Member m = (Member)webSocketSession.getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
+	     if(flag.equals("hello")) {
 	    	 if(m == null) {
 	    		 jsonObject.put("data","Not logged in! ");
 	    	 }else {
 	    		 String email = m.getEmail();
-	    		 jsonObject.put("data","Hello server! "+email);
+	    		 jsonObject.put("data",userMap.keySet());
 	    	 }
 	    	 
 		     TextMessage tm = new TextMessage(jsonObject.toString());
 		     webSocketSession.sendMessage(tm);
 
-	     }
+	     }else if(flag.equals("msg")){
+	    	 if(m == null) {
+	    		 jsonObject.put("data","Not logged in! ");
+	    	 }else {
+	    		 String toId = jsonObject.getString("toId");
+	    		 jsonObject.put("data",userMap.keySet());
+	    	 }
+    	 }
 	     	     
 	 }
 	 
