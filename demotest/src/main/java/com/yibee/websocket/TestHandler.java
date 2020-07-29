@@ -62,6 +62,11 @@ public class TestHandler extends AbstractWebSocketHandler{
     @Override
     public void handleTransportError(WebSocketSession webSocketSession, Throwable throwable) throws Exception {
     	log.info("handleTransportError");
+    	Member m = (Member)webSocketSession.getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
+    	if( m != null) {
+    		String sId = ""+m.getId();
+    		userMap.remove(sId);
+    	}
     }
     
     @Override
