@@ -9,6 +9,8 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
+import com.yibee.MyUtil;
+
 import net.sf.json.JSONObject;
 
 @Component("TestHandler")
@@ -30,7 +32,13 @@ public class TestHandler extends AbstractWebSocketHandler{
 		 JSONObject jsonObject = JSONObject.fromObject(webSocketMessage.getPayload());
 	     String flag = jsonObject.getString("flag");
 	     if(flag.equals("msg")) {
-	    	 jsonObject.put("data","Hello server!");
+	    	 String uid = webSocketSession.getAttributes().get(MyUtil.ATTR_LAST_USERID).toString();
+	    	 if(uid == null) {
+	    		 jsonObject.put("data","Not logged in! ");
+	    	 }else {
+	    		 jsonObject.put("data","Hello server! "+uid);
+	    	 }
+	    	 
 		     TextMessage tm = new TextMessage(jsonObject.toString());
 		     webSocketSession.sendMessage(tm);
 

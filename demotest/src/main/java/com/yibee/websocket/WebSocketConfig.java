@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 /**
  * <websocket配置类>
@@ -27,7 +28,7 @@ public class WebSocketConfig implements WebSocketConfigurer{
             .addInterceptors(new WebSocketHandshakeInterceptor()).setAllowedOrigins("*");
 //        registry.addHandler(new MyWebSocketHander(), "myHandler")
 //        .setAllowedOrigins("*");
-        registry.addHandler(testHandler, "testHandler").setAllowedOrigins("*");
+        registry.addHandler(testHandler, "testHandler").addInterceptors(new HttpSessionHandshakeInterceptor()).setAllowedOrigins("*");
 
         /*
         注册消息处理器，并添加自定义拦截器,添加不支持websocket的连接访问
