@@ -29,3 +29,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+/com/yibee/resource/my.properties
+/.DS_Store

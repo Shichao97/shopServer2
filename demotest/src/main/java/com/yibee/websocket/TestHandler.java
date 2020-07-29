@@ -10,6 +10,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 import com.yibee.MyUtil;
+import com.yibee.entity.Member;
 
 import net.sf.json.JSONObject;
 
@@ -32,11 +33,13 @@ public class TestHandler extends AbstractWebSocketHandler{
 		 JSONObject jsonObject = JSONObject.fromObject(webSocketMessage.getPayload());
 	     String flag = jsonObject.getString("flag");
 	     if(flag.equals("msg")) {
-	    	 String uid = webSocketSession.getAttributes().get(MyUtil.ATTR_LAST_USERID).toString();
-	    	 if(uid == null) {
+	    	 Member m = (Member)webSocketSession.getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
+	    	
+	    	 if(m == null) {
 	    		 jsonObject.put("data","Not logged in! ");
 	    	 }else {
-	    		 jsonObject.put("data","Hello server! "+uid);
+	    		 String email = m.getEmail();
+	    		 jsonObject.put("data","Hello server! "+email);
 	    	 }
 	    	 
 		     TextMessage tm = new TextMessage(jsonObject.toString());
