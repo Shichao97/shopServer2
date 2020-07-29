@@ -60,7 +60,7 @@ public class TestHandler extends AbstractWebSocketHandler{
 			     webSocketSession.sendMessage(tm);
 	    	 }else {
 	    		 String toId = jsonObject.getString("toId");
-	    		 WebSocketSession session = userMap.get("toId");
+	    		 WebSocketSession session = userMap.get(toId);
 	    		 if(session == null) {
 	    			 jsonObject.put("data","toId is not logged in!");
 	    			 TextMessage tm = new TextMessage(jsonObject.toString());
