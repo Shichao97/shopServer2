@@ -17,7 +17,8 @@ public class GoodsTypeController {
 	
 	@Resource
 	private GoodsTypeRepository repo;
-	 
+	
+	//show all goods type
 	@RequestMapping(value = "/showAll")
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	public List showAll(){

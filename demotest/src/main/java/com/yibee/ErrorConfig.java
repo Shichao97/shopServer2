@@ -6,6 +6,8 @@ import org.springframework.boot.web.server.ErrorPageRegistry;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+
+// Use for wrong http path when reload, back or wrong typing
 @Component
 public class ErrorConfig implements ErrorPageRegistrar {
 

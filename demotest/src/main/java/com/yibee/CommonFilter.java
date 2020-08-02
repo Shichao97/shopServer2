@@ -15,9 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringUtils;
-//配置拦截路径
+//configure path for interception 
 //@WebFilter(filterName = "loginFilter",urlPatterns = {"/goods/sell/*,/goods/buy/*,/member/upIcon,/member/edit*"})
 
+//This filter is wrote for ajax cross domain
 @WebFilter(filterName = "commonFilter",urlPatterns = {"/goods/*","/member/*","/collect/*","/order/*"})
 public class CommonFilter implements Filter {
     @Override
@@ -48,7 +49,7 @@ public class CommonFilter implements Filter {
 //			c.setPath("/");
 //			c2.setPath("/");
 //			
-//			response.addCookie(c);//添加到response中
+//			response.addCookie(c);//add to response
 //			response.addCookie(c2);        	
 //        }
 		
@@ -56,8 +57,7 @@ public class CommonFilter implements Filter {
     }
     
 	public String getCookies(Cookie[] cookies,String name){
-    	//HttpServletRequest 装请求信息类
-    	//HttpServletRespionse 装相应信息的类
+    	
     	// Cookie cookie=new Cookie("sessionId","CookieTestInfo");
     	//Cookie[] cookies = request.getCookies();
     	if(cookies != null){

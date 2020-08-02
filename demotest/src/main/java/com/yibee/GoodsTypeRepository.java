@@ -8,6 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import com.yibee.entity.GoodsType;
 
 public interface GoodsTypeRepository extends PagingAndSortingRepository<GoodsType, Integer>{
+	
 	@Query(value = "from GoodsType t order by t.categoryCode")
 	List<GoodsType> findAllOrderByCategory();
 }

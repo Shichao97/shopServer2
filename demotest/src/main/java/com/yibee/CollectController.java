@@ -42,46 +42,16 @@ public class CollectController {
 	 private CollectRepository repo;
 	 @Resource
 	 private GoodsRepository goodsRepo;
- 
-	 @CrossOrigin(origins = "*", maxAge = 3600)
-	 @GetMapping(value="/getcollecticon")
-	 public ResponseEntity<FileSystemResource> getCollectIcon(HttpServletResponse response,@RequestParam("goodsId") Long goodsId,@RequestParam("memberId") Long memberId) {
-	  Properties pp;
-	  try {
-	   File file;
-	   pp = MyUtil.getConfProperties();
-	   String savePath = pp.getProperty("collect_icon.dir");
-	   
-	   Optional<Collect> oc = repo.findByGoodsidAndMemberid(goodsId, memberId);
-	   if(!oc.isPresent()) {
-	    
-	    String absolutePath = savePath+"/purple_heart.png";
-	    file = new File(absolutePath);
-	   }else {
-	    String absolutePath = savePath+"/red_heart.png";
-	    file = new File(absolutePath);
-	   }
-	   
-	   HttpHeaders headers = new HttpHeaders();
-	      headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-	      headers.add("Pragma", "no-cache");
-	      headers.add("Expires", "0");
-	      headers.add("Last-Modified", new Date().toString()); 
-	      headers.add("ETag", String.valueOf(System.currentTimeMillis()));
-	      return ResponseEntity
-	        .ok()
-	        .headers(headers)
-	        .contentLength(file.length())
-	        .contentType(MediaType.IMAGE_JPEG)
-	        .body(new FileSystemResource(file));
-	
-	  } catch (IOException e) {
-	   // TODO Auto-generated catch block
-	   e.printStackTrace();
-	  }
-	  return ResponseEntity.status(602).build();
-	 }
 	 
+	 	 
+	 /**
+	  * When user click the collect button goods,this function is invoked
+	  * 
+	  * @param request
+	  * @param goodsId
+	  * @param memberId
+	  * @return if the click operation is success and some info message
+	  */
 	 @CrossOrigin(origins = "*", maxAge = 3600)
 	 @GetMapping(value="/edit/clickcollect")
 	 public Properties clickCollect(HttpServletRequest request,@RequestParam("goodsId") Long goodsId,
@@ -142,6 +112,14 @@ public class CollectController {
 		 
 	 }
 	 
+	 /**
+	  * get the collection relationship for a certain user and goods
+	  * 
+	  * @param request
+	  * @param goodsId
+	  * @param memberId
+	  * @return if the get operation is success and some info msg
+	  */
 	 @CrossOrigin(origins = "*", maxAge = 3600)
 	 @GetMapping(value="/edit/getIsLike")
 	 public Properties getIsLike(HttpServletRequest request,@RequestParam("goodsId") Long goodsId,
@@ -180,9 +158,18 @@ public class CollectController {
 		 
 	 }
 	 
+	 /**
+	  * search for all the collection of a certain user
+	  * 
+	  * @param request
+	  * @param pageNo
+	  * @param pageSize
+	  * @param searchValue
+	  * @param sortBy
+	  * @return page with goods and member info for display
+	  */
 	 @CrossOrigin(origins = "*", maxAge = 3600)
 	 @GetMapping(value="/edit/searchCollect")
-
 	 public Page<GoodsWithMember> searchCollect(HttpServletRequest request,
 			@RequestParam(value="pageNo",defaultValue="0") Integer pageNo,
 			@RequestParam(value="pageSize",defaultValue="8") Integer pageSize,
@@ -196,8 +183,6 @@ public class CollectController {
 		 	Page<GoodsWithMember> page = null;
 			Pageable pageable = null;
 			
-			
-			
 			if(sortBy.length() == 0) {
 				pageable = PageRequest.of(pageNo, pageSize);
 			}else {
@@ -208,5 +193,45 @@ public class CollectController {
 							
 			return page;
 	 }
+	 
+//	 @CrossOrigin(origins = "*", maxAge = 3600)
+//	 @GetMapping(value="/getcollecticon")
+//	 public ResponseEntity<FileSystemResource> getCollectIcon(HttpServletResponse response,@RequestParam("goodsId") Long goodsId,@RequestParam("memberId") Long memberId) {
+//	  Properties pp;
+//	  try {
+//	   File file;
+//	   pp = MyUtil.getConfProperties();
+//	   String savePath = pp.getProperty("collect_icon.dir");
+//	   
+//	   Optional<Collect> oc = repo.findByGoodsidAndMemberid(goodsId, memberId);
+//	   if(!oc.isPresent()) {
+//	    
+//	    String absolutePath = savePath+"/purple_heart.png";
+//	    file = new File(absolutePath);
+//	   }else {
+//	    String absolutePath = savePath+"/red_heart.png";
+//	    file = new File(absolutePath);
+//	   }
+//	   
+//	   HttpHeaders headers = new HttpHeaders();
+//	      headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+//	      headers.add("Pragma", "no-cache");
+//	      headers.add("Expires", "0");
+//	      headers.add("Last-Modified", new Date().toString()); 
+//	      headers.add("ETag", String.valueOf(System.currentTimeMillis()));
+//	      return ResponseEntity
+//	        .ok()
+//	        .headers(headers)
+//	        .contentLength(file.length())
+//	        .contentType(MediaType.IMAGE_JPEG)
+//	        .body(new FileSystemResource(file));
+//	
+//	  } catch (IOException e) {
+//	   // TODO Auto-generated catch block
+//	   e.printStackTrace();
+//	  }
+//	  return ResponseEntity.status(602).build();
+//	 }
+
  
 }

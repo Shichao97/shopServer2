@@ -66,6 +66,7 @@ public class MyUtil {
 	public static void main(String[] args) {
 		
 	}
+	
 	public static void resizeImage(int sizeOf,String oriPath,String afterPath) throws IOException {
         resizeImage(new Rectangle(0,0,sizeOf,sizeOf),oriPath,afterPath);
     }

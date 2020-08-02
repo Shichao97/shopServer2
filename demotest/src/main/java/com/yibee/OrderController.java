@@ -51,6 +51,16 @@ public class OrderController {
 	@PersistenceContext
     private EntityManager em;
 	
+	/**
+	 * invoke when user place order
+	 * 
+	 * @param request
+	 * @param buyerId
+	 * @param goodsId
+	 * @param receiveAddr
+	 * @param receiveMethod
+	 * @return if the order placement is successful
+	 */
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/placeOrder")
 	@Transactional
@@ -124,6 +134,11 @@ public class OrderController {
         
 	}
 	
+	/**
+	 * produce random order no.
+	 * @param gid
+	 * @return order no.
+	 */
 	private String produceOrderNo(Long gid) {
 		int r1=(int)(Math.random()*(10));//产生2个0-9的随机数
 		int r2=(int)(Math.random()*(10));
@@ -137,6 +152,13 @@ public class OrderController {
 		return paymentID+num;
 	}
 	
+	/**
+	 * invoke when cancel order
+	 * 
+	 * @param request
+	 * @param id
+	 * @return if the order has been successfully canceled
+	 */
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/cancelOrder")
 	@Transactional
@@ -197,6 +219,13 @@ public class OrderController {
         
 	}
 	
+	/**
+	 * invoke when user want to complete order
+	 * 
+	 * @param request
+	 * @param orderId
+	 * @return if successfully complete order
+	 */
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/completeOrder")
 	public Properties completeOrder(
@@ -227,7 +256,17 @@ public class OrderController {
 		return p;
 	}
 	
-	
+	/**
+	 * search order
+	 * @param request
+	 * @param buyerId
+	 * @param searchValue
+	 * @param searchStatus
+	 * @param pageNo
+	 * @param pageSize
+	 * @param sortBy
+	 * @return page with order and goods info
+	 */
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/searchOrder")
 	public Page<OrderWithGoods> searchOrder(HttpServletRequest request,
@@ -266,6 +305,7 @@ public class OrderController {
 		
 		return page;
 	}
+	
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/getOGById")
@@ -321,6 +361,12 @@ public class OrderController {
 		return p;
 	}
 	
+	/**
+	 * invoke when user pay order
+	 * @param request
+	 * @param orderId
+	 * @return if successfully pay the order
+	 */
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/payOrder")
 	public Properties payOrder(HttpServletRequest request,

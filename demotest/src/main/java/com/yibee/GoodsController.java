@@ -57,6 +57,13 @@ public class GoodsController {
 		return null;
 	}
 	
+	
+	/**
+	 * get goods info by goods id
+	 * 
+	 * @param Id
+	 * @return Optional<Goods>
+	 */
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/getgoodsinfo")
 	public Optional<Goods> getGoodsById(@RequestParam("Id") Long Id){ //selling now
@@ -71,6 +78,14 @@ public class GoodsController {
 //		}
 	}
 	
+	/**
+	 * get big img for certain goods to display
+	 * 
+	 * @param response
+	 * @param Id
+	 * @param fname
+	 * @return goods big img source
+	 */
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/getGoodsBigImg")
 	public ResponseEntity<FileSystemResource> getGoodsBigImg(HttpServletResponse response,@RequestParam("Id") Long Id,@RequestParam("fname") String fname) {
@@ -218,6 +233,13 @@ public class GoodsController {
 
 	}
 	
+	/**
+	 * put goods on the shelf
+	 * 
+	 * @param request
+	 * @param gid
+	 * @return
+	 */
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/sell/putonshelf")
 	public Properties putOnShelf(HttpServletRequest request,@RequestParam("gid") Long gid) {
@@ -250,7 +272,13 @@ public class GoodsController {
 	}
 	
 
-	
+	/**
+	 * remove goods from shelf
+	 * 
+	 * @param request
+	 * @param gid
+	 * @return
+	 */
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/sell/removefromshelf")
 	public Properties removeFromShelf(HttpServletRequest request,@RequestParam("gid") Long gid) {
@@ -282,7 +310,7 @@ public class GoodsController {
 		
 	}
 	/*
-	 * 买家搜索
+	 * buyer search
 	 */
 //	@GetMapping(value = "search")
 //	@CrossOrigin(origins = "*", maxAge = 3600)
@@ -311,8 +339,17 @@ public class GoodsController {
 //		
 //	}
 	
-	/*
-	 * 买家搜索,Goods带卖家信息
+	
+	/**
+	 * Search function for buyer
+	 * 
+	 * @param searchValue
+	 * @param pageNo
+	 * @param schoolCode
+	 * @param sellerId
+	 * @param pageSize
+	 * @param sortBy
+	 * @return goods with info of seller
 	 */
 	@GetMapping(value = "search2")
 	@CrossOrigin(origins = "*", maxAge = 3600)
@@ -345,9 +382,6 @@ public class GoodsController {
 		
 	}	
 	
-	/*
-	 * 卖家家搜索自己的商品
-	 */
 	
 	@GetMapping(value = "sell/getSellCount")
 	@CrossOrigin(origins = "*", maxAge = 3600)
@@ -364,7 +398,16 @@ public class GoodsController {
 		return p;
 	}
 	
-	//real sell search
+	/**
+	 * seller search for goods
+	 * 
+	 * @param request
+	 * @param searchType
+	 * @param pageNo
+	 * @param pageSize
+	 * @param sortBy
+	 * @return
+	 */
 	@GetMapping(value = "sell/search")
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	public Page<GoodsWithOrder> goodsSelect(HttpServletRequest request,
@@ -413,6 +456,23 @@ public class GoodsController {
 		}
 		return maxId;
 	}
+	
+	/**
+	 * seller edit goods info
+	 * 
+	 * @param request
+	 * @param gid
+	 * @param typeCode
+	 * @param location
+	 * @param description
+	 * @param name
+	 * @param price
+	 * @param method1
+	 * @param method2
+	 * @param method3
+	 * @param oldimgnames
+	 * @return
+	 */
 	
 	@PostMapping(value = "/sell/edit")
 	@CrossOrigin(origins = "*", maxAge = 3600)
@@ -506,7 +566,21 @@ public class GoodsController {
 	}
 	
 
-	
+	/**
+	 * add goods
+	 * 
+	 * @param request
+	 * @param typeCode
+	 * @param location
+	 * @param description
+	 * @param name
+	 * @param price
+	 * @param method1
+	 * @param method2
+	 * @param method3
+	 * @param status
+	 * @return
+	 */
 	@PostMapping(value = "/sell/add")
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	public Optional<Goods> addGoods(HttpServletRequest request,
@@ -592,9 +666,6 @@ public class GoodsController {
 			return Optional.empty();
 		}
 			
-		
-		
-		
 		
 	}
 	

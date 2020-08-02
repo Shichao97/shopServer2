@@ -17,7 +17,7 @@ public class MailSendObj {
     private String password = "lYc196899";
     
     
-	//use default outlook
+	//use default outlook email
 	public MailSendObj() {
 		// TODO Auto-generated constructor stub
 		props.setProperty("mail.transport.protocol", "smtp");   // 使用的协议（JavaMail规范要求）        
@@ -28,6 +28,7 @@ public class MailSendObj {
 		
 	}
 	
+	//
 	public MailSendObj(String host, int port, boolean starttlsEnable, String account, String password) {
 		props.setProperty("mail.transport.protocol", "smtp");
 		props.put("mail.smtp.host", host);
@@ -48,6 +49,7 @@ public class MailSendObj {
 		return props.getProperty(name);
 	}
 	
+	//send out email
 	public boolean sendOut(String sendMail, String sendName, String receiveMail, String receiveName, String subject, String content) {
 		
 		try {

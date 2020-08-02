@@ -95,6 +95,15 @@ public class MemberController {
 	}
 	*/
 	
+	/**
+	 * upload member icon
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/edit/upIcon")
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	public Properties upIcon2(HttpServletRequest request,HttpServletResponse response) throws IOException, ServletException {
@@ -180,7 +189,10 @@ public class MemberController {
 	*/
 	
 	
-
+	/**
+	 * 
+	 * @return member icon source
+	 */
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/geticon")
 	public ResponseEntity<FileSystemResource> getIconById(HttpServletResponse response,@RequestParam("Id") int Id,@RequestParam("size") int size) {
@@ -223,6 +235,7 @@ public class MemberController {
 	}
 	
 	
+	
 	@CrossOrigin(origins = "*")
 	@GetMapping(value="/checkUsername")
 	public Properties checkUsername(HttpServletResponse response,@RequestParam("userName") String userName) throws IOException {
@@ -255,10 +268,17 @@ public class MemberController {
 		return p;
 	} 
 	
+	/**
+	 * When reset password, this function is used for checking if there is an account 
+	 * with this specific email and send out reset link
+	 * 
+	 * @param email
+	 * @return
+	 */
 	@CrossOrigin(origins = "*")
 	@PostMapping(value="/beginReset")
 	public Properties beginReset(@RequestParam("email") String email) {
-		//生成code存入数据库，发邮件
+		
 		Properties p = new Properties();
 		int count = repo.findUniqueEmail(email);
 		if(count == 0) {
@@ -291,6 +311,14 @@ public class MemberController {
 		return p;
 	}
 	
+	/**
+	 * Reset Password with account
+	 * 
+	 * @param userName
+	 * @param resetcode
+	 * @param passWord
+	 * @return
+	 */
 	@CrossOrigin(origins = "*")
 	@PostMapping(value="/resetPassword")
 	public Properties resetPassword(@RequestParam("userName") String userName,
@@ -319,7 +347,17 @@ public class MemberController {
 	}
 	
 
-	
+	/**
+	 * member register 
+	 * 
+	 * @param response
+	 * @param userName
+	 * @param passWord
+	 * @param email
+	 * @param schoolCode
+	 * @return
+	 * @throws IOException
+	 */
 	@CrossOrigin(origins = "*")
 	@PostMapping(value="/register")
 	public Member memberRegister(HttpServletResponse response,@RequestParam("userName") String userName,
@@ -369,6 +407,13 @@ public class MemberController {
 		
 	}
 	
+	/**
+	 * activate member account
+	 * 
+	 * @param userName
+	 * @param actcode
+	 * @return 
+	 */
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/active")
 	public Properties memberActive(@RequestParam("userName") String userName, 
@@ -404,6 +449,7 @@ public class MemberController {
 		webSocketHander.sendSysMessage(m.getId(), "Active success! Wellcome to Yibee Second Hands website.");
 		return p;
 	}
+	
 	
 	@PostMapping(value="/add")
 	public Member memberAdd(HttpServletRequest request,HttpServletResponse response,

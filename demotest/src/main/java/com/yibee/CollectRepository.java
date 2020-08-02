@@ -24,6 +24,7 @@ public interface CollectRepository  extends PagingAndSortingRepository<Collect, 
 	  @Query(value = "select new com.yibee.entity.GoodsWithMember(g,m) from Goods g left join Member m on g.sellerId=m.id where g.sellerId=?1 and g.status = ?2 and g.name like ?3")
     Page<GoodsWithMember> findGMBySelleridAndStatus(Long sellerId, int status,String name,Pageable pageable);
 	  */
+	 
 	 @Query(value="select new com.yibee.entity.GoodsWithMember(g,m) from Collect c inner join Goods g on c.goodsId = g.id inner join Member m on g.sellerId = m.id where c.memberId = ?1")
 	 Page<GoodsWithMember> findGMByUID(Long uid,Pageable pageable);
 	 
