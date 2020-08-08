@@ -13,18 +13,22 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * 
  */
 @Entity
-@Table(name="game")
-@NamedQuery(name="School.findAll", query="SELECT s FROM School s")
+@Table(name="game_score")
+@NamedQuery(name="GameScore.findAll", query="SELECT g FROM GameScore g")
 public class GameScore implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	private Long id;
 
+	@Column(name="game_name")
 	private String gameName;
+	@Column(name="player_name")
 	private String playerName;
 
 	private int score;
+	
+	@Column(name="rlines")
 	private int lines;
 	private int level;
 	
