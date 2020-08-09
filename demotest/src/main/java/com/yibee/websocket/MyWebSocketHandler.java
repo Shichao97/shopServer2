@@ -36,8 +36,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 /**
- * <消息处理中心>
- * <功能详细描述>
+ * <Message access center>
+ * <functions detailed description>
  **/
 @Component
 //@EnableJpaRepositories
@@ -51,6 +51,7 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
 //    public void setMessageService(MessageService messageService) {
 //    	MyWebSocketHander.messageService = messageService;
 //    }    
+    //***websocket注入repository或bean必须static才行，否则为null
     //***websocket注入repository或bean必须static才行，否则为null
 //    private static MessageRepository repo;
 //    @Autowired
