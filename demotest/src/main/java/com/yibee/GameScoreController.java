@@ -1,6 +1,9 @@
 package com.yibee;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 import javax.annotation.Resource;
 
@@ -24,14 +27,44 @@ public class GameScoreController {
 	
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/saveScore")
-	public int saveScore(){ //selling now
-
+	public Properties saveScore(String playerName,int score,int level,int lines){ //selling now
 		
-		return 0;
+		Properties p = new Properties();
+		GameScore g;
+		Optional<GameScore> op = repo.findByPlayerName(playerName);
+		boolean willUpdate = false;
+		if(op.isPresent()) {
+			g = op.get();
+			if(score > g.getScore()) willUpdate = true;
+		}
+		else {
+			g = new GameScore();
+			willUpdate = true;
+			g.setId(0L);
+			g.setPlayerName(playerName);
+			
+		}
+		
+		if(willUpdate) {
+			g.setScore(score);
+			g.setLevel(level);
+			g.setLines(lines);
+			g.setSaveTime(new Date());
+			repo.save(g);
+		}
+		
+		Long n = repo.getRankingIndex(g.getScore());
+		p.put("updated",willUpdate);
+		p.put("score",g.getScore());
+		p.put("rank",n);
+		return p;
+		
 	}
 	
-	public Page<GameScore> getRankingList(){
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	@GetMapping(value="/getRankingList")
+	public List<GameScore> getRankingList(){
 		Pageable pageable = PageRequest.of(0, 10, Sort.by("score").descending());
-		return repo.findAll(pageable);
+		return repo.findAll(pageable).toList();
 	}
 }

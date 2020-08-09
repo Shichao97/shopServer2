@@ -21,8 +21,7 @@ public class GameScore implements Serializable {
 	@Id
 	private Long id;
 
-	@Column(name="game_name")
-	private String gameName;
+
 	@Column(name="player_name")
 	private String playerName;
 
@@ -45,13 +44,6 @@ public class GameScore implements Serializable {
 		this.id = id;
 	}
 
-	public String getGameName() {
-		return gameName;
-	}
-
-	public void setGameName(String gameName) {
-		this.gameName = gameName;
-	}
 
 	public String getPlayerName() {
 		return playerName;
