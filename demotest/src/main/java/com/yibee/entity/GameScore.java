@@ -8,10 +8,6 @@ import javax.persistence.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
-/**
- * The persistent class for the schools database table.
- * 
- */
 @Entity
 @Table(name="game_score")
 @NamedQuery(name="GameScore.findAll", query="SELECT g FROM GameScore g")

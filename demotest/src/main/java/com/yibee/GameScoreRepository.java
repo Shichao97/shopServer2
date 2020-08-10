@@ -19,4 +19,5 @@ public interface GameScoreRepository  extends PagingAndSortingRepository<GameSco
 
 //	@Query(value="From GameScore g")
 //	Page<GameScore> getRankList(String gameName,Pageable pageable);
+	
 }

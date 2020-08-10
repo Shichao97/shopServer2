@@ -51,8 +51,6 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
 //    public void setMessageService(MessageService messageService) {
 //    	MyWebSocketHander.messageService = messageService;
 //    }    
-    //***websocket注入repository或bean必须static才行，否则为null
-    //***websocket注入repository或bean必须static才行，否则为null
 //    private static MessageRepository repo;
 //    @Autowired
 //    public void setMessageRepository(MessageRepository repo) {
@@ -63,25 +61,25 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
     private MessageRepository repo;
     
     /**
-     * 用来存放每个客户端对应的webSocket对象。
+     * Used to store webSocket objects for each user
      */
     private static Map<String,WebSocketBeanSpring> webSocketMap;
     private static Map<String,WebSocketBeanSpring> userMap;
 
     static
     {
-        // concurrent包的线程安全map
+        // concurrent package thread safe map
         webSocketMap = new ConcurrentHashMap<String, WebSocketBeanSpring>();
         userMap = new ConcurrentHashMap<String, WebSocketBeanSpring>();
     }
 
-    // 服务器与客户端初次websocket连接成功执行
+    // executed when the server and client build connection successfully the first time
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 
-        log.debug("websocket 连接成功......");
+        log.debug("websocket connect success......");
 
-        // 连接成功当前对象放入websocket对象集合
+        // The current object is put into the WebSocket object collection
         WebSocketBeanSpring bean = new WebSocketBeanSpring();
         bean.setSession(session);
 
@@ -107,7 +105,7 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
         
         //long n = repo.count();
         
-        log.info("客户端连接服务器session id :"+session.getId()+"，当前连接数：" + webSocketMap.size());
+        log.info("The client connects to the server session id :"+session.getId()+"，connections now：" + webSocketMap.size());
 
     }
 
@@ -139,17 +137,17 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
     }
     
     /*
-	    获取客户端发送的消息,这里使用文件消息，也就是字符串进行接收
-	    消息可以通过字符串，或者字节流进行接收
-	TextMessage String/byte[]接收均可以
-	BinaryMessage byte[]接收
+	    Gets the message sent by the client, which is received using a file message, which is a string
+	    Messages can be received via a string or byte stream
+	    TextMessage can be received by String/byte[]
+	    BinaryMessage can be received by byte[]
 	*/
     @Override
     public void handleMessage(WebSocketSession webSocketSession,
         WebSocketMessage<?> webSocketMessage)
         throws Exception
     {
-        log.info("客户端发送消息" + webSocketMessage.getPayload().toString());
+        log.info("client end send message" + webSocketMessage.getPayload().toString());
         JSONObject jsonObject = JSONObject.fromObject(webSocketMessage.getPayload());
         String flag = jsonObject.getString("flag");
         Member sender = (Member)webSocketSession.getAttributes().get(MyUtil.ATTR_LOGIN_NAME);
@@ -174,7 +172,7 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
 	        	jsonObject.put("sendTime",new Date().getTime());
 	            TextMessage tm = new TextMessage(jsonObject.toString());
 	            this.sendMessage(toId.toString(), tm);
-	            //回送给自己
+	            //give message back to yourself
 	            webSocketSession.sendMessage(tm);
         	}
         }
@@ -257,7 +255,7 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
     	}
     }
 
-    // 连接错误时触发
+    // Triggered when a connection error occurred
     @Override
     public void handleTransportError(WebSocketSession webSocketSession, Throwable throwable) throws Exception {
         if(webSocketSession.isOpen()){
@@ -272,7 +270,7 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
         }
     }
 
-    // 关闭websocket时触发
+    // Triggered when webSocket is closed
     @Override
     public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) throws Exception {
 
@@ -287,7 +285,7 @@ public class MyWebSocketHandler extends AbstractWebSocketHandler{
     }
 
     /**
-     * 给所有在线用户发送消息（这里用的文本消息）
+     * Send a message to all online users (text message used here)
      * @param message
      */
     public void batchSendMessage(TextMessage message)

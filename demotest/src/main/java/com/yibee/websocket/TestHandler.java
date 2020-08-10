@@ -17,6 +17,7 @@ import com.yibee.entity.Member;
 
 import net.sf.json.JSONObject;
 
+// This haler is just used  for testing, no need to read about
 @Component("TestHandler")
 public class TestHandler extends AbstractWebSocketHandler{
 	private Logger log = LogManager.getLogger(TestHandler.class);
@@ -75,7 +76,7 @@ public class TestHandler extends AbstractWebSocketHandler{
 	     	     
 	 }
 	 
-	// 连接错误时触发
+	
     @Override
     public void handleTransportError(WebSocketSession webSocketSession, Throwable throwable) throws Exception {
     	log.info("handleTransportError");

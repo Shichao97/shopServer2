@@ -5,8 +5,8 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * <websocket信息对象>
- * <用于存储secket连接信息>
+ * <websocket information object>
+ * <used to store socket linking info>
  **/
 public class WebSocketBeanSpring
 {
@@ -14,20 +14,21 @@ public class WebSocketBeanSpring
     private WebSocketSession session;
     
     /**
-     * 连接错误次数
+     * The count of error link
      */
-    private AtomicInteger erroerLinkCount = new AtomicInteger(0);
+    private AtomicInteger errorLinkCount = new AtomicInteger(0);
     
-    public int getErroerLinkCount()
+    public int getErrorLinkCount()
     {
-        // 线程安全,以原子方式将当前值加1，注意：这里返回的是自增前的值
-        return erroerLinkCount.getAndIncrement();
+        // thread safe, atomically increase the current value by 1. 
+    	// Note: the returning value is that before increment
+        return errorLinkCount.getAndIncrement();
     }
     
     public void cleanErrorNum()
     {
-        // 清空计数
-        erroerLinkCount = new AtomicInteger(0);
+        // clean up the count
+        errorLinkCount = new AtomicInteger(0);
     }
 
 	public void setSession(WebSocketSession session) {
@@ -40,5 +41,5 @@ public class WebSocketBeanSpring
 		return this.session;
 	}
     
-   // 省略get set 方法
+   // ignore get set method
 }

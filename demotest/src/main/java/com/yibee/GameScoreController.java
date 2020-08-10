@@ -25,6 +25,14 @@ public class GameScoreController {
 	@Resource
 	private GameScoreRepository repo;
 	
+	/**
+	 * save user's game score to the database
+	 * @param playerName
+	 * @param score
+	 * @param level
+	 * @param lines
+	 * @return
+	 */
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/saveScore")
 	public Properties saveScore(String playerName,int score,int level,int lines){ //selling now
@@ -61,6 +69,10 @@ public class GameScoreController {
 		
 	}
 	
+	/**
+	 * get the whole list of rank
+	 * @return
+	 */
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/getRankingList")
 	public List<GameScore> getRankingList(){
