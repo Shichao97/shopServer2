@@ -43,7 +43,6 @@ import javax.servlet.http.HttpSession;
 //@EnableJpaRepositories
 public class MyWebSocketHandler extends AbstractWebSocketHandler{
 
-
     private Logger log = LogManager.getLogger(MyWebSocketHandler.class);
     //@Resource
 //    private static MessageService messageService;
