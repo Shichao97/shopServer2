@@ -75,8 +75,8 @@ public class GameScoreController {
 	 */
 	@CrossOrigin(origins = "*", maxAge = 3600)
 	@GetMapping(value="/getRankingList")
-	public List<GameScore> getRankingList(){
-		Pageable pageable = PageRequest.of(0, 10, Sort.by("score").descending());
+	public List<GameScore> getRankingList(@RequestParam(defaultValue="20") int pageSize){
+		Pageable pageable = PageRequest.of(0, pageSize, Sort.by("score").descending());
 		return repo.findAll(pageable).toList();
 	}
 }
